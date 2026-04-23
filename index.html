@@ -829,7 +829,10 @@ const MAX_FRAME_DELTA = 1 / 20;
 const MAX_UPDATE_STEPS = 4;
 const DEFAULT_SPAWN_TIMER = 0.55;
 const DAMAGE_PER_ESCAPED_ENEMY = 8;
-// Keep enough health to feel the hits, but never enough damage to fail the guided training run.
+const WARMUP_PROGRESS_WEIGHT = 0.18;
+const ASSIGNMENT_PROGRESS_WEIGHT = 0.64;
+const BOSS_PROGRESS_WEIGHT = 0.18;
+// Keep enough health to take one more hit, then bounce back to 28% so the guided run never hard-fails.
 const MIN_SHIELD_HP = 14;
 const SHIELD_RECOVERY_RATIO = 0.28;
 const SHIELD_TOAST_COOLDOWN = 2.2;
@@ -1002,6 +1005,7 @@ const game = {
 };
 
 const assetPaths = {
+  logo: 'EXAPLAY-Logo.png',
   backgrounds: [1, 2, 3, 4, 5].map(n => `PNG/Backgrounds/07/Layer${n}.png`),
   player: Array.from({ length: 14 }, (_, i) => `PNG/Main%20Planes/Plane03/Idle%20and%20Moving/skeleton-MovingNIdle_${i}.png`),
   enemyScout: Array.from({ length: 18 }, (_, i) => `PNG/Enemy/Char03/Idle/skeleton-Idle_${i}.png`),
@@ -1283,15 +1287,29 @@ function getProgressRatio() {
   const boss = getBoss();
   if (boss) {
     const bossProgress = 1 - boss.hp / boss.maxHp;
-    return 0.82 + bossProgress * 0.18;
+    return (WARMUP_PROGRESS_WEIGHT + ASSIGNMENT_PROGRESS_WEIGHT) + bossProgress * BOSS_PROGRESS_WEIGHT;
   }
   if (game.phase === 'warmup') {
-    return clamp(game.phaseTime / WARMUP_TIME, 0, 1) * 0.18;
+    return clamp(game.phaseTime / WARMUP_TIME, 0, 1) * WARMUP_PROGRESS_WEIGHT;
   }
   const completedAssignments = Math.max(0, game.completedObjectives - 1);
-  const base = 0.18 + (completedAssignments / Math.max(1, REGULAR_ASSIGNMENT_COUNT)) * 0.64;
+  const base = WARMUP_PROGRESS_WEIGHT + (completedAssignments / Math.max(1, REGULAR_ASSIGNMENT_COUNT)) * ASSIGNMENT_PROGRESS_WEIGHT;
   const stageProgress = game.phase === 'mission' ? clamp(game.phaseTime / ASSIGNMENT_SIM_TIME, 0, 1) : 0;
-  return clamp(base + stageProgress * (0.64 / Math.max(1, REGULAR_ASSIGNMENT_COUNT)), 0, 0.82);
+  return clamp(base + stageProgress * (ASSIGNMENT_PROGRESS_WEIGHT / Math.max(1, REGULAR_ASSIGNMENT_COUNT)), 0, WARMUP_PROGRESS_WEIGHT + ASSIGNMENT_PROGRESS_WEIGHT);
+}
+
+function getProgressCopyText() {
+  if (game.bossDefeated) return 'All objectives cleared. Certification granted.';
+  if (game.phase === 'warmup') {
+    return `Warm-up flight • ${Math.max(0, Math.ceil(WARMUP_TIME - game.phaseTime))}s until the first assignment briefing.`;
+  }
+  if (game.phase === 'briefing') {
+    return `Briefing open • ${OBJECTIVES[game.objectiveIndex].estimate} • continue when ready.`;
+  }
+  if (game.phase === 'mission') {
+    return `${OBJECTIVES[game.objectiveIndex].title} • ${Math.max(0, Math.ceil(ASSIGNMENT_SIM_TIME - game.phaseTime))}s left in this sim stage.`;
+  }
+  return 'Easy boss review live. Finish the run to unlock certification.';
 }
 
 function shouldSpawnEnemy() {
@@ -1472,17 +1490,7 @@ function updateHud() {
   threatValue.textContent = game.phase === 'briefing' ? 'Briefing' : OBJECTIVES[game.objectiveIndex].badge;
   const progress = getProgressRatio();
   progressFill.style.width = `${progress * 100}%`;
-  if (game.bossDefeated) {
-    progressCopy.textContent = 'All objectives cleared. Certification granted.';
-  } else if (game.phase === 'warmup') {
-    progressCopy.textContent = `Warm-up flight • ${Math.max(0, Math.ceil(WARMUP_TIME - game.phaseTime))}s until the first assignment briefing.`;
-  } else if (game.phase === 'briefing') {
-    progressCopy.textContent = `Briefing open • ${OBJECTIVES[game.objectiveIndex].estimate} • continue when ready.`;
-  } else if (game.phase === 'mission') {
-    progressCopy.textContent = `${OBJECTIVES[game.objectiveIndex].title} • ${Math.max(0, Math.ceil(ASSIGNMENT_SIM_TIME - game.phaseTime))}s left in this sim stage.`;
-  } else {
-    progressCopy.textContent = 'Easy boss review live. Finish the run to unlock certification.';
-  }
+  progressCopy.textContent = getProgressCopyText();
   renderObjectiveBoard();
 }
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Exaplay 3 Homework Run</title>
+<title>EXAPLAY Homework Flight</title>
 <style>
 :root {
   --bg: #070d1f;
@@ -81,6 +81,9 @@ button {
   align-items: center;
   gap: 14px;
   margin-bottom: 14px;
+}
+.brand-lockup.compact {
+  margin-bottom: 10px;
 }
 .brand-logo {
   display: block;
@@ -325,6 +328,14 @@ button {
   line-height: 1.6;
   font-size: 1rem;
 }
+.panel-title {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  margin-bottom: 10px;
+}
+.briefing-title {
+  font-size: clamp(2rem, 4vw, 3.8rem);
+  margin-bottom: 10px;
+}
 .feature-list {
   list-style: none;
   padding: 0;
@@ -343,6 +354,9 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+.button-row-spaced {
+  margin-top: 24px;
 }
 .cta {
   border: none;
@@ -639,7 +653,7 @@ button {
     <div id="hud">
       <div class="hud-card" id="hud-left">
         <div class="brand-lockup">
-          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY training platform logo">
         </div>
         <div class="hud-label">Homework</div>
         <div id="mission-name">EXAPLAY Homework Flight</div>
@@ -692,7 +706,7 @@ button {
       <div class="panel hero-panel">
         <div>
           <div class="brand-lockup">
-            <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+            <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY training platform logo">
           </div>
           <div class="pretitle">Gamified EXAPLAY homework</div>
           <h1 class="title">EXAPLAY<br>Homework Flight</h1>
@@ -721,14 +735,14 @@ button {
       <div class="panel">
         <div class="briefing-topline">
           <div>
-            <div class="brand-lockup" style="margin-bottom:10px;">
-              <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+            <div class="brand-lockup compact">
+              <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY training platform logo">
             </div>
             <div class="pretitle" id="briefing-pretitle">Assignment briefing</div>
           </div>
           <div class="brand-chip" id="briefing-chip">Sim stage 1</div>
         </div>
-        <h2 class="title" id="briefing-title" style="font-size:clamp(2rem,4vw,3.8rem); margin-bottom:10px;">Projection setup</h2>
+        <h2 class="title briefing-title" id="briefing-title">Projection setup</h2>
         <p class="lead" id="briefing-copy">Read the assignment, then press continue to launch the next 60-second EXAPLAY training flight.</p>
         <div class="briefing-meta">
           <div class="briefing-pill" id="briefing-estimate">Real task: 5–10 min</div>
@@ -736,9 +750,9 @@ button {
           <div class="briefing-pill" id="briefing-goal">Goal: Stay mobile and absorb the brief</div>
         </div>
         <ul class="briefing-list" id="briefing-list"></ul>
-        <div class="button-row" style="margin-top:24px;">
+        <div class="button-row button-row-spaced">
           <button class="cta cta-primary" id="briefing-continue-button">Continue mission</button>
-          <button class="cta cta-secondary" id="briefing-back-button">Back to briefing</button>
+          <button class="cta cta-secondary" id="briefing-back-button">Back to title</button>
         </div>
       </div>
     </section>
@@ -746,8 +760,8 @@ button {
     <section class="overlay hidden" id="pause-overlay">
       <div class="panel">
         <div class="pretitle">Homework paused</div>
-        <h2 class="title" style="font-size:clamp(2rem,4vw,3.5rem); margin-bottom:10px;">Briefing on standby</h2>
-        <p class="lead">Take a breath, then jump back in and finish the Exaplay 3 checklist.</p>
+        <h2 class="title panel-title">Briefing on standby</h2>
+        <p class="lead">Take a breath, then jump back in and finish the EXAPLAY checklist.</p>
         <div class="button-row">
           <button class="cta cta-primary" id="resume-button">Resume</button>
           <button class="cta cta-secondary" id="pause-restart-button">Restart homework</button>
@@ -758,10 +772,10 @@ button {
     <section class="overlay hidden" id="end-overlay">
       <div class="panel">
         <div class="brand-lockup">
-          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY training platform logo">
         </div>
         <div class="pretitle" id="end-pretitle">Certification unlocked</div>
-        <h2 class="title" id="end-title" style="font-size:clamp(2rem,4vw,3.5rem); margin-bottom:10px;">You are a certified EXAPLAY user</h2>
+        <h2 class="title panel-title" id="end-title">You are a certified EXAPLAY user</h2>
         <p class="lead" id="end-copy">You survived the warm-up, cleared every assignment flight, and beat the easy final boss review.</p>
         <div class="summary-grid">
           <div class="summary-box">
@@ -813,7 +827,11 @@ const STAR_COUNT = 64;
 const FIXED_TIMESTEP_SECONDS = 1 / 60;
 const MAX_FRAME_DELTA = 1 / 20;
 const MAX_UPDATE_STEPS = 4;
+const DEFAULT_SPAWN_TIMER = 0.55;
 const DAMAGE_PER_ESCAPED_ENEMY = 8;
+const MIN_SHIELD_HP = 14;
+const SHIELD_RECOVERY_RATIO = 0.28;
+const SHIELD_TOAST_COOLDOWN = 2.2;
 const MIN_ENEMIES_FOR_VICTORY = 2;
 const PLAYER_BULLET_SPREAD = 0.02;
 const AUTOPILOT_BULLET_SPREAD = 0.01;
@@ -1071,7 +1089,7 @@ function resetGame() {
   game.comboTimer = 0;
   game.clearedThreats = 0;
   game.completedObjectives = 0;
-  game.spawnTimer = 0.55;
+  game.spawnTimer = DEFAULT_SPAWN_TIMER;
   game.meteorTimer = 1.8;
   game.flash = 0;
   game.cameraShake = 0;
@@ -1279,6 +1297,15 @@ function shouldSpawnEnemy() {
   return game.spawnTimer <= 0 && game.mode === 'playing' && game.phase === 'mission' && !game.bossSpawned;
 }
 
+function clearCombatArena() {
+  game.enemies = [];
+  game.bullets = [];
+  game.enemyBullets = [];
+  game.effects = [];
+  game.sparks = [];
+  game.spawnTimer = DEFAULT_SPAWN_TIMER;
+}
+
 function refillPlayerShield() {
   if (!game.player) return;
   game.player.hp = MAX_PLAYER_HP;
@@ -1293,7 +1320,9 @@ function showBriefing(index) {
   game.phaseTime = 0;
   game.objectiveIndex = index;
   game.pendingObjectiveIndex = index;
+  clearCombatArena();
   input.fire = false;
+  resetTouchVector();
   pauseOverlay.classList.add('hidden');
   briefingPretitle.textContent = index === OBJECTIVES.length - 1 ? 'Final boss briefing' : 'Assignment briefing';
   briefingChip.textContent = index === OBJECTIVES.length - 1 ? 'Easy boss' : `Sim stage ${index}`;
@@ -1369,7 +1398,7 @@ function spawnBoss() {
     score: 1200,
     scale: 1.18,
     sway: 1.1,
-     isBoss: true
+      isBoss: true
   });
 }
 
@@ -1399,12 +1428,11 @@ function damagePlayer(amount) {
   game.comboTimer = 0;
   createEffect('sparkle', player.x + 30, player.y, 0.34, 0.42);
   createSparkBurst(player.x + 18, player.y, 10, '#ff7e87');
-  game.shieldToastCooldown = Math.max(0, game.shieldToastCooldown - 0);
   if (player.hp <= 0) {
-    player.hp = Math.max(14, MAX_PLAYER_HP * 0.28);
+    player.hp = Math.max(MIN_SHIELD_HP, MAX_PLAYER_HP * SHIELD_RECOVERY_RATIO);
     if (game.shieldToastCooldown <= 0) {
       showToast('Training shield active. You cannot really die in this run.');
-      game.shieldToastCooldown = 2.2;
+      game.shieldToastCooldown = SHIELD_TOAST_COOLDOWN;
     }
   } else {
     showToast('Hit taken. Training shield still active.');
@@ -1511,7 +1539,7 @@ function updatePlayer(dt) {
 }
 
 function updateEnemies(dt) {
-  const intensity = clamp(game.time / SURVIVE_TIME, 0, 1);
+  const intensity = clamp(game.phaseTime / ASSIGNMENT_SIM_TIME, 0, 1);
   game.spawnTimer -= dt;
   if (shouldSpawnEnemy()) {
     spawnEnemy();

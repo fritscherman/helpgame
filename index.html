@@ -12,8 +12,8 @@
   --border: rgba(142, 205, 255, 0.22);
   --text: #eef7ff;
   --muted: #9cc4e7;
-  --accent: #66d7ff;
-  --accent-2: #ffb347;
+  --accent: #5be4ff;
+  --accent-2: #9b6bff;
   --danger: #ff607d;
   --success: #73ffb8;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
@@ -35,19 +35,19 @@ body {
   justify-content: center;
   overflow: hidden;
   padding:
-    max(18px, env(safe-area-inset-top))
-    max(18px, env(safe-area-inset-right))
-    max(18px, env(safe-area-inset-bottom))
-    max(18px, env(safe-area-inset-left));
+    max(8px, env(safe-area-inset-top))
+    max(8px, env(safe-area-inset-right))
+    max(8px, env(safe-area-inset-bottom))
+    max(8px, env(safe-area-inset-left));
 }
 button {
   font: inherit;
 }
 #game-shell {
   position: relative;
-  width: min(100vw - 36px, 1280px);
+  width: min(100vw - 16px, 1536px);
   aspect-ratio: 16 / 9;
-  max-height: calc(100vh - 36px);
+  max-height: calc(100vh - 16px);
   border-radius: 28px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -294,7 +294,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 30px;
+  padding: 20px;
   background: linear-gradient(180deg, rgba(4, 10, 27, 0.3), rgba(4, 10, 27, 0.82));
   backdrop-filter: blur(5px);
   z-index: 5;
@@ -314,7 +314,8 @@ button {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 28px;
-  align-items: center;
+  align-items: start;
+  width: min(100%, 1080px);
 }
 .pretitle {
   font-size: 0.8rem;
@@ -324,8 +325,8 @@ button {
 }
 .title {
   margin: 8px 0 14px;
-  font-size: clamp(2.3rem, 5vw, 4.8rem);
-  line-height: 0.95;
+  font-size: clamp(2rem, 4.2vw, 4rem);
+  line-height: 1;
 }
 .lead {
   margin: 0 0 18px;
@@ -501,6 +502,29 @@ button {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+}
+#start-overlay .pretitle {
+  color: #7ce7ff;
+}
+#start-overlay {
+  align-items: stretch;
+  padding: 12px;
+}
+#start-overlay .panel {
+  margin: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+}
+#start-overlay .cta-primary {
+  background: linear-gradient(135deg, #4ce2ff, #8b63ff);
+  color: #051329;
+  box-shadow: 0 10px 24px rgba(91, 228, 255, 0.24);
+}
+#start-overlay .flow-card,
+#start-overlay .feature-list li {
+  background: rgba(124, 231, 255, 0.08);
+  border-color: rgba(155, 107, 255, 0.25);
 }
 .kicker {
   margin-top: 16px;
@@ -735,6 +759,9 @@ button {
   .hero-panel {
     grid-template-columns: 1fr;
   }
+  #start-overlay {
+    padding: 8px;
+  }
   .mission-flow,
   .briefing-card-grid {
     grid-template-columns: 1fr;
@@ -850,9 +877,9 @@ button {
           <div class="brand-lockup">
             <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
           </div>
-          <div class="pretitle">Gamified EXAPLAY homework</div>
-          <h1 class="title">EXAPLAY<br>Homework Flight</h1>
-          <p class="lead">A branded training run for the tech team: warm up for 20 seconds, absorb a richer task briefing, then survive a focused 30-second combat burst before the next EXAPLAY session unlocks.</p>
+          <div class="pretitle">VIOSO × EXAPLAY mission sim</div>
+          <h1 class="title">VIOSO<br>Homework Flight</h1>
+          <p class="lead">A VIOSO-branded training run for the tech team: warm up for 20 seconds, absorb a richer task briefing, then survive a focused 30-second combat burst before the next EXAPLAY session unlocks.</p>
           <div class="mission-flow">
             <div class="flow-card">
               <div class="flow-icon">🧭</div>
@@ -861,17 +888,18 @@ button {
             </div>
             <div class="flow-card">
               <div class="flow-icon">📋</div>
-              <div class="flow-title">2. Mission briefing</div>
+              <div class="flow-title">2. VIOSO mission briefing</div>
               <div class="flow-copy">Review the exact EXAPLAY task, key systems, expected outcome, and the visual theme of the incoming threat wave.</div>
             </div>
             <div class="flow-card">
               <div class="flow-icon">✈️</div>
-              <div class="flow-title">3. 30-second flight</div>
+              <div class="flow-title">3. 30-second VIOSO flight</div>
               <div class="flow-copy">Keep the lane clean for 30 seconds, then immediately move into the next session with a fresh briefing.</div>
             </div>
           </div>
           <ul class="feature-list">
             <li>⏱️ Each real-world assignment is framed as a 5–10 minute EXAPLAY setup task, while the playable flight between sessions is trimmed to a sharp 30 seconds.</li>
+            <li>🎨 Updated with VIOSO color styling and a stronger startup brand presence while keeping the EXAPLAY logo visible.</li>
             <li>🛠️ Expanded briefings now call out outputs, media behavior, automation checkpoints, and what to watch for before each launch.</li>
             <li>🛡️ Training shield active: you can get hit, but the run keeps going until you earn your EXAPLAY certification.</li>
           </ul>
@@ -879,7 +907,7 @@ button {
             <button class="cta cta-primary" id="start-button">Launch warm-up</button>
             <button class="cta cta-secondary" id="demo-button">Autopilot flythrough</button>
           </div>
-          <div class="kicker">Authored by Etienne Servant • EXAPLAY branding, staged briefings, easy boss, and a certification reward at the end.</div>
+          <div class="kicker">Authored by Etienne Servant • VIOSO branding focus with EXAPLAY logo presence, staged briefings, easy boss, and a certification reward at the end.</div>
         </div>
         <div class="hero-art">
           <img id="hero-bg" src="PNG/Backgrounds/07/Layer1.png" alt="Nebula background">

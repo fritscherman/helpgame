@@ -2,1848 +2,1434 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎮 ExPlay 3 Quest — AV Configuration Challenge</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nebula Run</title>
 <style>
-/* ===== RESET & VARIABLES ===== */
 :root {
-  --primary: #7c5cbf;
-  --primary-light: #a480e8;
-  --accent: #00d4ff;
-  --accent2: #ff6b9d;
-  --success: #00e676;
-  --warning: #ffd740;
-  --danger: #ff5252;
-  --bg: #0b0b1e;
-  --bg2: #12122a;
-  --bg3: #1a1a3a;
-  --card: #1e1e40;
-  --card2: #252550;
-  --border: rgba(124,92,191,0.35);
-  --text: #f0eeff;
-  --text2: #a8a0cc;
-  --radius: 18px;
-  --shadow: 0 8px 32px rgba(0,0,0,0.5);
-  --glow: 0 0 18px rgba(124,92,191,0.6);
+  --bg: #070d1f;
+  --panel: rgba(8, 14, 33, 0.86);
+  --panel-strong: rgba(9, 16, 39, 0.96);
+  --border: rgba(142, 205, 255, 0.22);
+  --text: #eef7ff;
+  --muted: #9cc4e7;
+  --accent: #66d7ff;
+  --accent-2: #ffb347;
+  --danger: #ff607d;
+  --success: #73ffb8;
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+  --radius: 24px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; min-height: 100vh; }
-body {
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: var(--bg);
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, rgba(122, 66, 177, 0.45), transparent 34%),
+    linear-gradient(180deg, #261034 0%, #131c35 54%, #041a26 100%);
   color: var(--text);
-  overflow-x: hidden;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 18px;
+}
+button {
+  font: inherit;
+}
+#game-shell {
   position: relative;
+  width: min(100vw - 36px, 1280px);
+  aspect-ratio: 16 / 9;
+  max-height: calc(100vh - 36px);
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: var(--shadow);
+  background: linear-gradient(180deg, rgba(18, 24, 52, 0.95), rgba(4, 13, 28, 0.98));
 }
-
-/* ===== STARFIELD BG ===== */
-#stars-canvas {
-  position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 0; pointer-events: none;
+#game-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
-
-/* ===== LAYOUT ===== */
-#game {
-  position: relative; z-index: 1;
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 20px 16px 40px;
-  min-height: 100vh;
-}
-
-/* ===== SCREEN MANAGEMENT ===== */
-.screen { display: none; }
-.screen.active { display: block; }
-
-/* ===== HUD (progress bar, score, lives) ===== */
 #hud {
-  display: none;
-  align-items: center; gap: 12px;
-  background: var(--bg2);
+  position: absolute;
+  inset: 20px 20px auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  pointer-events: none;
+}
+.hud-card {
+  pointer-events: auto;
+  background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px 20px;
-  margin-bottom: 22px;
-  box-shadow: var(--shadow);
+  border-radius: 20px;
+  padding: 14px 16px;
+  backdrop-filter: blur(12px);
 }
-#hud.visible { display: flex; }
-#hud-level { font-weight: 700; font-size: 0.95rem; color: var(--accent); white-space: nowrap; }
-#progress-wrap { flex: 1; background: var(--bg3); border-radius: 99px; height: 12px; overflow: hidden; }
-#progress-bar { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 0.5s ease; }
-#hud-score { font-weight: 700; font-size: 1rem; color: var(--warning); white-space: nowrap; }
-#hud-lives { display: flex; gap: 4px; }
-.heart { font-size: 1.2rem; transition: transform 0.2s; }
-.heart.lost { filter: grayscale(1) opacity(0.4); transform: scale(0.85); }
-
-/* ===== TITLE SCREEN ===== */
-#screen-title {
-  text-align: center;
-  padding: 30px 0 10px;
+#hud-left {
+  min-width: min(48vw, 360px);
 }
-.title-logo {
-  font-size: clamp(2.2rem, 6vw, 3.4rem);
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 60%, var(--accent2) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.15;
-  margin-bottom: 6px;
-  text-shadow: none;
+.hud-label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
-.title-sub {
-  color: var(--text2); font-size: 1.05rem; margin-bottom: 28px;
+#mission-name {
+  margin: 4px 0 12px;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 800;
 }
-.exa-container {
-  display: flex; justify-content: center; margin-bottom: 24px;
-}
-.title-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 26px 28px;
-  margin-bottom: 24px;
-  text-align: left;
-  box-shadow: var(--shadow);
-}
-.title-card h3 { color: var(--accent); font-size: 1rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-.title-card ul { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-.title-card ul li { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text2); }
-.title-card ul li::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 50%; background: var(--primary-light); flex-shrink: 0; }
-
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 14px 36px;
-  border-radius: 99px;
-  border: none; cursor: pointer;
-  font-size: 1.05rem; font-weight: 700;
-  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
-}
-.btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-.btn:active { transform: translateY(0); }
-.btn-primary {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-  color: #fff;
-  box-shadow: 0 4px 18px rgba(124,92,191,0.5);
-}
-.btn-success {
-  background: linear-gradient(135deg, #00b86c, var(--success));
-  color: #fff;
-  box-shadow: 0 4px 18px rgba(0,230,118,0.4);
-}
-.btn-accent {
-  background: linear-gradient(135deg, #0095b3, var(--accent));
-  color: #fff;
-  box-shadow: 0 4px 18px rgba(0,212,255,0.35);
-}
-.btn-sm {
-  padding: 9px 20px; font-size: 0.88rem;
-}
-.btn-ghost {
-  background: transparent;
-  border: 1.5px solid var(--border);
-  color: var(--text2);
-  box-shadow: none;
-}
-
-/* ===== LEVEL MAP ===== */
-#screen-map { padding: 10px 0; }
-.map-title { text-align: center; font-size: 1.6rem; font-weight: 800; margin-bottom: 20px; }
-.map-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+.health-row {
+  display: flex;
+  align-items: center;
   gap: 14px;
 }
-.map-node {
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 16px;
-  cursor: pointer;
-  transition: var(--transition, all 0.25s);
+.health-wrap {
   position: relative;
+  width: min(42vw, 300px);
+  aspect-ratio: 605 / 46;
+}
+.health-wrap img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+#health-fill-wrap {
+  position: absolute;
+  left: 15.5%;
+  top: 18.5%;
+  width: 52.1%;
+  height: 60.9%;
   overflow: hidden;
 }
-.map-node:hover { border-color: var(--primary-light); transform: translateY(-3px); box-shadow: var(--glow); }
-.map-node.locked { opacity: 0.45; cursor: not-allowed; }
-.map-node.completed { border-color: var(--success); }
-.map-node.completed::after {
-  content: '✓';
-  position: absolute; top: 10px; right: 14px;
-  color: var(--success); font-size: 1.2rem; font-weight: 700;
+#health-fill {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: left center;
+  transform-origin: left center;
 }
-.map-node-icon { font-size: 2.2rem; margin-bottom: 8px; }
-.map-node-title { font-weight: 700; font-size: 0.95rem; }
-.map-node-sub { color: var(--text2); font-size: 0.8rem; margin-top: 3px; }
-.level-badge {
-  display: inline-block;
-  background: var(--bg3);
-  color: var(--text2);
-  font-size: 0.72rem; font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 99px;
-  margin-bottom: 6px;
-  text-transform: uppercase; letter-spacing: 0.5px;
+#health-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffef9a;
+  min-width: 54px;
 }
-.map-stars { display: flex; gap: 3px; margin-top: 8px; }
-.map-star { color: var(--bg3); font-size: 1rem; }
-.map-star.earned { color: var(--warning); }
-
-/* ===== QUESTION SCREEN ===== */
-#screen-question { }
-.q-header {
-  display: flex; align-items: center; gap: 14px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 22px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
+.stat-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
 }
-.q-icon { font-size: 2.6rem; line-height: 1; }
-.q-header-text h2 { font-size: 1.1rem; font-weight: 800; }
-.q-header-text p { color: var(--text2); font-size: 0.88rem; margin-top: 2px; }
-.q-counter { margin-left: auto; text-align: right; }
-.q-counter span { display: block; }
-.q-counter .q-n { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
-.q-counter .q-of { font-size: 0.78rem; color: var(--text2); }
-
-.q-card {
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 26px 24px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow);
-  position: relative;
+.stat-chip {
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.84rem;
 }
-.q-text {
-  font-size: 1.08rem;
-  font-weight: 600;
-  line-height: 1.55;
-  margin-bottom: 22px;
+#hud-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
 }
-.q-hint-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(255,215,64,0.12);
-  border: 1px solid rgba(255,215,64,0.3);
-  color: var(--warning);
-  padding: 7px 16px;
-  border-radius: 99px;
-  font-size: 0.83rem;
+#progress-panel {
+  min-width: 230px;
+}
+#progress-track {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  overflow: hidden;
+  margin-top: 10px;
+}
+#progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 18px rgba(102, 215, 255, 0.4);
+}
+#progress-copy {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.icon-button {
+  width: 62px;
+  height: 62px;
+  border: none;
+  background: transparent;
+  padding: 0;
   cursor: pointer;
-  margin-bottom: 18px;
-  transition: background 0.2s;
+  pointer-events: auto;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
 }
-.q-hint-btn:hover { background: rgba(255,215,64,0.22); }
-.q-hint-text {
-  background: rgba(255,215,64,0.08);
-  border-left: 3px solid var(--warning);
-  padding: 12px 16px;
-  border-radius: 8px;
-  color: var(--warning);
-  font-size: 0.88rem;
-  margin-bottom: 18px;
+.icon-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background: linear-gradient(180deg, rgba(4, 10, 27, 0.3), rgba(4, 10, 27, 0.82));
+  backdrop-filter: blur(5px);
+  z-index: 5;
+}
+.overlay.hidden {
   display: none;
 }
-.q-hint-text.visible { display: block; }
-
-/* Multiple choice */
-.options-grid {
+.panel {
+  width: min(100%, 960px);
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: clamp(22px, 4vw, 34px);
+  box-shadow: var(--shadow);
+}
+.hero-panel {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+  align-items: center;
+}
+.pretitle {
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.title {
+  margin: 8px 0 14px;
+  font-size: clamp(2.3rem, 5vw, 4.8rem);
+  line-height: 0.95;
+}
+.lead {
+  margin: 0 0 18px;
+  color: #d4ebff;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
   display: grid;
   gap: 10px;
 }
-.option-btn {
-  background: var(--bg3);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  text-align: left;
+.feature-list li {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #dcefff;
+}
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.cta {
+  border: none;
+  border-radius: 999px;
+  padding: 15px 24px;
+  cursor: pointer;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.cta-primary {
+  background: linear-gradient(135deg, #ff9d46, #ffd45d);
+  color: #1d223c;
+  box-shadow: 0 10px 24px rgba(255, 180, 71, 0.28);
+}
+.cta-secondary {
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s, transform 0.15s;
-  display: flex; align-items: center; gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.option-btn:hover:not(:disabled) { border-color: var(--primary-light); background: var(--card2); transform: translateX(4px); }
-.option-btn .opt-letter {
-  background: var(--card2);
-  border-radius: 8px;
-  width: 30px; height: 30px;
-  flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 0.85rem; color: var(--text2);
-}
-.option-btn.correct { border-color: var(--success); background: rgba(0,230,118,0.12); }
-.option-btn.correct .opt-letter { background: var(--success); color: #fff; }
-.option-btn.wrong { border-color: var(--danger); background: rgba(255,82,82,0.12); }
-.option-btn.wrong .opt-letter { background: var(--danger); color: #fff; }
-.option-btn:disabled { cursor: default; }
-
-/* Drag & Drop */
-.drag-area {
-  display: grid;
-  gap: 16px;
-}
-.drag-items-row {
-  display: flex; flex-wrap: wrap; gap: 10px; padding: 14px;
-  background: var(--bg3); border-radius: 12px; border: 1.5px dashed var(--border);
-  min-height: 58px;
-}
-.drag-item {
-  background: var(--card2);
-  border: 1.5px solid var(--primary);
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-size: 0.9rem; font-weight: 600;
-  cursor: grab; user-select: none;
-  transition: transform 0.1s, box-shadow 0.1s;
-}
-.drag-item:active { cursor: grabbing; transform: scale(1.06); box-shadow: 0 6px 20px rgba(124,92,191,0.4); }
-.drag-item.dragging { opacity: 0.5; }
-.drop-zones { display: grid; gap: 12px; }
-.drop-zone {
-  background: var(--bg3);
-  border: 2px dashed var(--border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  min-height: 54px;
-  display: flex; align-items: center; gap: 10px;
-  transition: border-color 0.15s, background 0.15s;
-}
-.drop-zone.over { border-color: var(--primary-light); background: rgba(124,92,191,0.1); }
-.drop-zone.correct { border-color: var(--success); background: rgba(0,230,118,0.08); }
-.drop-zone.wrong { border-color: var(--danger); background: rgba(255,82,82,0.08); }
-.drop-zone-label { font-size: 0.82rem; color: var(--text2); min-width: 120px; }
-.drop-zone-content { display: flex; flex-wrap: wrap; gap: 8px; }
-
-/* Input question */
-.input-answer {
-  background: var(--bg3);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  padding: 13px 18px;
-  color: var(--text);
-  font-size: 1rem;
-  width: 100%;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.input-answer:focus { border-color: var(--primary-light); }
-.input-row { display: flex; gap: 10px; }
-
-/* Slider question */
-.slider-wrap {
-  padding: 10px 4px;
-}
-.slider-labels { display: flex; justify-content: space-between; color: var(--text2); font-size: 0.82rem; margin-bottom: 8px; }
-input[type="range"] {
-  -webkit-appearance: none; appearance: none;
-  width: 100%; height: 8px;
-  border-radius: 99px;
-  background: var(--bg3);
-  outline: none;
-  cursor: pointer;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; appearance: none;
-  width: 24px; height: 24px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  border: 2px solid #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-  cursor: pointer;
-}
-.slider-value {
-  text-align: center;
-  font-size: 1.8rem; font-weight: 800;
-  color: var(--accent);
-  margin: 10px 0;
-}
-
-/* Toggle question */
-.toggle-grid { display: grid; gap: 12px; }
-.toggle-row {
-  background: var(--bg3);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  display: flex; align-items: center; justify-content: space-between;
-  cursor: pointer;
-  transition: border-color 0.15s;
-}
-.toggle-row:hover { border-color: var(--primary-light); }
-.toggle-label { font-size: 0.92rem; }
-.toggle-switch {
-  width: 46px; height: 26px;
-  background: var(--bg);
-  border-radius: 99px;
+.hero-art {
   position: relative;
-  border: 1.5px solid var(--border);
-  transition: background 0.2s;
-  flex-shrink: 0;
+  min-height: 340px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 18%, rgba(255, 173, 63, 0.24), transparent 24%), rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
-.toggle-switch.on { background: var(--primary); border-color: var(--primary-light); }
-.toggle-switch::after {
-  content: '';
+.hero-art img {
   position: absolute;
-  top: 3px; left: 3px;
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: #fff;
-  transition: transform 0.2s;
+  user-select: none;
+  -webkit-user-drag: none;
 }
-.toggle-switch.on::after { transform: translateX(20px); }
-.toggle-row.correct { border-color: var(--success); }
-.toggle-row.wrong { border-color: var(--danger); }
-
-/* Submit button area */
-.q-submit-row { display: flex; gap: 12px; align-items: center; }
-
-/* Feedback overlay */
-.feedback-box {
-  border-radius: var(--radius);
-  padding: 20px 22px;
-  margin-bottom: 16px;
+#hero-bg {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.95;
+}
+#hero-ship {
+  width: min(72%, 360px);
+  left: 6%;
+  bottom: 10%;
+  transform: rotate(-10deg);
+}
+#hero-enemy {
+  width: min(52%, 260px);
+  right: 2%;
+  top: 18%;
+  transform: rotate(-9deg) scaleX(-1);
+}
+#hero-bolt {
+  width: min(32%, 180px);
+  left: 48%;
+  top: 42%;
+}
+.kicker {
+  margin-top: 16px;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+#toast {
+  position: absolute;
+  left: 50%;
+  bottom: 122px;
+  transform: translateX(-50%);
+  background: rgba(9, 16, 39, 0.9);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-size: 0.9rem;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+#toast.visible {
+  opacity: 1;
+}
+#touch-controls {
+  position: absolute;
+  inset: auto 20px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+  z-index: 3;
+}
+#joystick {
+  position: relative;
+  width: 148px;
+  height: 148px;
+  pointer-events: auto;
+  touch-action: none;
+}
+#joystick-base,
+#joystick-knob,
+#shoot-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+#joystick-base {
+  opacity: 0.85;
+}
+#joystick-knob {
+  position: absolute;
+  inset: 0;
+  transform: translate(0, 0);
+  transition: transform 0.08s linear;
+}
+#shoot-button {
+  width: 110px;
+  height: 110px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  pointer-events: auto;
+  touch-action: none;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.36));
+}
+#controls-note {
+  position: absolute;
+  inset: auto auto 18px 50%;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(7, 12, 28, 0.72);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--muted);
+  font-size: 0.82rem;
+  z-index: 2;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 22px 0 24px;
+}
+.summary-box {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.summary-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+.summary-value {
+  margin-top: 8px;
+  font-size: clamp(1.25rem, 2vw, 1.8rem);
+  font-weight: 800;
+}
+.loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 8, 20, 0.9);
+  z-index: 6;
+}
+.loading.hidden {
   display: none;
 }
-.feedback-box.visible { display: block; }
-.feedback-box.correct-fb {
-  background: rgba(0,230,118,0.1);
-  border: 1.5px solid var(--success);
-}
-.feedback-box.wrong-fb {
-  background: rgba(255,82,82,0.1);
-  border: 1.5px solid var(--danger);
-}
-.feedback-box h3 { display: flex; align-items: center; gap: 8px; font-size: 1rem; margin-bottom: 8px; }
-.feedback-box p { font-size: 0.9rem; color: var(--text2); line-height: 1.5; }
-
-/* Level complete / Game over */
-#screen-levelcomplete, #screen-gameover {
-  text-align: center; padding: 30px 0;
-}
-.complete-icon { font-size: 5rem; margin-bottom: 16px; animation: bounceIn 0.6s ease; }
-@keyframes bounceIn {
-  0% { transform: scale(0); }
-  60% { transform: scale(1.15); }
-  100% { transform: scale(1); }
-}
-.complete-title { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
-.complete-sub { color: var(--text2); font-size: 1rem; margin-bottom: 24px; }
-.stars-display { display: flex; justify-content: center; gap: 10px; font-size: 2.5rem; margin-bottom: 22px; }
-.badge-row { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
-.badge {
-  background: var(--card2);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  text-align: center;
-  min-width: 110px;
-}
-.badge-icon { font-size: 2rem; display: block; margin-bottom: 4px; }
-.badge-name { font-size: 0.75rem; color: var(--text2); }
-
-/* Final certificate */
-#screen-final { text-align: center; padding: 20px 0; }
-.certificate {
-  background: linear-gradient(145deg, var(--card), var(--card2));
-  border: 2px solid var(--primary);
-  border-radius: var(--radius);
-  padding: 36px 28px;
-  margin-bottom: 24px;
-  box-shadow: 0 0 30px rgba(124,92,191,0.4);
-  position: relative; overflow: hidden;
-}
-.certificate::before {
-  content: '';
-  position: absolute; top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle at center, rgba(124,92,191,0.08) 0%, transparent 70%);
-}
-.cert-logo { font-size: 3.5rem; margin-bottom: 10px; }
-.cert-title { font-size: 1rem; color: var(--text2); text-transform: uppercase; letter-spacing: 2px; }
-.cert-name { font-size: 2.4rem; font-weight: 900; background: linear-gradient(135deg, var(--primary-light), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 10px 0; }
-.cert-desc { color: var(--text2); font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px; }
-.cert-score-big { font-size: 3rem; font-weight: 900; color: var(--warning); }
-.cert-score-label { color: var(--text2); font-size: 0.85rem; }
-.cert-topics { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 20px; }
-.cert-tag {
-  background: rgba(124,92,191,0.15);
+.loading-card {
+  width: min(92vw, 420px);
+  padding: 28px;
+  border-radius: 24px;
+  background: rgba(8, 14, 33, 0.98);
   border: 1px solid var(--border);
-  border-radius: 99px;
-  padding: 5px 14px;
-  font-size: 0.78rem;
-  color: var(--primary-light);
+  box-shadow: var(--shadow);
 }
-
-/* Confetti */
-.confetti-piece {
-  position: fixed;
-  width: 10px; height: 10px;
-  pointer-events: none;
-  z-index: 9999;
-  animation: confettiFall linear forwards;
-  border-radius: 2px;
+.loading-bar {
+  margin-top: 14px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
 }
-@keyframes confettiFall {
-  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+.loading-bar span {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
 }
-
-/* Exa avatar */
-.exa-bubble {
-  display: flex; align-items: flex-start; gap: 14px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 18px;
-  margin-bottom: 20px;
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover,
+  .icon-button:hover,
+  #shoot-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
 }
-.exa-bubble p { font-size: 0.92rem; color: var(--text2); line-height: 1.6; }
-.exa-bubble strong { color: var(--text); }
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 520px) {
-  .title-card ul { grid-template-columns: 1fr; }
-  .map-grid { grid-template-columns: 1fr 1fr; }
+@media (max-width: 900px) {
+  body {
+    padding: 0;
+  }
+  #game-shell {
+    width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  .hero-panel {
+    grid-template-columns: 1fr;
+  }
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  #hud {
+    inset: 12px 12px auto;
+  }
+  #controls-note {
+    bottom: 10px;
+    font-size: 0.74rem;
+    padding: 8px 12px;
+  }
 }
-@media (max-width: 380px) {
-  .map-grid { grid-template-columns: 1fr; }
+@media (max-width: 640px) {
+  #hud {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  #hud-right {
+    align-items: stretch;
+  }
+  #progress-panel {
+    min-width: 0;
+  }
+  .hud-card {
+    padding: 10px 12px;
+    border-radius: 16px;
+  }
+  #joystick {
+    width: 116px;
+    height: 116px;
+  }
+  #shoot-button {
+    width: 92px;
+    height: 92px;
+  }
+  #touch-controls {
+    inset: auto 12px 14px;
+  }
+  #toast {
+    bottom: 104px;
+    width: calc(100% - 24px);
+    text-align: center;
+  }
 }
-
-/* ===== ANIMATIONS ===== */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.anim-in { animation: fadeInUp 0.4s ease forwards; }
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  20%,60% { transform: translateX(-8px); }
-  40%,80% { transform: translateX(8px); }
-}
-.shake { animation: shake 0.4s ease; }
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-/* transition between questions */
-.q-card { animation: fadeInUp 0.35s ease; }
 </style>
 </head>
 <body>
+  <div id="game-shell">
+    <canvas id="game-canvas" width="1280" height="720"></canvas>
 
-<!-- Animated Starfield -->
-<canvas id="stars-canvas"></canvas>
-
-<div id="game">
-
-  <!-- ===== HUD ===== -->
-  <div id="hud">
-    <div id="hud-level">Level 1</div>
-    <div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
-    <div id="hud-score">0 pts</div>
-    <div id="hud-lives">
-      <span class="heart">❤️</span>
-      <span class="heart">❤️</span>
-      <span class="heart">❤️</span>
-    </div>
-  </div>
-
-  <!-- ===== TITLE SCREEN ===== -->
-  <div id="screen-title" class="screen active">
-    <div class="exa-container">
-      <!-- Exa Robot SVG -->
-      <svg width="110" height="130" viewBox="0 0 110 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Body -->
-        <rect x="22" y="62" width="66" height="50" rx="14" fill="#1e1e40" stroke="#7c5cbf" stroke-width="2"/>
-        <!-- Head -->
-        <rect x="28" y="16" width="54" height="50" rx="14" fill="#252550" stroke="#7c5cbf" stroke-width="2"/>
-        <!-- Antenna -->
-        <line x1="55" y1="16" x2="55" y2="6" stroke="#a480e8" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="55" cy="4" r="4" fill="#00d4ff"/>
-        <!-- Eyes -->
-        <rect x="36" y="30" width="14" height="10" rx="4" fill="#00d4ff" opacity="0.9"/>
-        <rect x="60" y="30" width="14" height="10" rx="4" fill="#00d4ff" opacity="0.9"/>
-        <!-- Eye shine -->
-        <rect x="38" y="32" width="4" height="3" rx="1.5" fill="#fff" opacity="0.7"/>
-        <rect x="62" y="32" width="4" height="3" rx="1.5" fill="#fff" opacity="0.7"/>
-        <!-- Smile -->
-        <path d="M41 50 Q55 60 69 50" stroke="#a480e8" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-        <!-- Chest panel -->
-        <rect x="32" y="72" width="46" height="28" rx="8" fill="#12122a" stroke="#7c5cbf" stroke-width="1.5"/>
-        <!-- Chest lights -->
-        <circle cx="43" cy="84" r="4" fill="#ff6b9d"/>
-        <circle cx="55" cy="84" r="4" fill="#ffd740"/>
-        <circle cx="67" cy="84" r="4" fill="#00e676"/>
-        <!-- Arms -->
-        <rect x="4" y="66" width="20" height="12" rx="6" fill="#1e1e40" stroke="#7c5cbf" stroke-width="2"/>
-        <rect x="86" y="66" width="20" height="12" rx="6" fill="#1e1e40" stroke="#7c5cbf" stroke-width="2"/>
-        <!-- Feet -->
-        <rect x="28" y="108" width="22" height="14" rx="7" fill="#1e1e40" stroke="#7c5cbf" stroke-width="2"/>
-        <rect x="60" y="108" width="22" height="14" rx="7" fill="#1e1e40" stroke="#7c5cbf" stroke-width="2"/>
-      </svg>
-    </div>
-
-    <h1 class="title-logo">ExPlay 3 Quest</h1>
-    <p class="title-sub">🎬 AV Configuration Challenge — Learn by Playing!</p>
-
-    <div class="exa-bubble">
-      <svg width="40" height="40" viewBox="0 0 110 130" fill="none" style="flex-shrink:0; margin-top:2px">
-        <rect x="28" y="16" width="54" height="50" rx="14" fill="#252550" stroke="#7c5cbf" stroke-width="2"/>
-        <line x1="55" y1="16" x2="55" y2="6" stroke="#a480e8" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="55" cy="4" r="4" fill="#00d4ff"/>
-        <rect x="36" y="30" width="14" height="10" rx="4" fill="#00d4ff" opacity="0.9"/>
-        <rect x="60" y="30" width="14" height="10" rx="4" fill="#00d4ff" opacity="0.9"/>
-        <path d="M41 50 Q55 60 69 50" stroke="#a480e8" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-      </svg>
-      <p>Hi! I'm <strong>Exa</strong>, your AV assistant! 🤖 Together we'll master <strong>ExPlay 3</strong> — the powerful media server software. Complete all 9 levels to earn your <strong>Certified ExPlay 3 Operator</strong> badge!</p>
-    </div>
-
-    <div class="title-card">
-      <h3>📚 What you'll learn</h3>
-      <ul>
-        <li>Screen &amp; field setup</li>
-        <li>Transformations &amp; FX</li>
-        <li>Timeline &amp; loops</li>
-        <li>Playlists &amp; saturation</li>
-        <li>Dome shader &amp; masks</li>
-        <li>User panel &amp; PJLink</li>
-        <li>Data tracks &amp; TCP</li>
-        <li>Scheduler &amp; auto-start</li>
-      </ul>
-    </div>
-
-    <div style="text-align:center; margin-bottom:18px;">
-      <div style="color:var(--text2); font-size:0.85rem; margin-bottom:14px;">
-        ❤️ 3 lives &nbsp;|&nbsp; 💡 Hints available &nbsp;|&nbsp; ⭐ Score points &nbsp;|&nbsp; 🏆 Earn badges
+    <div id="hud">
+      <div class="hud-card" id="hud-left">
+        <div class="hud-label">Mission</div>
+        <div id="mission-name">Nebula Run</div>
+        <div class="health-row">
+          <div class="health-wrap">
+            <img src="PNG/Hud/HPbar_Bg.png" alt="Health background">
+            <div id="health-fill-wrap"><img id="health-fill" src="PNG/Hud/Hpbar_green.png" alt="Health fill"></div>
+          </div>
+          <div id="health-text">100%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-chip">Score <strong id="score-value">0</strong></div>
+          <div class="stat-chip">Combo <strong id="combo-value">x1</strong></div>
+          <div class="stat-chip">Threat <strong id="threat-value">Calm</strong></div>
+        </div>
       </div>
-      <button class="btn btn-primary" onclick="startGame()" style="font-size:1.15rem; padding:16px 48px;">
-        🚀 Start Mission
+      <div id="hud-right">
+        <div class="hud-card" id="progress-panel">
+          <div class="hud-label">Sector progress</div>
+          <div id="progress-track"><div id="progress-fill"></div></div>
+          <div id="progress-copy">Hold the line until your jump window opens.</div>
+        </div>
+        <button class="icon-button" id="pause-button" aria-label="Pause game">
+          <img src="PNG/Hud/Pause-Btn.png" alt="Pause">
+        </button>
+      </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <div id="touch-controls">
+      <div id="joystick" aria-label="Touch joystick">
+        <img id="joystick-base" src="PNG/Hud/Analog.png" alt="Joystick base">
+        <img id="joystick-knob" src="PNG/Hud/Analog2.png" alt="Joystick knob">
+      </div>
+      <button id="shoot-button" aria-label="Shoot">
+        <img src="PNG/Hud/Shoot_btn.png" alt="Shoot">
       </button>
     </div>
-  </div>
 
-  <!-- ===== LEVEL MAP ===== -->
-  <div id="screen-map" class="screen">
-    <p class="map-title" style="font-size:1.5rem; font-weight:800;">🗺️ Mission Control</p>
+    <div id="controls-note">WASD / Arrow keys to move • Space to fire • P or pause button to pause</div>
 
-    <div class="exa-bubble" style="margin-bottom:20px;">
-      <svg width="36" height="36" viewBox="0 0 110 130" fill="none" style="flex-shrink:0">
-        <rect x="28" y="16" width="54" height="50" rx="14" fill="#252550" stroke="#7c5cbf" stroke-width="2"/>
-        <circle cx="55" cy="4" r="4" fill="#00d4ff"/>
-        <rect x="36" y="30" width="14" height="10" rx="4" fill="#00d4ff" opacity="0.9"/>
-        <rect x="60" y="30" width="14" height="10" rx="4" fill="#00d4ff" opacity="0.9"/>
-        <path d="M41 50 Q55 60 69 50" stroke="#a480e8" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-      </svg>
-      <p id="map-exa-text">Choose your next mission! Complete them in order to unlock new challenges.</p>
-    </div>
-
-    <div class="map-grid" id="level-map-grid">
-      <!-- generated by JS -->
-    </div>
-  </div>
-
-  <!-- ===== QUESTION SCREEN ===== -->
-  <div id="screen-question" class="screen">
-    <div class="q-header" id="q-header">
-      <div class="q-icon" id="q-level-icon">🖥️</div>
-      <div class="q-header-text">
-        <h2 id="q-level-title">Level 1: Screen Setup</h2>
-        <p id="q-level-sub">Configure your display environment</p>
+    <section class="overlay" id="start-overlay">
+      <div class="panel hero-panel">
+        <div>
+          <div class="pretitle">Sprite-powered arcade mission</div>
+          <h1 class="title">Nebula<br>Run</h1>
+          <p class="lead">The old quiz has been replaced with a real space game. Dodge incoming squadrons, shred interceptors, and survive long enough to make the final warp jump using the uploaded sprite pack.</p>
+          <ul class="feature-list">
+            <li>🚀 Fly with a fully animated ship built from the uploaded main-plane sprite frames.</li>
+            <li>🪐 Fight through layered nebula backgrounds, hostile pilots, missiles, and impact effects from the PNG pack.</li>
+            <li>🎮 Play with keyboard or on-screen mobile controls inspired by the provided HUD artwork.</li>
+          </ul>
+          <div class="button-row">
+            <button class="cta cta-primary" id="start-button">Launch mission</button>
+            <button class="cta cta-secondary" id="demo-button">Autopilot preview</button>
+          </div>
+          <div class="kicker">Goal: survive 75 seconds and clear enough hostiles to open the hyperspace route.</div>
+        </div>
+        <div class="hero-art">
+          <img id="hero-bg" src="PNG/Backgrounds/07/Layer1.png" alt="Nebula background">
+          <img id="hero-ship" src="PNG/Main%20Planes/Plane03/Idle%20and%20Moving/skeleton-MovingNIdle_0.png" alt="Player ship">
+          <img id="hero-enemy" src="PNG/Enemy/Char05/Moving/skeleton-Moving_0.png" alt="Enemy ship">
+          <img id="hero-bolt" src="PNG/Projectile/14.png" alt="Projectile">
+        </div>
       </div>
-      <div class="q-counter">
-        <span class="q-n" id="q-n">1</span>
-        <span class="q-of" id="q-of">/ 3</span>
+    </section>
+
+    <section class="overlay hidden" id="pause-overlay">
+      <div class="panel">
+        <div class="pretitle">Mission paused</div>
+        <h2 class="title" style="font-size:clamp(2rem,4vw,3.5rem); margin-bottom:10px;">Systems on standby</h2>
+        <p class="lead">Take a breath, then jump back into the dogfight.</p>
+        <div class="button-row">
+          <button class="cta cta-primary" id="resume-button">Resume</button>
+          <button class="cta cta-secondary" id="pause-restart-button">Restart run</button>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="q-card" id="q-card">
-      <div class="q-text" id="q-text">Question text here</div>
-      <button class="q-hint-btn" id="hint-btn" onclick="showHint()">💡 Hint <span style="color:var(--text2); font-size:0.75rem;">(-5 pts)</span></button>
-      <div class="q-hint-text" id="hint-text">Hint text here</div>
-      <div id="q-input-area">
-        <!-- dynamic content -->
+    <section class="overlay hidden" id="end-overlay">
+      <div class="panel">
+        <div class="pretitle" id="end-pretitle">Mission complete</div>
+        <h2 class="title" id="end-title" style="font-size:clamp(2rem,4vw,3.5rem); margin-bottom:10px;">Warp route secured</h2>
+        <p class="lead" id="end-copy">You punched through the blockade and lived to tell the story.</p>
+        <div class="summary-grid">
+          <div class="summary-box">
+            <div class="summary-label">Final score</div>
+            <div class="summary-value" id="final-score">0</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-label">Enemies cleared</div>
+            <div class="summary-value" id="final-kills">0</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-label">Survival time</div>
+            <div class="summary-value" id="final-time">0s</div>
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="cta cta-primary" id="restart-button">Play again</button>
+          <button class="cta cta-secondary" id="back-to-title-button">Back to briefing</button>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="feedback-box" id="feedback-box">
-      <h3 id="feedback-title">✅ Correct!</h3>
-      <p id="feedback-text">Explanation here.</p>
-    </div>
-
-    <div class="q-submit-row">
-      <button class="btn btn-primary" id="submit-btn" onclick="submitAnswer()">Check Answer ✓</button>
-      <button class="btn btn-ghost btn-sm" id="next-btn" onclick="nextQuestion()" style="display:none">Next →</button>
-    </div>
-  </div>
-
-  <!-- ===== LEVEL COMPLETE ===== -->
-  <div id="screen-levelcomplete" class="screen">
-    <div class="complete-icon" id="lc-icon">🎉</div>
-    <h2 class="complete-title" id="lc-title">Level Complete!</h2>
-    <p class="complete-sub" id="lc-sub">You've mastered this section</p>
-    <div class="stars-display" id="lc-stars">⭐⭐⭐</div>
-    <div class="badge-row" id="lc-badges"></div>
-    <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-      <button class="btn btn-accent" onclick="goToMap()">🗺️ Mission Map</button>
-      <button class="btn btn-success" id="lc-next-btn" onclick="nextLevel()">Next Level →</button>
-    </div>
-  </div>
-
-  <!-- ===== GAME OVER ===== -->
-  <div id="screen-gameover" class="screen">
-    <div class="complete-icon">💀</div>
-    <h2 class="complete-title">Mission Failed</h2>
-    <p class="complete-sub">You ran out of lives! Don't give up — Exa believes in you!</p>
-    <div style="margin-bottom:24px;">
-      <div style="font-size:3rem; font-weight:800; color:var(--warning)" id="go-score">0 pts</div>
-    </div>
-    <button class="btn btn-primary" onclick="restartGame()">🔄 Try Again</button>
-  </div>
-
-  <!-- ===== FINAL SCREEN ===== -->
-  <div id="screen-final" class="screen">
-    <div class="exa-container">
-      <svg width="90" height="108" viewBox="0 0 110 130" fill="none">
-        <rect x="22" y="62" width="66" height="50" rx="14" fill="#1e1e40" stroke="#7c5cbf" stroke-width="2"/>
-        <rect x="28" y="16" width="54" height="50" rx="14" fill="#252550" stroke="#7c5cbf" stroke-width="2"/>
-        <line x1="55" y1="16" x2="55" y2="6" stroke="#a480e8" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="55" cy="4" r="4" fill="#ffd740"/>
-        <rect x="36" y="30" width="14" height="10" rx="4" fill="#ffd740" opacity="0.9"/>
-        <rect x="60" y="30" width="14" height="10" rx="4" fill="#ffd740" opacity="0.9"/>
-        <path d="M41 50 Q55 60 69 50" stroke="#ffd740" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-        <rect x="32" y="72" width="46" height="28" rx="8" fill="#12122a" stroke="#7c5cbf" stroke-width="1.5"/>
-        <circle cx="43" cy="84" r="4" fill="#ff6b9d"/>
-        <circle cx="55" cy="84" r="4" fill="#ffd740"/>
-        <circle cx="67" cy="84" r="4" fill="#00e676"/>
-        <rect x="4" y="66" width="20" height="12" rx="6" fill="#1e1e40" stroke="#7c5cbf" stroke-width="2"/>
-        <rect x="86" y="66" width="20" height="12" rx="6" fill="#1e1e40" stroke="#7c5cbf" stroke-width="2"/>
-        <rect x="28" y="108" width="22" height="14" rx="7" fill="#1e1e40" stroke="#7c5cbf" stroke-width="2"/>
-        <rect x="60" y="108" width="22" height="14" rx="7" fill="#1e1e40" stroke="#7c5cbf" stroke-width="2"/>
-      </svg>
-    </div>
-
-    <div class="certificate">
-      <div class="cert-logo">🏆</div>
-      <div class="cert-title">Certificate of Achievement</div>
-      <div class="cert-name">ExPlay 3 Operator</div>
-      <div class="cert-desc">
-        This certifies that you have successfully completed the<br>
-        <strong>ExPlay 3 Quest: AV Configuration Challenge</strong><br>
-        demonstrating proficiency in media server configuration.
+    <section class="loading" id="loading-overlay">
+      <div class="loading-card">
+        <div class="pretitle">Loading sprites</div>
+        <h2 style="margin:8px 0 0; font-size:2rem;">Preparing the hangar</h2>
+        <p class="lead" style="margin-top:10px; margin-bottom:0;">Pulling backgrounds, pilots, projectiles, HUD, and effects from the uploaded PNG folder.</p>
+        <div class="loading-bar"><span id="loading-fill"></span></div>
       </div>
-      <div class="cert-score-big" id="final-score-big">0</div>
-      <div class="cert-score-label">Total Points</div>
-      <div class="cert-topics">
-        <span class="cert-tag">🖥️ Screen Setup</span>
-        <span class="cert-tag">📐 Field Config</span>
-        <span class="cert-tag">🔄 Transforms</span>
-        <span class="cert-tag">🎬 Timeline</span>
-        <span class="cert-tag">📋 Playlists</span>
-        <span class="cert-tag">✨ Effects</span>
-        <span class="cert-tag">🎛️ User Panel</span>
-        <span class="cert-tag">📡 Data Track</span>
-        <span class="cert-tag">⏰ Scheduler</span>
-      </div>
-    </div>
-
-    <div class="exa-bubble" style="margin-bottom:24px;">
-      <svg width="36" height="36" viewBox="0 0 110 130" fill="none" style="flex-shrink:0">
-        <rect x="28" y="16" width="54" height="50" rx="14" fill="#252550" stroke="#7c5cbf" stroke-width="2"/>
-        <circle cx="55" cy="4" r="4" fill="#ffd740"/>
-        <rect x="36" y="30" width="14" height="10" rx="4" fill="#ffd740" opacity="0.9"/>
-        <rect x="60" y="30" width="14" height="10" rx="4" fill="#ffd740" opacity="0.9"/>
-        <path d="M41 50 Q55 60 69 50" stroke="#ffd740" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-      </svg>
-      <p id="final-exa-text">🎊 <strong>Amazing work!</strong> You've mastered ExPlay 3 configuration! You're ready to set up professional AV installations. Keep exploring and creating amazing experiences!</p>
-    </div>
-
-    <div style="text-align:center;">
-      <button class="btn btn-primary" onclick="restartGame()">🔄 Play Again</button>
-    </div>
+    </section>
   </div>
-
-</div><!-- #game -->
 
 <script>
-/* ===============================================================
-   GAME DATA — All 9 Levels
-=============================================================== */
-const LEVELS = [
-  {
-    id: 0,
-    title: "Screen Setup",
-    subtitle: "Create your displays",
-    icon: "🖥️",
-    color: "#7c5cbf",
-    badge: { icon: "🖥️", name: "Display Pro" },
-    questions: [
-      {
-        type: "mc",
-        text: "You need to configure ExPlay 3 for a new installation. What type and resolution should the <strong>PROJECTION</strong> screen use?",
-        hint: "This screen uses a classic cinema resolution — 1920×1080 — on TWO devices.",
-        options: [
-          "One 4K (UHD) projector",
-          "Two Full HD (FHD) videoprojectors",
-          "Three WXGA projectors",
-          "One WUXGA laser projector"
-        ],
-        correct: 1,
-        explanation: "✅ PROJECTION is built from <strong>2 videoprojectors at FHD (1920×1080)</strong> resolution, forming a combined wide display surface."
-      },
-      {
-        type: "mc",
-        text: "What resolution should the <strong>MONITOR</strong> screen use?",
-        hint: "WUXGA stands for Widescreen Ultra Extended Graphics Array — 1920×1200.",
-        options: [
-          "Full HD — 1920×1080",
-          "4K UHD — 3840×2160",
-          "WUXGA — 1920×1200",
-          "WXGA — 1280×800"
-        ],
-        correct: 2,
-        explanation: "✅ MONITOR uses <strong>WUXGA (1920×1200)</strong> resolution — slightly taller than FHD, ideal for a dedicated monitoring display."
-      },
-      {
-        type: "drag",
-        text: "Match each screen name to its correct description by dragging the labels to the right boxes.",
-        hint: "There's one screen for projecting content and one for monitoring.",
-        items: ["PROJECTION", "MONITOR"],
-        zones: [
-          { label: "2× FHD videoprojectors", correct: "PROJECTION" },
-          { label: "1× WUXGA monitor display", correct: "MONITOR" }
-        ],
-        explanation: "✅ <strong>PROJECTION</strong> = 2 FHD projectors for the main display. <strong>MONITOR</strong> = 1 WUXGA monitor for dedicated monitoring."
-      }
-    ]
-  },
-  {
-    id: 1,
-    title: "Field Configuration",
-    subtitle: "Set up background & PiP",
-    icon: "📐",
-    color: "#00d4ff",
-    badge: { icon: "📐", name: "Field Expert" },
-    questions: [
-      {
-        type: "mc",
-        text: "How many fields does each screen have in ExPlay 3, and what are they called?",
-        hint: "Think about a main full-screen layer and a smaller overlay window.",
-        options: [
-          "1 field: Full Screen",
-          "3 fields: Top, Middle, Bottom",
-          "2 fields: Background and PiP",
-          "4 fields: A, B, C, D"
-        ],
-        correct: 2,
-        explanation: "✅ Each screen has exactly <strong>2 fields</strong>: a <strong>Background</strong> (full-screen layer) and a <strong>PiP</strong> (Picture-in-Picture overlay)."
-      },
-      {
-        type: "mc",
-        text: "Content in the <strong>Background</strong> field should be scaled how?",
-        hint: "Background content should fill the entire screen, even if it means cropping slightly.",
-        options: [
-          "Fit — show all content with letterboxing",
-          "Cover — fill the frame entirely",
-          "Stretch — distort to fill exactly",
-          "Original — use native resolution"
-        ],
-        correct: 1,
-        explanation: "✅ Background content uses <strong>Cover</strong> scaling — it fills the entire field, cropping edges if necessary, so there are never any black bars."
-      },
-      {
-        type: "mc",
-        text: "Content in the <strong>PiP</strong> (Picture-in-Picture) field should be scaled how?",
-        hint: "PiP content should be fully visible — no cropping allowed.",
-        options: [
-          "Cover — fill the PiP box even if cropped",
-          "Stretch — always fill exactly",
-          "Fit — show the whole image within the PiP frame",
-          "Tile — repeat the image"
-        ],
-        correct: 2,
-        explanation: "✅ PiP content uses <strong>Fit</strong> scaling — the full image is always visible within the PiP frame, with possible letterboxing inside the PiP."
-      }
-    ]
-  },
-  {
-    id: 2,
-    title: "Transformations",
-    subtitle: "Rotations, flips & geometry",
-    icon: "🔄",
-    color: "#ff6b9d",
-    badge: { icon: "🔄", name: "Geometry Guru" },
-    questions: [
-      {
-        type: "mc",
-        text: "On the <strong>PROJECTION</strong> screen, the PiP field has a special geometric transformation. Which one?",
-        hint: "Imagine tilting the PiP window diagonally — a classic diamond shape.",
-        options: [
-          "Flipped vertically (upside-down)",
-          "Rotated 90° clockwise",
-          "Rotated 45° (diamond orientation)",
-          "Flipped horizontally (mirrored)"
-        ],
-        correct: 2,
-        explanation: "✅ On PROJECTION, the <strong>PiP is rotated 45°</strong> — creating a dynamic diamond/rhombus shape that adds visual interest to the overlay."
-      },
-      {
-        type: "mc",
-        text: "On the <strong>MONITOR</strong> screen, the <em>Background</em> field has a special transformation. What is it?",
-        hint: "Like looking in a mirror — the image is reversed left-to-right.",
-        options: [
-          "Rotated 180°",
-          "Flipped horizontally (mirrored)",
-          "Rotated 45°",
-          "Flipped vertically"
-        ],
-        correct: 1,
-        explanation: "✅ On MONITOR, the <strong>Background is flipped horizontally</strong> — this mirrors the image left-to-right, useful for IMAG or confidence monitor displays."
-      },
-      {
-        type: "mc",
-        text: "Which screen+field combination has <em>no special transform</em> applied?",
-        hint: "Only two of the four field slots have transforms — the others stay normal.",
-        options: [
-          "PROJECTION Background (no transform)",
-          "PROJECTION PiP (rotated 45°)",
-          "MONITOR Background (flipped)",
-          "MONITOR PiP (rotated 90°)"
-        ],
-        correct: 0,
-        explanation: "✅ <strong>PROJECTION Background</strong> plays content without any transform. Only PROJECTION PiP (45° rotation) and MONITOR Background (horizontal flip) have special transforms. MONITOR PiP uses a dome shader effect (Level 6), not a geometric transform."
-      }
-    ]
-  },
-  {
-    id: 3,
-    title: "Timeline & Loop",
-    subtitle: "Build the main show loop",
-    icon: "🎬",
-    color: "#ffd740",
-    badge: { icon: "🎬", name: "Timeline Master" },
-    questions: [
-      {
-        type: "mc",
-        text: "In the <strong>PROJECTION Timeline loop</strong>, how many items loop in the Background field, and what type are they?",
-        hint: "Moving pictures — three of them — cycling continuously.",
-        options: [
-          "2 still images",
-          "3 videos",
-          "5 videos and 2 images",
-          "1 video on repeat"
-        ],
-        correct: 1,
-        explanation: "✅ The PROJECTION timeline loop plays <strong>3 different videos</strong> cycling in the Background field — creating a dynamic looping show."
-      },
-      {
-        type: "mc",
-        text: "What loops in the <strong>PROJECTION PiP</strong> during the main timeline loop?",
-        hint: "Static images — not videos — three of them rotating as an overlay.",
-        options: [
-          "3 videos",
-          "1 video",
-          "3 still images",
-          "A live camera feed"
-        ],
-        correct: 2,
-        explanation: "✅ The PROJECTION PiP loops <strong>3 still images</strong> — these cycle through the rotated 45° PiP window overlaid on the background videos."
-      },
-      {
-        type: "mc",
-        text: "A special <strong>cue</strong> is added to the timeline. What appears in the PiP during this cue?",
-        hint: "This is a calibration pattern used with mapping systems — VIOSO specifically.",
-        options: [
-          "A live camera with color correction",
-          "A VIOSO test pattern with a keyer effect on the PiP",
-          "A scrolling text overlay",
-          "The same still images as the main loop"
-        ],
-        correct: 1,
-        explanation: "✅ The special cue shows a <strong>warped VIOSO test pattern with a keyer</strong> on the PiP — used for projector alignment and calibration. VIOSO is a leading auto-calibration system for multi-projector setups."
-      },
-      {
-        type: "mc",
-        text: "In the special cue, which elements run <strong>asynchronously</strong>?",
-        hint: "Two elements break free from the main timeline clock and run independently.",
-        options: [
-          "Only the background video",
-          "The music and the cue background video both run asynchronously",
-          "Only the VIOSO test pattern",
-          "All elements are synchronized"
-        ],
-        correct: 1,
-        explanation: "✅ Both the <strong>background video</strong> (looping independently) and the <strong>music</strong> run asynchronously in the cue — they have their own independent playback heads, not locked to the main timeline."
-      }
-    ]
-  },
-  {
-    id: 4,
-    title: "Playlists",
-    subtitle: "Monitor playlists & content",
-    icon: "📋",
-    color: "#00e676",
-    badge: { icon: "📋", name: "Playlist Pro" },
-    questions: [
-      {
-        type: "mc",
-        text: "The <strong>Monitor Background Playlist</strong> has a specific issue that needs fixing. What correction must be applied to the videos?",
-        hint: "The content creator didn't push a color parameter far enough — the colors look washed out.",
-        options: [
-          "Correct the brightness — videos are too dark",
-          "Correct the saturation — colors are not vivid enough",
-          "Correct the contrast — too flat",
-          "Correct the hue — wrong color cast"
-        ],
-        correct: 1,
-        explanation: "✅ The <strong>saturation must be increased</strong> on the Monitor Background videos — the content creator didn't push saturation enough, making colors look pale. ExPlay 3 lets you adjust this directly on the playlist."
-      },
-      {
-        type: "mc",
-        text: "The <strong>Monitor Background Playlist</strong> contains how many videos?",
-        hint: "A simple pair of videos that loop.",
-        options: ["1 video", "2 videos", "3 videos", "4 videos"],
-        correct: 1,
-        explanation: "✅ The Monitor Background Playlist contains exactly <strong>2 videos</strong>, both with the saturation correction applied."
-      },
-      {
-        type: "mc",
-        text: "The <strong>Monitor PiP Playlist</strong> contains a mix of media. What is the correct composition?",
-        hint: "Count carefully: 2 moving + 2 frozen, with a specific duration for the frozen items.",
-        options: [
-          "4 videos",
-          "2 videos and 1 still image of 5 seconds",
-          "2 videos and 2 still images displayed for 8 seconds each",
-          "3 stills and 1 video"
-        ],
-        correct: 2,
-        explanation: "✅ Monitor PiP Playlist = <strong>2 videos + 2 still images at 8 seconds each</strong>. The 8-second duration is set explicitly in ExPlay 3 for each still image in the playlist."
-      },
-      {
-        type: "slider",
-        text: "Set the <strong>still image display duration</strong> in the Monitor PiP Playlist. Drag the slider to the correct number of seconds.",
-        hint: "8 seconds — a comfortable dwell time for a still image in a playlist.",
-        min: 1, max: 20, correct: 8,
-        unit: "seconds",
-        explanation: "✅ Each still image in the Monitor PiP Playlist should be set to <strong>8 seconds</strong> duration."
-      }
-    ]
-  },
-  {
-    id: 5,
-    title: "Effects & Masks",
-    subtitle: "Dome shader, masks & linking",
-    icon: "✨",
-    color: "#a480e8",
-    badge: { icon: "✨", name: "FX Wizard" },
-    questions: [
-      {
-        type: "mc",
-        text: "A special shader effect must be applied to <strong>all PiP content</strong> in the Monitor Playlist. Which effect?",
-        hint: "This effect curves the image as if it's projected inside a hemisphere — like a planetarium.",
-        options: [
-          "Lens flare effect",
-          "Chromatic aberration",
-          "Dome shader effect",
-          "Edge blend warp"
-        ],
-        correct: 2,
-        explanation: "✅ A <strong>Dome shader</strong> is applied to all PiP content — this effect warps the image to fit a domed projection surface, commonly used in planetariums and immersive installations."
-      },
-      {
-        type: "mc",
-        text: "A small mask needs to be placed on the <strong>PROJECTION screen</strong>. What shape is it?",
-        hint: "Think of the letter V — like a downward-pointing notch.",
-        options: [
-          "Circular mask (spotlight)",
-          "Rectangular cutout",
-          "V-shaped mask",
-          "Horizontal stripe mask"
-        ],
-        correct: 2,
-        explanation: "✅ A <strong>V-shaped mask</strong> is placed on the PROJECTION screen — this hides a triangular area, useful for blocking architectural elements or creating creative shapes in the projection mapping."
-      },
-      {
-        type: "mc",
-        text: "The <strong>Monitor PiP Playlist</strong> must follow the Monitor Background Playlist. What relationship should it have?",
-        hint: "In ExPlay 3 terminology, one playlist takes its cues from another.",
-        options: [
-          "The PiP playlist is set as Master",
-          "The PiP playlist is set as Client (follows the Background)",
-          "Both playlists are independent",
-          "The Background follows the PiP"
-        ],
-        correct: 1,
-        explanation: "✅ The PiP playlist is set as <strong>Client</strong> of the Background playlist — meaning it follows the Background playlist's cue changes. When the Background switches to cue 2, the PiP follows to its own cue 2."
-      }
-    ]
-  },
-  {
-    id: 6,
-    title: "User Panel & PJLink",
-    subtitle: "Build the operator control surface",
-    icon: "🎛️",
-    color: "#ff6b9d",
-    badge: { icon: "🎛️", name: "Panel Builder" },
-    questions: [
-      {
-        type: "mc",
-        text: "The User Panel needs a control for the audio. Which audio element should the operator be able to adjust, and from which part of the setup?",
-        hint: "The music plays asynchronously in the special timeline cue.",
-        options: [
-          "Volume of the Monitor PiP videos",
-          "Audio level of the music in the timeline cue",
-          "Master output volume of all screens",
-          "Audio level of the background videos"
-        ],
-        correct: 1,
-        explanation: "✅ The User Panel exposes a control for the <strong>audio level of the music in the timeline cue</strong> — letting the operator fade the background music up or down live."
-      },
-      {
-        type: "mc",
-        text: "The User Panel also needs a color control. What should the operator be able to adjust?",
-        hint: "Recall the saturation issue from the Monitor Background Playlist.",
-        options: [
-          "Hue of the PROJECTION background",
-          "Brightness of the PiP fields",
-          "Saturation level of the Monitor Background videos",
-          "Contrast of the timeline videos"
-        ],
-        correct: 2,
-        explanation: "✅ The User Panel exposes a <strong>saturation level control</strong> for the Monitor Background — so the operator can fine-tune the color intensity live without going into the full ExPlay 3 interface."
-      },
-      {
-        type: "mc",
-        text: "Which projector control protocol is used for the 2 projectors, and what buttons does the User Panel provide?",
-        hint: "PJ = Projector, Link = network link. A standard protocol for AV control.",
-        options: [
-          "RS-232 serial with brightness control",
-          "HDMI CEC with auto-switch buttons",
-          "PJLink protocol with ON/OFF buttons for each projector",
-          "Art-Net DMX with a dimmer slider"
-        ],
-        correct: 2,
-        explanation: "✅ <strong>PJLink</strong> (a standard TCP/IP projector control protocol) is used. The User Panel provides <strong>ON/OFF buttons</strong> for each of the 2 projectors — allowing the operator to power cycle projectors remotely."
-      },
-      {
-        type: "mc",
-        text: "What cue controls does the User Panel provide for the playlists and timeline?",
-        hint: "The operator needs to trigger different scenes/cues from the playlists and the timeline.",
-        options: [
-          "Play/Pause/Stop for all media",
-          "Controls to switch between cues from the playlists and the timeline",
-          "Only a master play button",
-          "Individual file browser and selection"
-        ],
-        correct: 1,
-        explanation: "✅ The User Panel provides <strong>cue controls for all playlists and the timeline</strong> — buttons that jump to specific cues, giving the operator easy access to switch scenes without needing to navigate the full ExPlay 3 interface."
-      }
-    ]
-  },
-  {
-    id: 7,
-    title: "Data Track & TCP",
-    subtitle: "Send data over the network",
-    icon: "📡",
-    color: "#00d4ff",
-    badge: { icon: "📡", name: "Network Ninja" },
-    questions: [
-      {
-        type: "mc",
-        text: "A <strong>data track</strong> is created in the timeline. What value range does this data track produce?",
-        hint: "The range starts at zero and goes to the answer to Life, the Universe, and Everything.",
-        options: [
-          "0 to 100",
-          "0 to 255",
-          "0 to 42",
-          "−100 to +100"
-        ],
-        correct: 2,
-        explanation: "✅ The data track outputs values from <strong>0 to 42</strong>, with keyframes set to create variations throughout the timeline loop. The 42 maximum is a fun nod to The Hitchhiker's Guide to the Galaxy!"
-      },
-      {
-        type: "mc",
-        text: "The data track uses keyframes to vary its values during the loop. What protocol does it use to send these values over the network?",
-        hint: "A reliable, connection-oriented protocol — not UDP.",
-        options: [
-          "UDP (unreliable datagram)",
-          "OSC (Open Sound Control)",
-          "TCP (Transmission Control Protocol)",
-          "Art-Net over Ethernet"
-        ],
-        correct: 2,
-        explanation: "✅ The data track outputs via <strong>TCP</strong> — a reliable, connection-oriented protocol that guarantees delivery of the data values to the receiving device."
-      },
-      {
-        type: "input",
-        text: "Enter the <strong>IP address</strong> that the data track should send TCP data to:",
-        hint: "It's a private Class C address starting with 192.168.1.",
-        correct: "192.168.1.54",
-        placeholder: "e.g. 192.168.x.y",
-        explanation: "✅ The data track sends TCP data to <strong>192.168.1.54</strong> — a device on the local network (such as a control system or external receiver)."
-      },
-      {
-        type: "input",
-        text: "Enter the <strong>TCP port number</strong> that the data track should send data to:",
-        hint: "Port numbers above 1024 are user-defined. This one is 4 digits.",
-        correct: "8567",
-        placeholder: "e.g. 8xxx",
-        explanation: "✅ The TCP port is <strong>8567</strong>. Combined with the IP, the full destination is <strong>192.168.1.54:8567</strong>."
-      }
-    ]
-  },
-  {
-    id: 8,
-    title: "Scheduler & Auto-Start",
-    subtitle: "Automate startup and shows",
-    icon: "⏰",
-    color: "#ffd740",
-    badge: { icon: "⏰", name: "Automation Ace" },
-    questions: [
-      {
-        type: "mc",
-        text: "The scheduler should automatically start the <strong>main timeline loop</strong> every week. When exactly?",
-        hint: "The working week starts on a day before Wednesday — early morning.",
-        options: [
-          "Every Monday at 08:00",
-          "Every Tuesday at 09:00",
-          "Every Wednesday at 07:00",
-          "Every Tuesday at 17:00"
-        ],
-        correct: 1,
-        explanation: "✅ The scheduler triggers the <strong>main timeline loop every Tuesday at 09:00</strong> — the show starts automatically on Tuesday mornings."
-      },
-      {
-        type: "mc",
-        text: "A second scheduler task is needed. When should <strong>Background Playlist Cue 2</strong> be triggered?",
-        hint: "Monday afternoon — at the end of the working day.",
-        options: [
-          "Monday at 09:00",
-          "Monday at 17:00",
-          "Tuesday at 17:00",
-          "Friday at 18:00"
-        ],
-        correct: 1,
-        explanation: "✅ Background Playlist Cue 2 is triggered by the scheduler <strong>every Monday at 17:00</strong> — perhaps triggering an end-of-day content change automatically."
-      },
-      {
-        type: "mc",
-        text: "ExPlay 3 should auto-start on a specific cue when the software launches. Which cue?",
-        hint: "Think about the cue with the two asynchronous elements.",
-        options: [
-          "The main timeline loop cue",
-          "Background Playlist Cue 1",
-          "The cue with the asynchronous videos (and music) in the timeline",
-          "Monitor PiP Playlist Cue 1"
-        ],
-        correct: 2,
-        explanation: "✅ ExPlay 3 is set to <strong>auto-start on the cue with asynchronous videos in the timeline</strong> — so when ExPlay 3 launches, it immediately jumps to this specific cue and begins playback."
-      },
-      {
-        type: "mc",
-        text: "A daily automatic restart is configured. At what time should ExPlay 3 restart every day?",
-        hint: "In the dead of night — early morning, before any shows.",
-        options: [
-          "00:00 (midnight)",
-          "02:00",
-          "04:00",
-          "06:00"
-        ],
-        correct: 2,
-        explanation: "✅ An <strong>automatic restart at 04:00</strong> every morning is configured — this ensures ExPlay 3 stays healthy, clears any memory leaks, and is freshly loaded for the day's shows."
-      }
-    ]
-  }
-];
+const GAME_WIDTH = 1280;
+const GAME_HEIGHT = 720;
+const SURVIVE_TIME = 75;
+const MAX_PLAYER_HP = 100;
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+const lerp = (a, b, t) => a + (b - a) * t;
+const rand = (min, max) => Math.random() * (max - min) + min;
+const pick = (list) => list[Math.floor(Math.random() * list.length)];
 
-/* ===============================================================
-   GAME STATE
-=============================================================== */
-let state = {
-  screen: 'title',
-  currentLevel: 0,
-  currentQuestion: 0,
-  score: 0,
-  lives: 3,
-  hintUsed: false,
-  answered: false,
-  levelScores: [],
-  completedLevels: [],
-  // drag state
-  dragItem: null,
-  dropZoneData: {},
-  // toggle state
-  toggleValues: {},
-  // slider state
-  sliderValue: 10,
-  // input state
-  inputValue: ''
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext('2d');
+const loadingOverlay = document.getElementById('loading-overlay');
+const loadingFill = document.getElementById('loading-fill');
+const startOverlay = document.getElementById('start-overlay');
+const pauseOverlay = document.getElementById('pause-overlay');
+const endOverlay = document.getElementById('end-overlay');
+const pauseButton = document.getElementById('pause-button');
+const startButton = document.getElementById('start-button');
+const demoButton = document.getElementById('demo-button');
+const resumeButton = document.getElementById('resume-button');
+const restartButton = document.getElementById('restart-button');
+const pauseRestartButton = document.getElementById('pause-restart-button');
+const backToTitleButton = document.getElementById('back-to-title-button');
+const toast = document.getElementById('toast');
+const missionName = document.getElementById('mission-name');
+const healthFill = document.getElementById('health-fill');
+const healthText = document.getElementById('health-text');
+const scoreValue = document.getElementById('score-value');
+const comboValue = document.getElementById('combo-value');
+const threatValue = document.getElementById('threat-value');
+const progressFill = document.getElementById('progress-fill');
+const progressCopy = document.getElementById('progress-copy');
+const endPretitle = document.getElementById('end-pretitle');
+const endTitle = document.getElementById('end-title');
+const endCopy = document.getElementById('end-copy');
+const finalScore = document.getElementById('final-score');
+const finalKills = document.getElementById('final-kills');
+const finalTime = document.getElementById('final-time');
+const joystick = document.getElementById('joystick');
+const joystickKnob = document.getElementById('joystick-knob');
+const shootButton = document.getElementById('shoot-button');
+
+const FRAME_CACHE = {};
+const input = {
+  left: false,
+  right: false,
+  up: false,
+  down: false,
+  fire: false,
+  touchX: 0,
+  touchY: 0,
+  touchActive: false,
+  autopilot: false
 };
 
-/* ===============================================================
-   SCREEN MANAGEMENT
-=============================================================== */
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-  state.screen = id;
+const game = {
+  mode: 'loading',
+  time: 0,
+  score: 0,
+  combo: 1,
+  comboTimer: 0,
+  kills: 0,
+  spawnTimer: 0,
+  meteorTimer: 0,
+  flash: 0,
+  cameraShake: 0,
+  player: null,
+  enemies: [],
+  bullets: [],
+  enemyBullets: [],
+  effects: [],
+  sparks: [],
+  stars: [],
+  autopilotTimer: 0
+};
 
-  const hudVisible = ['question', 'levelcomplete'].includes(id);
-  const hud = document.getElementById('hud');
-  if (hudVisible) hud.classList.add('visible');
-  else hud.classList.remove('visible');
+const assetPaths = {
+  backgrounds: [1, 2, 3, 4, 5].map(n => `PNG/Backgrounds/07/Layer${n}.png`),
+  player: Array.from({ length: 14 }, (_, i) => `PNG/Main%20Planes/Plane03/Idle%20and%20Moving/skeleton-MovingNIdle_${i}.png`),
+  enemyScout: Array.from({ length: 18 }, (_, i) => `PNG/Enemy/Char03/Idle/skeleton-Idle_${i}.png`),
+  enemyRaider: Array.from({ length: 18 }, (_, i) => `PNG/Enemy/Char05/Moving/skeleton-Moving_${i}.png`),
+  enemyAce: Array.from({ length: 18 }, (_, i) => `PNG/Enemy/Char08/Moving/skeleton-Moving_${i}.png`),
+  engine: Array.from({ length: 14 }, (_, i) => `PNG/TurbineFX/skeleton-animation_${i}.png`),
+  explosion: Array.from({ length: 18 }, (_, i) => `PNG/Collision_Fx/Fx02/skeleton-Fx2_${i}.png`),
+  sparkle: Array.from({ length: 10 }, (_, i) => `PNG/Collision_Fx/Fx01/skeleton-Fx1_${i}.png`),
+  muzzle: Array.from({ length: 6 }, (_, i) => `PNG/ShootFx/Fx01/skeleton-animation_${i}.png`),
+  playerShot: 'PNG/Projectile/14.png',
+  enemyShot: 'PNG/Projectile/06.png',
+  pause: 'PNG/Hud/Pause-Btn.png',
+  healthBg: 'PNG/Hud/HPbar_Bg.png',
+  healthFill: 'PNG/Hud/Hpbar_green.png',
+  analog: 'PNG/Hud/Analog.png',
+  analogKnob: 'PNG/Hud/Analog2.png',
+  shoot: 'PNG/Hud/Shoot_btn.png'
+};
+
+const assets = {};
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error(`Failed to load ${src}`));
+    image.src = src;
+  });
 }
 
-/* ===============================================================
-   STARFIELD
-=============================================================== */
-(function initStars() {
-  const canvas = document.getElementById('stars-canvas');
-  const ctx = canvas.getContext('2d');
-  let stars = [];
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  function makeStars() {
-    stars = [];
-    const n = Math.floor(canvas.width * canvas.height / 4000);
-    for (let i = 0; i < n; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 1.4 + 0.2,
-        o: Math.random(),
-        speed: Math.random() * 0.015 + 0.005,
-        phase: Math.random() * Math.PI * 2
-      });
+async function loadAssets() {
+  const entries = [];
+  Object.entries(assetPaths).forEach(([key, value]) => {
+    if (Array.isArray(value)) value.forEach((src, index) => entries.push({ key, index, src }));
+    else entries.push({ key, index: null, src: value });
+  });
+
+  let completed = 0;
+  for (const entry of entries) {
+    const image = await loadImage(entry.src);
+    if (entry.index === null) assets[entry.key] = image;
+    else {
+      if (!assets[entry.key]) assets[entry.key] = [];
+      assets[entry.key][entry.index] = image;
     }
-  }
-  let t = 0;
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    t += 0.016;
-    stars.forEach(s => {
-      const alpha = 0.2 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.speed * 60 + s.phase));
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(200,180,255,${alpha})`;
-      ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  resize();
-  makeStars();
-  draw();
-  window.addEventListener('resize', () => { resize(); makeStars(); });
-})();
-
-/* ===============================================================
-   START GAME / MAP
-=============================================================== */
-function startGame() {
-  showScreen('map');
-  buildMap();
-  updateHud();
-}
-
-function buildMap() {
-  const grid = document.getElementById('level-map-grid');
-  grid.innerHTML = '';
-  LEVELS.forEach((lvl, i) => {
-    const completed = state.completedLevels.includes(i);
-    const locked = i > 0 && !state.completedLevels.includes(i - 1);
-    const node = document.createElement('div');
-    node.className = 'map-node' + (locked ? ' locked' : '') + (completed ? ' completed' : '');
-    const stars = state.levelScores[i] !== undefined
-      ? Math.round((state.levelScores[i] / (lvl.questions.length * 10)) * 3)
-      : 0;
-    const starHTML = [1,2,3].map(n => `<span class="map-star ${n <= stars ? 'earned' : ''}">★</span>`).join('');
-    node.innerHTML = `
-      <span class="level-badge">Level ${i + 1}</span>
-      <div class="map-node-icon">${lvl.icon}</div>
-      <div class="map-node-title">${lvl.title}</div>
-      <div class="map-node-sub">${lvl.subtitle}</div>
-      <div class="map-stars">${starHTML}</div>
-    `;
-    if (!locked) node.addEventListener('click', () => startLevel(i));
-    grid.appendChild(node);
-  });
-}
-
-function goToMap() {
-  showScreen('map');
-  buildMap();
-}
-
-/* ===============================================================
-   LEVEL / QUESTION FLOW
-=============================================================== */
-function startLevel(levelIndex) {
-  state.currentLevel = levelIndex;
-  state.currentQuestion = 0;
-  const lvl = LEVELS[levelIndex];
-  document.getElementById('q-level-icon').textContent = lvl.icon;
-  document.getElementById('q-level-title').textContent = `Level ${levelIndex + 1}: ${lvl.title}`;
-  document.getElementById('q-level-sub').textContent = lvl.subtitle;
-  showScreen('question');
-  renderQuestion();
-  updateHud();
-}
-
-function renderQuestion() {
-  const lvl = LEVELS[state.currentLevel];
-  const q = lvl.questions[state.currentQuestion];
-  state.hintUsed = false;
-  state.answered = false;
-  state.dropZoneData = {};
-  state.toggleValues = {};
-
-  document.getElementById('q-n').textContent = state.currentQuestion + 1;
-  document.getElementById('q-of').textContent = `/ ${lvl.questions.length}`;
-  document.getElementById('q-text').innerHTML = q.text;
-
-  // Hint
-  const hintBtn = document.getElementById('hint-btn');
-  const hintText = document.getElementById('hint-text');
-  hintBtn.style.display = q.hint ? 'inline-flex' : 'none';
-  hintText.textContent = q.hint || '';
-  hintText.classList.remove('visible');
-
-  // Feedback
-  const fb = document.getElementById('feedback-box');
-  fb.className = 'feedback-box';
-  fb.style.display = 'none';
-
-  // Buttons
-  document.getElementById('submit-btn').style.display = 'inline-flex';
-  document.getElementById('next-btn').style.display = 'none';
-
-  // Render input area
-  const area = document.getElementById('q-input-area');
-  area.innerHTML = '';
-
-  if (q.type === 'mc') renderMC(q, area);
-  else if (q.type === 'drag') renderDrag(q, area);
-  else if (q.type === 'slider') renderSlider(q, area);
-  else if (q.type === 'input') renderInput(q, area);
-  else if (q.type === 'toggle') renderToggle(q, area);
-
-  // Scroll to top of question
-  document.getElementById('q-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-/* --- Multiple Choice --- */
-function renderMC(q, area) {
-  const letters = ['A', 'B', 'C', 'D', 'E'];
-  const grid = document.createElement('div');
-  grid.className = 'options-grid';
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.dataset.index = i;
-    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt}`;
-    btn.addEventListener('click', () => selectOption(btn, i));
-    grid.appendChild(btn);
-  });
-  area.appendChild(grid);
-}
-
-let selectedOption = -1;
-function selectOption(btn, index) {
-  if (state.answered) return;
-  selectedOption = index;
-  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  btn.style.borderColor = 'var(--primary-light)';
-}
-
-/* --- Drag & Drop --- */
-function renderDrag(q, area) {
-  const wrap = document.createElement('div');
-  wrap.className = 'drag-area';
-
-  const row = document.createElement('div');
-  row.className = 'drag-items-row';
-  row.id = 'drag-source-row';
-
-  q.items.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'drag-item';
-    el.textContent = item;
-    el.draggable = true;
-    el.dataset.value = item;
-    el.addEventListener('dragstart', e => {
-      state.dragItem = item;
-      el.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    });
-    el.addEventListener('dragend', () => el.classList.remove('dragging'));
-    row.appendChild(el);
-  });
-  wrap.appendChild(row);
-
-  const zonesWrap = document.createElement('div');
-  zonesWrap.className = 'drop-zones';
-  q.zones.forEach((zone, zi) => {
-    const dz = document.createElement('div');
-    dz.className = 'drop-zone';
-    dz.dataset.zoneIndex = zi;
-    dz.innerHTML = `<span class="drop-zone-label">${zone.label}</span><div class="drop-zone-content" id="dz-content-${zi}"></div>`;
-    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
-    dz.addEventListener('dragleave', () => dz.classList.remove('over'));
-    dz.addEventListener('drop', e => {
-      e.preventDefault();
-      dz.classList.remove('over');
-      if (!state.dragItem) return;
-      // Place the drag item in this zone
-      const contentDiv = document.getElementById(`dz-content-${zi}`);
-      // Remove from previous zone
-      Object.keys(state.dropZoneData).forEach(k => {
-        if (state.dropZoneData[k] === state.dragItem) {
-          delete state.dropZoneData[k];
-          const prevContent = document.getElementById(`dz-content-${k}`);
-          if (prevContent) prevContent.innerHTML = '';
-          // Put item back in source? No, move it.
-        }
-      });
-      // Remove from source row
-      const srcEl = document.querySelector(`#drag-source-row .drag-item[data-value="${state.dragItem}"]`);
-      if (srcEl) srcEl.remove();
-      // Place in zone
-      state.dropZoneData[zi] = state.dragItem;
-      const badge = document.createElement('span');
-      badge.className = 'drag-item';
-      badge.textContent = state.dragItem;
-      badge.style.cursor = 'default';
-      contentDiv.innerHTML = '';
-      contentDiv.appendChild(badge);
-      state.dragItem = null;
-    });
-    zonesWrap.appendChild(dz);
-  });
-  wrap.appendChild(zonesWrap);
-  area.appendChild(wrap);
-}
-
-/* --- Slider --- */
-function renderSlider(q, area) {
-  state.sliderValue = q.min;
-  const wrap = document.createElement('div');
-  wrap.className = 'slider-wrap';
-  wrap.innerHTML = `
-    <div class="slider-labels"><span>${q.min}${q.unit ? ' ' + q.unit : ''}</span><span>${q.max}${q.unit ? ' ' + q.unit : ''}</span></div>
-    <input type="range" min="${q.min}" max="${q.max}" value="${q.min}" id="q-slider" />
-    <div class="slider-value" id="slider-val-display">${q.min} ${q.unit || ''}</div>
-  `;
-  area.appendChild(wrap);
-  const slider = wrap.querySelector('#q-slider');
-  const valDisplay = wrap.querySelector('#slider-val-display');
-  slider.addEventListener('input', () => {
-    state.sliderValue = parseInt(slider.value);
-    valDisplay.textContent = `${state.sliderValue}${q.unit ? ' ' + q.unit : ''}`;
-  });
-}
-
-/* --- Input --- */
-function renderInput(q, area) {
-  state.inputValue = '';
-  const row = document.createElement('div');
-  row.className = 'input-row';
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.className = 'input-answer';
-  input.placeholder = q.placeholder || 'Type your answer...';
-  input.id = 'q-input';
-  input.addEventListener('input', () => { state.inputValue = input.value.trim(); });
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') submitAnswer(); });
-  row.appendChild(input);
-  area.appendChild(row);
-  setTimeout(() => input.focus(), 100);
-}
-
-/* --- Toggle (not used in current questions but available) --- */
-function renderToggle(q, area) {
-  const grid = document.createElement('div');
-  grid.className = 'toggle-grid';
-  q.items.forEach((item, i) => {
-    state.toggleValues[i] = false;
-    const row = document.createElement('div');
-    row.className = 'toggle-row';
-    row.dataset.index = i;
-    const sw = document.createElement('div');
-    sw.className = 'toggle-switch';
-    sw.id = `toggle-${i}`;
-    row.innerHTML = `<span class="toggle-label">${item.label}</span>`;
-    row.appendChild(sw);
-    row.addEventListener('click', () => {
-      if (state.answered) return;
-      state.toggleValues[i] = !state.toggleValues[i];
-      sw.classList.toggle('on', state.toggleValues[i]);
-    });
-    grid.appendChild(row);
-  });
-  area.appendChild(grid);
-}
-
-/* ===============================================================
-   HINTS
-=============================================================== */
-function showHint() {
-  const hintText = document.getElementById('hint-text');
-  hintText.classList.add('visible');
-  if (!state.hintUsed) {
-    state.hintUsed = true;
-    // Deduct points visually but don't affect life
-  }
-}
-
-/* ===============================================================
-   SUBMIT ANSWER
-=============================================================== */
-function submitAnswer() {
-  if (state.answered) { nextQuestion(); return; }
-  const q = LEVELS[state.currentLevel].questions[state.currentQuestion];
-  let correct = false;
-
-  if (q.type === 'mc') {
-    if (selectedOption === -1) { flashMessage('Please select an answer first!'); return; }
-    correct = selectedOption === q.correct;
-    // Color the options
-    document.querySelectorAll('.option-btn').forEach((btn, i) => {
-      btn.disabled = true;
-      if (i === q.correct) btn.classList.add('correct');
-      else if (i === selectedOption && !correct) btn.classList.add('wrong');
-    });
-    selectedOption = -1;
-  }
-  else if (q.type === 'drag') {
-    // Check all zones
-    let allCorrect = true;
-    q.zones.forEach((zone, zi) => {
-      const placed = state.dropZoneData[zi];
-      const dz = document.querySelector(`.drop-zone[data-zone-index="${zi}"]`);
-      if (placed === zone.correct) {
-        if (dz) dz.classList.add('correct');
-      } else {
-        if (dz) dz.classList.add('wrong');
-        allCorrect = false;
-      }
-    });
-    correct = allCorrect;
-  }
-  else if (q.type === 'slider') {
-    correct = state.sliderValue === q.correct;
-    if (!correct) {
-      // wiggle
-      document.getElementById('q-slider').classList.add('shake');
-    }
-  }
-  else if (q.type === 'input') {
-    const val = state.inputValue.trim();
-    correct = val.toLowerCase() === q.correct.toLowerCase();
-    const input = document.getElementById('q-input');
-    if (input) {
-      input.disabled = true;
-      input.style.borderColor = correct ? 'var(--success)' : 'var(--danger)';
-    }
+    completed += 1;
+    loadingFill.style.width = `${(completed / entries.length) * 100}%`;
   }
 
-  state.answered = true;
-  processResult(correct, q);
+  loadingOverlay.classList.add('hidden');
+  initGame();
 }
 
-function processResult(correct, q) {
-  const points = correct ? (state.hintUsed ? 5 : 10) : 0;
-  if (correct) {
-    state.score += points;
-    showFeedback(true, `+${points} points!`, q.explanation);
-    launchMiniConfetti();
-  } else {
-    state.lives--;
-    updateHud();
-    showFeedback(false, '❌ Not quite!', q.explanation);
-    if (state.lives <= 0) {
-      setTimeout(() => {
-        document.getElementById('go-score').textContent = state.score + ' pts';
-        showScreen('gameover');
-      }, 2200);
-      return;
-    }
-  }
-  updateHud();
-
-  document.getElementById('submit-btn').style.display = 'none';
-  document.getElementById('next-btn').style.display = 'inline-flex';
+function initStars() {
+  game.stars = Array.from({ length: 64 }, () => ({
+    x: Math.random() * GAME_WIDTH,
+    y: Math.random() * GAME_HEIGHT,
+    size: rand(1, 3.6),
+    speed: rand(12, 60),
+    alpha: rand(0.2, 0.95)
+  }));
 }
 
-function showFeedback(isCorrect, title, text) {
-  const fb = document.getElementById('feedback-box');
-  fb.style.display = 'block';
-  fb.className = 'feedback-box ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
-  document.getElementById('feedback-title').innerHTML = (isCorrect ? '✅ ' : '❌ ') + title;
-  document.getElementById('feedback-text').innerHTML = text;
-}
-
-function flashMessage(msg) {
-  // simple shake on submit button
-  const btn = document.getElementById('submit-btn');
-  btn.classList.add('shake');
-  setTimeout(() => btn.classList.remove('shake'), 500);
-}
-
-/* ===============================================================
-   NEXT QUESTION / LEVEL
-=============================================================== */
-function nextQuestion() {
-  const lvl = LEVELS[state.currentLevel];
-  if (state.currentQuestion + 1 < lvl.questions.length) {
-    state.currentQuestion++;
-    renderQuestion();
-  } else {
-    showLevelComplete();
-  }
-}
-
-function showLevelComplete() {
-  const lvl = LEVELS[state.currentLevel];
-  const maxScore = lvl.questions.length * 10;
-  // Calculate level score (approximate from total)
-  const levelScore = lvl.questions.reduce((acc, q) => acc + 10, 0); // assume all correct for display
-  state.completedLevels.push(state.currentLevel);
-  state.levelScores[state.currentLevel] = levelScore;
-
-  const stars = Math.min(3, Math.ceil(state.score / ((state.currentLevel + 1) * maxScore / 3)));
-
-  document.getElementById('lc-icon').textContent = lvl.badge.icon;
-  document.getElementById('lc-title').textContent = `${lvl.title} — Complete!`;
-  document.getElementById('lc-sub').textContent = `You've mastered ${lvl.subtitle}!`;
-  document.getElementById('lc-stars').innerHTML = [1,2,3].map(n => n <= Math.max(1, stars) ? '⭐' : '☆').join('');
-
-  const badgeRow = document.getElementById('lc-badges');
-  badgeRow.innerHTML = `
-    <div class="badge">
-      <span class="badge-icon">${lvl.badge.icon}</span>
-      <span class="badge-name">${lvl.badge.name}</span>
-    </div>
-    <div class="badge">
-      <span class="badge-icon">🏅</span>
-      <span class="badge-name">${state.score} pts</span>
-    </div>
-  `;
-
-  const isLast = state.currentLevel === LEVELS.length - 1;
-  const nextBtn = document.getElementById('lc-next-btn');
-  if (isLast) {
-    nextBtn.textContent = '🏆 See Certificate';
-    nextBtn.onclick = showFinalScreen;
-  } else {
-    nextBtn.textContent = 'Next Level →';
-    nextBtn.onclick = nextLevel;
-  }
-
-  showScreen('levelcomplete');
-  launchConfetti();
-}
-
-function nextLevel() {
-  const next = state.currentLevel + 1;
-  if (next >= LEVELS.length) {
-    showFinalScreen();
-  } else {
-    startLevel(next);
-  }
-}
-
-function showFinalScreen() {
-  document.getElementById('final-score-big').textContent = state.score;
-  const pct = Math.round((state.score / (LEVELS.reduce((a, l) => a + l.questions.length, 0) * 10)) * 100);
-  document.getElementById('final-exa-text').innerHTML =
-    `🎊 <strong>Incredible!</strong> You scored <strong>${state.score} points</strong> (${pct}% accuracy)! You've mastered ExPlay 3 configuration. You're ready to set up professional AV installations like a pro! Keep exploring and creating amazing experiences!`;
-  showScreen('final');
-  launchConfetti();
-}
-
-/* ===============================================================
-   HUD UPDATE
-=============================================================== */
-function updateHud() {
-  const lvl = LEVELS[state.currentLevel];
-  document.getElementById('hud-level').textContent = `Lv ${state.currentLevel + 1}: ${lvl.title}`;
-
-  const totalQ = LEVELS.reduce((a, l) => a + l.questions.length, 0);
-  const doneQ = LEVELS.slice(0, state.currentLevel).reduce((a, l) => a + l.questions.length, 0) + state.currentQuestion;
-  const pct = Math.round((doneQ / totalQ) * 100);
-  document.getElementById('progress-bar').style.width = pct + '%';
-
-  document.getElementById('hud-score').textContent = state.score + ' pts';
-
-  document.querySelectorAll('.heart').forEach((h, i) => {
-    h.classList.toggle('lost', i >= state.lives);
-  });
-}
-
-/* ===============================================================
-   RESTART
-=============================================================== */
-function restartGame() {
-  state = {
-    screen: 'title', currentLevel: 0, currentQuestion: 0,
-    score: 0, lives: 3, hintUsed: false, answered: false,
-    levelScores: [], completedLevels: [],
-    dragItem: null, dropZoneData: {}, toggleValues: {},
-    sliderValue: 10, inputValue: ''
+function createPlayer() {
+  return {
+    x: 180,
+    y: GAME_HEIGHT * 0.5,
+    vx: 0,
+    vy: 0,
+    fireCooldown: 0,
+    hitCooldown: 0,
+    radius: 34,
+    hp: MAX_PLAYER_HP,
+    bob: 0,
+    muzzleTimer: 0
   };
-  selectedOption = -1;
-  showScreen('title');
-  document.getElementById('hud').classList.remove('visible');
 }
 
-/* ===============================================================
-   CONFETTI
-=============================================================== */
-function launchConfetti() {
-  const colors = ['#7c5cbf','#00d4ff','#ff6b9d','#ffd740','#00e676','#a480e8'];
-  for (let i = 0; i < 60; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.style.cssText = `
-      left: ${Math.random() * 100}vw;
-      top: -10px;
-      background: ${colors[Math.floor(Math.random() * colors.length)]};
-      width: ${6 + Math.random() * 8}px;
-      height: ${6 + Math.random() * 8}px;
-      animation-duration: ${1.5 + Math.random() * 2}s;
-      animation-delay: ${Math.random() * 0.8}s;
-      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
-    `;
-    document.body.appendChild(piece);
-    setTimeout(() => piece.remove(), 4000);
+function resetGame() {
+  game.mode = 'ready';
+  game.time = 0;
+  game.score = 0;
+  game.combo = 1;
+  game.comboTimer = 0;
+  game.kills = 0;
+  game.spawnTimer = 0.55;
+  game.meteorTimer = 1.8;
+  game.flash = 0;
+  game.cameraShake = 0;
+  game.player = createPlayer();
+  game.enemies = [];
+  game.bullets = [];
+  game.enemyBullets = [];
+  game.effects = [];
+  game.sparks = [];
+  game.autopilotTimer = 0;
+  input.fire = false;
+  input.touchActive = false;
+  updateHud();
+}
+
+function initGame() {
+  initStars();
+  resetGame();
+  draw(0);
+  requestAnimationFrame(loop);
+}
+
+function startRun({ autopilot = false } = {}) {
+  resetGame();
+  input.autopilot = autopilot;
+  game.mode = 'playing';
+  startOverlay.classList.add('hidden');
+  pauseOverlay.classList.add('hidden');
+  endOverlay.classList.add('hidden');
+  missionName.textContent = autopilot ? 'Nebula Run • Autopilot demo' : 'Nebula Run';
+  showToast(autopilot ? 'Autopilot demo engaged.' : 'Mission launched. Clear the blockade.');
+}
+
+function backToTitle() {
+  game.mode = 'ready';
+  input.autopilot = false;
+  startOverlay.classList.remove('hidden');
+  pauseOverlay.classList.add('hidden');
+  endOverlay.classList.add('hidden');
+  missionName.textContent = 'Nebula Run';
+  resetGame();
+}
+
+function togglePause(force) {
+  if (game.mode !== 'playing' && game.mode !== 'paused') return;
+  const nextMode = typeof force === 'boolean' ? (force ? 'paused' : 'playing') : (game.mode === 'paused' ? 'playing' : 'paused');
+  game.mode = nextMode;
+  pauseOverlay.classList.toggle('hidden', nextMode !== 'paused');
+  if (nextMode === 'paused') showToast('Mission paused.');
+}
+
+function showEnd(victory) {
+  game.mode = victory ? 'victory' : 'gameover';
+  endOverlay.classList.remove('hidden');
+  pauseOverlay.classList.add('hidden');
+  endPretitle.textContent = victory ? 'Mission complete' : 'Mission failed';
+  endTitle.textContent = victory ? 'Warp route secured' : 'Your ship broke apart';
+  endCopy.textContent = victory
+    ? 'You survived the blockade and carved open a safe jump lane through the sector.'
+    : 'The enemy squadrons won this round, but the hangar is ready for another run.';
+  finalScore.textContent = `${game.score}`;
+  finalKills.textContent = `${game.kills}`;
+  finalTime.textContent = `${Math.round(game.time)}s`;
+  showToast(victory ? 'Jump gate online!' : 'Hull integrity lost.');
+}
+
+function spawnEnemy() {
+  const tension = game.time / SURVIVE_TIME;
+  const laneY = rand(94, GAME_HEIGHT - 110);
+  const roll = Math.random();
+  const type = roll < 0.45
+    ? {
+        frames: assets.enemyScout,
+        speed: rand(220, 280) + tension * 40,
+        hp: 24,
+        radius: 28,
+        fireDelay: rand(1.8, 3.3),
+        score: 85,
+        scale: 0.55,
+        sway: rand(0.6, 1.15)
+      }
+    : roll < 0.82
+      ? {
+          frames: assets.enemyRaider,
+          speed: rand(180, 235) + tension * 35,
+          hp: 38,
+          radius: 34,
+          fireDelay: rand(1.25, 2.5),
+          score: 130,
+          scale: 0.62,
+          sway: rand(0.8, 1.4)
+        }
+      : {
+          frames: assets.enemyAce,
+          speed: rand(170, 210) + tension * 22,
+          hp: 58,
+          radius: 40,
+          fireDelay: rand(0.9, 1.8),
+          score: 190,
+          scale: 0.68,
+          sway: rand(1.2, 1.8)
+        };
+
+  game.enemies.push({
+    x: GAME_WIDTH + rand(40, 180),
+    y: laneY,
+    vy: rand(-12, 12),
+    phase: rand(0, Math.PI * 2),
+    hitFlash: 0,
+    fireTimer: type.fireDelay,
+    anim: rand(0, 1),
+    ...type
+  });
+}
+
+function firePlayerBullet() {
+  const player = game.player;
+  if (!player || player.fireCooldown > 0) return;
+  player.fireCooldown = 0.16;
+  player.muzzleTimer = 0.12;
+  const spread = input.autopilot ? rand(-0.05, 0.05) : rand(-0.02, 0.02);
+  game.bullets.push({
+    x: player.x + 58,
+    y: player.y - 10,
+    vx: 660,
+    vy: spread * 600,
+    life: 1.45,
+    radius: 14,
+    damage: 14,
+    friendly: true
+  });
+  game.bullets.push({
+    x: player.x + 58,
+    y: player.y + 10,
+    vx: 660,
+    vy: -spread * 600,
+    life: 1.45,
+    radius: 14,
+    damage: 14,
+    friendly: true
+  });
+  createEffect('muzzle', player.x + 62, player.y, 0.24, 0.34);
+}
+
+function fireEnemyBullet(enemy) {
+  const dx = game.player.x - enemy.x;
+  const dy = game.player.y - enemy.y;
+  const length = Math.max(1, Math.hypot(dx, dy));
+  const speed = 360 + game.time * 1.8;
+  game.enemyBullets.push({
+    x: enemy.x - 34,
+    y: enemy.y,
+    vx: (dx / length) * speed,
+    vy: (dy / length) * speed,
+    life: 2.8,
+    radius: 18,
+    damage: 12
+  });
+}
+
+function createEffect(type, x, y, life = 0.5, scale = 0.6) {
+  game.effects.push({ type, x, y, life, maxLife: life, scale, rotation: rand(-0.2, 0.2) });
+}
+
+function createSparkBurst(x, y, count = 8, color = '#ffd77f') {
+  for (let i = 0; i < count; i++) {
+    game.sparks.push({
+      x,
+      y,
+      vx: rand(-150, 220),
+      vy: rand(-130, 130),
+      life: rand(0.25, 0.65),
+      maxLife: rand(0.25, 0.65),
+      size: rand(2, 5),
+      color
+    });
   }
 }
 
-function launchMiniConfetti() {
-  const colors = ['#7c5cbf','#00d4ff','#ffd740','#00e676'];
-  for (let i = 0; i < 15; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.style.cssText = `
-      left: ${20 + Math.random() * 60}vw;
-      top: -5px;
-      background: ${colors[Math.floor(Math.random() * colors.length)]};
-      width: ${5 + Math.random() * 5}px;
-      height: ${5 + Math.random() * 5}px;
-      animation-duration: ${1 + Math.random() * 1.5}s;
-      animation-delay: ${Math.random() * 0.3}s;
-    `;
-    document.body.appendChild(piece);
-    setTimeout(() => piece.remove(), 3000);
+function damagePlayer(amount) {
+  const player = game.player;
+  if (!player || player.hitCooldown > 0) return;
+  player.hp = clamp(player.hp - amount, 0, MAX_PLAYER_HP);
+  player.hitCooldown = 0.7;
+  game.flash = 0.25;
+  game.cameraShake = Math.max(game.cameraShake, 12);
+  game.combo = 1;
+  game.comboTimer = 0;
+  createEffect('sparkle', player.x + 30, player.y, 0.34, 0.42);
+  createSparkBurst(player.x + 18, player.y, 10, '#ff7e87');
+  updateHud();
+  if (player.hp <= 0) {
+    createEffect('explosion', player.x + 18, player.y, 0.58, 0.75);
+    showEnd(false);
+  } else {
+    showToast('Hull hit! Keep moving.');
   }
 }
+
+function destroyEnemy(enemyIndex) {
+  const enemy = game.enemies[enemyIndex];
+  createEffect('explosion', enemy.x, enemy.y, 0.52, enemy.scale + 0.18);
+  createSparkBurst(enemy.x, enemy.y, 11, '#ffc86d');
+  game.kills += 1;
+  game.combo = clamp(game.combo + 0.2, 1, 5);
+  game.comboTimer = 2.2;
+  game.score += Math.round(enemy.score * game.combo);
+  game.cameraShake = Math.max(game.cameraShake, 6);
+  game.enemies.splice(enemyIndex, 1);
+  updateHud();
+}
+
+function updateHud() {
+  const hpPercent = game.player ? game.player.hp / MAX_PLAYER_HP : 1;
+  healthFill.style.transform = `scaleX(${hpPercent.toFixed(3)})`;
+  healthText.textContent = `${Math.round(hpPercent * 100)}%`;
+  healthText.style.color = hpPercent > 0.55 ? '#ffef9a' : hpPercent > 0.25 ? '#ffd27c' : '#ff8d98';
+  scoreValue.textContent = game.score;
+  comboValue.textContent = `x${game.combo.toFixed(1).replace('.0', '')}`;
+  const tension = game.time / SURVIVE_TIME;
+  threatValue.textContent = tension < 0.35 ? 'Calm' : tension < 0.7 ? 'Heavy' : 'Critical';
+  const progress = clamp(game.time / SURVIVE_TIME, 0, 1);
+  progressFill.style.width = `${progress * 100}%`;
+  progressCopy.textContent = progress < 1
+    ? `${Math.ceil(SURVIVE_TIME - game.time)}s until warp window.`
+    : 'Warp window is open. Finish the last attackers.';
+}
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add('visible');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove('visible'), 1500);
+}
+
+function handleAutopilot(dt) {
+  const player = game.player;
+  if (!player) return;
+  if (game.mode !== 'playing' || !input.autopilot) return;
+  const targets = [...game.enemies].sort((a, b) => a.x - b.x);
+  const target = targets[0];
+  const safeBullet = [...game.enemyBullets].sort((a, b) => a.x - b.x).find(b => b.x > player.x - 20 && b.x < player.x + 260);
+  if (safeBullet) {
+    input.touchX = safeBullet.vy > 0 ? -0.45 : 0.25;
+    input.touchY = safeBullet.y > player.y ? -0.95 : 0.95;
+  } else if (target) {
+    input.touchX = 0.24;
+    input.touchY = clamp((target.y - player.y) / 160, -1, 1);
+  } else {
+    const centerTarget = GAME_HEIGHT * 0.5 + Math.sin(game.time * 1.4) * 120;
+    input.touchX = 0.1;
+    input.touchY = clamp((centerTarget - player.y) / 180, -1, 1);
+  }
+  input.touchActive = true;
+  input.fire = true;
+}
+
+function updatePlayer(dt) {
+  const player = game.player;
+  if (!player) return;
+  if (input.autopilot) handleAutopilot(dt);
+
+  const axisX = (input.left ? -1 : 0) + (input.right ? 1 : 0) + (input.touchActive ? input.touchX : 0);
+  const axisY = (input.up ? -1 : 0) + (input.down ? 1 : 0) + (input.touchActive ? input.touchY : 0);
+  const magnitude = Math.max(1, Math.hypot(axisX, axisY));
+  const moveX = axisX / magnitude;
+  const moveY = axisY / magnitude;
+  const speed = input.autopilot ? 360 : 330;
+
+  player.vx = lerp(player.vx, moveX * speed, dt * 7.8);
+  player.vy = lerp(player.vy, moveY * speed, dt * 7.8);
+  player.x = clamp(player.x + player.vx * dt, 90, GAME_WIDTH - 140);
+  player.y = clamp(player.y + player.vy * dt, 88, GAME_HEIGHT - 88);
+  player.bob += dt * 8;
+  player.fireCooldown = Math.max(0, player.fireCooldown - dt);
+  player.hitCooldown = Math.max(0, player.hitCooldown - dt);
+  player.muzzleTimer = Math.max(0, player.muzzleTimer - dt);
+
+  if (input.fire) firePlayerBullet();
+}
+
+function updateEnemies(dt) {
+  const intensity = clamp(game.time / SURVIVE_TIME, 0, 1);
+  game.spawnTimer -= dt;
+  if (game.spawnTimer <= 0 && game.mode === 'playing') {
+    spawnEnemy();
+    game.spawnTimer = Math.max(0.32, 1.15 - intensity * 0.62) + rand(0, 0.35);
+  }
+
+  for (let i = game.enemies.length - 1; i >= 0; i--) {
+    const enemy = game.enemies[i];
+    enemy.anim += dt * 10;
+    enemy.fireTimer -= dt;
+    enemy.hitFlash = Math.max(0, enemy.hitFlash - dt * 3.5);
+    enemy.x -= enemy.speed * dt;
+    enemy.y += Math.sin(game.time * enemy.sway + enemy.phase) * 42 * dt;
+    enemy.y = clamp(enemy.y, 72, GAME_HEIGHT - 72);
+
+    if (enemy.fireTimer <= 0 && enemy.x < GAME_WIDTH - 150) {
+      fireEnemyBullet(enemy);
+      enemy.fireTimer = enemy.fireDelay;
+      createEffect('muzzle', enemy.x - 22, enemy.y, 0.18, 0.24);
+    }
+
+    if (enemy.x < -120) {
+      game.enemies.splice(i, 1);
+      damagePlayer(8);
+      continue;
+    }
+
+    const dx = enemy.x - game.player.x;
+    const dy = enemy.y - game.player.y;
+    if (Math.hypot(dx, dy) < enemy.radius + game.player.radius) {
+      game.enemies.splice(i, 1);
+      createEffect('explosion', enemy.x, enemy.y, 0.48, enemy.scale + 0.12);
+      damagePlayer(18);
+    }
+  }
+}
+
+function updateBullets(dt) {
+  for (let i = game.bullets.length - 1; i >= 0; i--) {
+    const bullet = game.bullets[i];
+    bullet.x += bullet.vx * dt;
+    bullet.y += bullet.vy * dt;
+    bullet.life -= dt;
+    if (bullet.life <= 0 || bullet.x > GAME_WIDTH + 80 || bullet.y < -80 || bullet.y > GAME_HEIGHT + 80) {
+      game.bullets.splice(i, 1);
+      continue;
+    }
+
+    for (let j = game.enemies.length - 1; j >= 0; j--) {
+      const enemy = game.enemies[j];
+      if (Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y) < bullet.radius + enemy.radius) {
+        enemy.hp -= bullet.damage;
+        enemy.hitFlash = 1;
+        createSparkBurst(bullet.x, bullet.y, 4, '#ffe287');
+        game.bullets.splice(i, 1);
+        if (enemy.hp <= 0) destroyEnemy(j);
+        break;
+      }
+    }
+  }
+
+  for (let i = game.enemyBullets.length - 1; i >= 0; i--) {
+    const bullet = game.enemyBullets[i];
+    bullet.x += bullet.vx * dt;
+    bullet.y += bullet.vy * dt;
+    bullet.life -= dt;
+    if (bullet.life <= 0 || bullet.x < -80 || bullet.y < -80 || bullet.y > GAME_HEIGHT + 80) {
+      game.enemyBullets.splice(i, 1);
+      continue;
+    }
+    if (Math.hypot(bullet.x - game.player.x, bullet.y - game.player.y) < bullet.radius + game.player.radius) {
+      game.enemyBullets.splice(i, 1);
+      damagePlayer(bullet.damage);
+    }
+  }
+}
+
+function updateEffects(dt) {
+  for (let i = game.effects.length - 1; i >= 0; i--) {
+    const effect = game.effects[i];
+    effect.life -= dt;
+    effect.rotation += dt * 0.4;
+    if (effect.life <= 0) game.effects.splice(i, 1);
+  }
+
+  for (let i = game.sparks.length - 1; i >= 0; i--) {
+    const spark = game.sparks[i];
+    spark.life -= dt;
+    spark.x += spark.vx * dt;
+    spark.y += spark.vy * dt;
+    spark.vx *= 0.985;
+    spark.vy *= 0.985;
+    if (spark.life <= 0) game.sparks.splice(i, 1);
+  }
+
+  for (const star of game.stars) {
+    star.x -= star.speed * dt;
+    if (star.x < -4) {
+      star.x = GAME_WIDTH + 4;
+      star.y = Math.random() * GAME_HEIGHT;
+    }
+  }
+
+  game.flash = Math.max(0, game.flash - dt);
+  game.cameraShake = Math.max(0, game.cameraShake - dt * 18);
+  game.comboTimer = Math.max(0, game.comboTimer - dt);
+  if (game.comboTimer <= 0) game.combo = lerp(game.combo, 1, dt * 3.5);
+}
+
+function update(dt) {
+  if (game.mode !== 'playing') return;
+  game.time += dt;
+  updatePlayer(dt);
+  updateEnemies(dt);
+  updateBullets(dt);
+  updateEffects(dt);
+  updateHud();
+
+  if (game.time >= SURVIVE_TIME && game.enemies.length <= 2) {
+    createEffect('explosion', GAME_WIDTH - 180, GAME_HEIGHT * 0.5, 0.7, 1.1);
+    game.score += 250;
+    updateHud();
+    showEnd(true);
+  }
+}
+
+function drawParallaxLayer(image, offset, speed, opacity = 1) {
+  const scale = GAME_HEIGHT / image.height;
+  const width = image.width * scale;
+  const x = -((offset * speed) % width);
+  ctx.save();
+  ctx.globalAlpha = opacity;
+  for (let drawX = x - width; drawX < GAME_WIDTH + width; drawX += width) {
+    ctx.drawImage(image, drawX, 0, width, GAME_HEIGHT);
+  }
+  ctx.restore();
+}
+
+function drawSprite(image, x, y, width, height, rotation = 0, flipX = false, alpha = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+  ctx.scale(flipX ? -1 : 1, 1);
+  ctx.globalAlpha = alpha;
+  ctx.drawImage(image, -width / 2, -height / 2, width, height);
+  ctx.restore();
+}
+
+function frameFrom(sequence, speed, offset = 0) {
+  return sequence[Math.floor(game.time * speed + offset) % sequence.length];
+}
+
+function drawBackground() {
+  ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+  drawParallaxLayer(assets.backgrounds[0], game.time, 6, 1);
+  drawParallaxLayer(assets.backgrounds[1], game.time, 14, 0.9);
+  drawParallaxLayer(assets.backgrounds[2], game.time, 22, 0.92);
+  drawParallaxLayer(assets.backgrounds[3], game.time, 35, 0.95);
+  drawParallaxLayer(assets.backgrounds[4], game.time, 52, 0.98);
+
+  ctx.save();
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  for (const star of game.stars) {
+    ctx.globalAlpha = star.alpha;
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  const glow = ctx.createRadialGradient(160, GAME_HEIGHT - 60, 40, 160, GAME_HEIGHT - 60, 280);
+  glow.addColorStop(0, 'rgba(255, 177, 57, 0.22)');
+  glow.addColorStop(0.6, 'rgba(255, 177, 57, 0.06)');
+  glow.addColorStop(1, 'rgba(255, 177, 57, 0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+}
+
+function drawBullets() {
+  for (const bullet of game.bullets) {
+    drawSprite(assets.playerShot, bullet.x, bullet.y, 74, 22, 0, false, 1);
+  }
+  for (const bullet of game.enemyBullets) {
+    drawSprite(assets.enemyShot, bullet.x, bullet.y, 52, 18, Math.atan2(bullet.vy, bullet.vx), true, 1);
+  }
+}
+
+function drawEnemies() {
+  for (const enemy of game.enemies) {
+    const frame = enemy.frames[Math.floor(enemy.anim) % enemy.frames.length];
+    const width = frame.width * enemy.scale;
+    const height = frame.height * enemy.scale;
+    drawSprite(frame, enemy.x, enemy.y, width, height, Math.sin(game.time * 2 + enemy.phase) * 0.03, true, 1);
+    if (enemy.hitFlash > 0) {
+      ctx.save();
+      ctx.globalAlpha = enemy.hitFlash * 0.28;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(enemy.x, enemy.y, enemy.radius * 1.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+}
+
+function drawPlayer() {
+  if (!game.player) return;
+  const player = game.player;
+  const engineFrame = frameFrom(assets.engine, 18);
+  drawSprite(engineFrame, player.x - 58, player.y + 2, engineFrame.width * 0.44, engineFrame.height * 0.44, 0, false, 0.95);
+  if (player.muzzleTimer > 0) {
+    const muzzleFrame = frameFrom(assets.muzzle, 26);
+    drawSprite(muzzleFrame, player.x + 70, player.y, muzzleFrame.width * 0.55, muzzleFrame.height * 0.55, 0, false, 0.85);
+  }
+  const frame = frameFrom(assets.player, 16);
+  drawSprite(frame, player.x, player.y, frame.width * 0.74, frame.height * 0.74, Math.sin(player.bob) * 0.02, false, 1);
+  if (player.hitCooldown > 0) {
+    ctx.save();
+    ctx.globalAlpha = 0.18 + Math.sin(game.time * 60) * 0.08;
+    ctx.fillStyle = '#ff7284';
+    ctx.beginPath();
+    ctx.arc(player.x + 16, player.y, player.radius * 1.7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawEffects() {
+  for (const effect of game.effects) {
+    const sequence = effect.type === 'explosion'
+      ? assets.explosion
+      : effect.type === 'sparkle'
+        ? assets.sparkle
+        : assets.muzzle;
+    const progress = 1 - effect.life / effect.maxLife;
+    const index = clamp(Math.floor(progress * sequence.length), 0, sequence.length - 1);
+    const frame = sequence[index];
+    drawSprite(frame, effect.x, effect.y, frame.width * effect.scale, frame.height * effect.scale, effect.rotation, false, 1 - progress * 0.15);
+  }
+
+  for (const spark of game.sparks) {
+    ctx.save();
+    ctx.globalAlpha = spark.life / spark.maxLife;
+    ctx.fillStyle = spark.color;
+    ctx.beginPath();
+    ctx.arc(spark.x, spark.y, spark.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawOverlayEffects() {
+  if (game.flash > 0) {
+    ctx.save();
+    ctx.fillStyle = `rgba(255, 120, 140, ${game.flash * 0.35})`;
+    ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+    ctx.restore();
+  }
+}
+
+function draw(timestamp) {
+  const shake = game.cameraShake;
+  ctx.save();
+  if (shake > 0) ctx.translate(rand(-shake, shake), rand(-shake, shake));
+  drawBackground();
+  drawBullets();
+  drawEnemies();
+  drawPlayer();
+  drawEffects();
+  drawOverlayEffects();
+  ctx.restore();
+
+  if (game.mode === 'ready') {
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    ctx.font = '700 20px Inter, Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Press Launch Mission to start', GAME_WIDTH / 2, GAME_HEIGHT - 52);
+    ctx.restore();
+  }
+}
+
+let previous = performance.now();
+function loop(now) {
+  const dt = Math.min((now - previous) / 1000, 0.033);
+  previous = now;
+  update(dt);
+  draw(now);
+  requestAnimationFrame(loop);
+}
+
+function handleKey(event, pressed) {
+  const code = event.code;
+  if (['ArrowLeft', 'KeyA'].includes(code)) input.left = pressed;
+  if (['ArrowRight', 'KeyD'].includes(code)) input.right = pressed;
+  if (['ArrowUp', 'KeyW'].includes(code)) input.up = pressed;
+  if (['ArrowDown', 'KeyS'].includes(code)) input.down = pressed;
+  if (code === 'Space') {
+    input.fire = pressed;
+    if (pressed) event.preventDefault();
+  }
+  if (pressed && (code === 'KeyP' || code === 'Escape')) togglePause();
+}
+
+window.addEventListener('keydown', (event) => handleKey(event, true));
+window.addEventListener('keyup', (event) => handleKey(event, false));
+
+function setTouchVector(clientX, clientY) {
+  const rect = joystick.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const dx = clientX - centerX;
+  const dy = clientY - centerY;
+  const radius = rect.width * 0.28;
+  const distance = Math.hypot(dx, dy);
+  const limited = distance > radius ? radius / distance : 1;
+  const clampedX = dx * limited;
+  const clampedY = dy * limited;
+  input.touchX = clamp(clampedX / radius, -1, 1);
+  input.touchY = clamp(clampedY / radius, -1, 1);
+  input.touchActive = true;
+  joystickKnob.style.transform = `translate(${clampedX}px, ${clampedY}px)`;
+}
+
+function resetTouchVector() {
+  input.touchX = 0;
+  input.touchY = 0;
+  input.touchActive = false;
+  joystickKnob.style.transform = 'translate(0px, 0px)';
+}
+
+joystick.addEventListener('pointerdown', (event) => {
+  joystick.setPointerCapture(event.pointerId);
+  setTouchVector(event.clientX, event.clientY);
+});
+joystick.addEventListener('pointermove', (event) => {
+  if (event.buttons === 0 && !input.touchActive) return;
+  if (input.touchActive) setTouchVector(event.clientX, event.clientY);
+});
+joystick.addEventListener('pointerup', resetTouchVector);
+joystick.addEventListener('pointercancel', resetTouchVector);
+shootButton.addEventListener('pointerdown', (event) => {
+  shootButton.setPointerCapture(event.pointerId);
+  input.fire = true;
+});
+shootButton.addEventListener('pointerup', () => { if (!input.autopilot) input.fire = false; });
+shootButton.addEventListener('pointercancel', () => { if (!input.autopilot) input.fire = false; });
+
+pauseButton.addEventListener('click', () => togglePause());
+startButton.addEventListener('click', () => startRun({ autopilot: false }));
+demoButton.addEventListener('click', () => startRun({ autopilot: true }));
+resumeButton.addEventListener('click', () => togglePause(false));
+restartButton.addEventListener('click', () => startRun({ autopilot: false }));
+pauseRestartButton.addEventListener('click', () => startRun({ autopilot: false }));
+backToTitleButton.addEventListener('click', backToTitle);
+
+loadAssets().catch((error) => {
+  loadingOverlay.innerHTML = `<div class="loading-card"><div class="pretitle">Load failure</div><h2 style="margin:8px 0 0; font-size:2rem;">Sprite hangar offline</h2><p class="lead" style="margin-top:10px;">${error.message}</p></div>`;
+  console.error(error);
+});
 </script>
 </body>
 </html>

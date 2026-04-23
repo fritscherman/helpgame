@@ -707,13 +707,16 @@ const GAME_HEIGHT = 720;
 const GAME_TITLE = 'Exaplay 3 Homework Run';
 const SURVIVE_TIME = 78;
 const WARMUP_TIME = 10;
-const PROJECTION_STAGE_TIME = 28;
-const MONITOR_STAGE_TIME = 46;
-const BOSS_STAGE_TIME = 62;
-const OBJECTIVE_STAGE_TIMES = [0, WARMUP_TIME, PROJECTION_STAGE_TIME, MONITOR_STAGE_TIME, BOSS_STAGE_TIME];
+const PROJECTION_UNLOCK_TIME_SECONDS = 28;
+const MONITOR_UNLOCK_TIME_SECONDS = 46;
+const BOSS_UNLOCK_TIME_SECONDS = 62;
+const OBJECTIVE_STAGE_TIMES = [0, WARMUP_TIME, PROJECTION_UNLOCK_TIME_SECONDS, MONITOR_UNLOCK_TIME_SECONDS, BOSS_UNLOCK_TIME_SECONDS];
 const PLAYER_SHOTS_PER_BURST = 2;
 const PLAYER_BULLET_DAMAGE = 14;
-const BOSS_MAX_HP = PLAYER_SHOTS_PER_BURST * PLAYER_BULLET_DAMAGE * 15;
+const BOSS_BURSTS_TO_DEFEAT = 15;
+const BOSS_MAX_HP = PLAYER_SHOTS_PER_BURST * PLAYER_BULLET_DAMAGE * BOSS_BURSTS_TO_DEFEAT;
+const BOSS_APPROACH_X = GAME_WIDTH - 220;
+const BOSS_APPROACH_LERP = 1.6;
 const BOSS_VERTICAL_AMPLITUDE = 170;
 const BOSS_COLLISION_DAMAGE = 26;
 const MAX_PLAYER_HP = 100;
@@ -750,7 +753,7 @@ const OBJECTIVES = [
   {
     title: 'Control & automation',
     short: 'Client panel, cue control, saturation/audio sliders, PJLink, TCP data track, scheduler, autostart.',
-    detail: 'Link the PiP playlist as client/follow, add the user panel controls for cues, saturation, music, PJLink ON/OFF, TCP data 0→42 to 192.168.1.54:8567 in the training lab, scheduler jobs, autostart on the async cue, and 04:00 restart.',
+    detail: 'Link the PiP playlist as client/follow, add the user panel controls for cues, saturation, music, PJLink ON/OFF, TCP data 0→42 to the lab target 192.168.1.54:8567 supplied in the brief, scheduler jobs, autostart on the async cue, and 04:00 restart.',
     badge: 'Control'
   },
   {
@@ -1078,9 +1081,9 @@ function firePlayerBullet() {
   createEffect('muzzle', player.x + 62, player.y, 0.24, 0.34);
 }
 
-function fireEnemyBullet(enemy, yOffset = 0) {
+function fireEnemyBullet(enemy, targetYOffset = 0) {
   const dx = game.player.x - enemy.x;
-  const dy = game.player.y + yOffset - enemy.y;
+  const dy = game.player.y + targetYOffset - enemy.y;
   const length = Math.max(1, Math.hypot(dx, dy));
   const speed = enemy.isBoss ? 420 : 360 + game.time * 1.8;
   game.enemyBullets.push({
@@ -1313,7 +1316,7 @@ function updateEnemies(dt) {
     enemy.fireTimer -= dt;
     enemy.hitFlash = Math.max(0, enemy.hitFlash - dt * 3.5);
     if (enemy.isBoss) {
-      enemy.x = lerp(enemy.x, GAME_WIDTH - 220, dt * 1.6);
+      enemy.x = lerp(enemy.x, BOSS_APPROACH_X, dt * BOSS_APPROACH_LERP);
       enemy.y = GAME_HEIGHT * 0.5 + Math.sin(game.time * enemy.sway + enemy.phase) * BOSS_VERTICAL_AMPLITUDE;
       enemy.y = clamp(enemy.y, 130, GAME_HEIGHT - 130);
     } else {

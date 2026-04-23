@@ -843,12 +843,12 @@ button {
         <div class="hud-card" id="progress-panel">
           <div class="hud-label">Learning path</div>
           <div id="progress-track"><div id="progress-fill"></div></div>
-          <div id="progress-copy">20-second warm-up first, then each EXAPLAY assignment gets a dedicated briefing and a 30-second flight sim.</div>
+          <div id="progress-copy">Start with a 20-second warm-up, then review each assignment briefing and either fly the 30-second sim or skip to the next task.</div>
         </div>
         <div class="hud-card" id="objective-panel">
           <div class="hud-label">Homework board</div>
           <div id="objective-current">Warm-up flight</div>
-          <div id="objective-detail">Warm up for 20 seconds, then the first EXAPLAY assignment briefing appears with a more detailed task card and launch notes.</div>
+          <div id="objective-detail">Use the warm-up to test movement and shooting. After 20 seconds, the first assignment briefing opens automatically.</div>
           <div id="objective-list"></div>
         </div>
         <button class="icon-button" id="pause-button" aria-label="Pause game">
@@ -931,7 +931,7 @@ button {
           <div class="brand-chip" id="briefing-chip">Sim stage 1</div>
         </div>
         <h2 class="title briefing-title" id="briefing-title">Projection setup</h2>
-        <p class="lead" id="briefing-copy">Read the assignment, then press continue to launch the next 30-second EXAPLAY training flight.</p>
+        <p class="lead" id="briefing-copy">Read the assignment and choose how to proceed: fly the 30-second simulation or skip directly to the next task briefing.</p>
         <div class="briefing-meta">
           <div class="briefing-pill" id="briefing-estimate">Real task: 5–10 min</div>
           <div class="briefing-pill" id="briefing-sim-time">Sim time: 30 sec flight</div>
@@ -954,6 +954,7 @@ button {
         <ul class="briefing-list" id="briefing-list"></ul>
         <div class="button-row button-row-spaced">
           <button class="cta cta-primary" id="briefing-continue-button">Continue mission</button>
+          <button class="cta cta-secondary" id="briefing-skip-button">Skip flying stage</button>
           <button class="cta cta-secondary" id="briefing-back-button">Back to title</button>
         </div>
       </div>
@@ -1051,42 +1052,42 @@ const OBJECTIVES = [
   {
     icon: '🧭',
     title: 'Warm-up flight',
-    short: '20-second controls check before the first detailed EXAPLAY session briefing appears.',
-    detail: 'Take a short warm-up lap, test movement, firing, and spacing, then get ready for the first fuller EXAPLAY assignment brief.',
+    short: '20-second controls check before the first assignment briefing.',
+    detail: 'Take a short practice lap to verify movement, firing, and spacing before the first assignment briefing appears.',
     estimate: 'Warm-up • 20 sec',
     goal: 'Stay loose and get comfortable with the ship.',
     systems: 'Movement, firing, and lane awareness.',
     focus: 'No pressure yet — simply calibrate for the next session.',
     threat: 'Low-noise onboarding wave before the glitch fleet appears.',
     bullets: [
-      'Move through the lane, fire a few bursts, and get used to the ship response.',
-      'Use these 20 seconds to lock in your rhythm before the first task card opens.',
-      'At the end of the countdown, the first detailed session briefing appears automatically.'
+      'Move around the lane and fire a few short bursts.',
+      'Use the 20 seconds to settle into your control rhythm.',
+      'When the timer ends, the first assignment briefing opens automatically.'
     ],
     badge: 'Warm-up'
   },
   {
     icon: '🛰️',
     title: 'Projection setup',
-    short: 'Projection assignment • real task 5–10 min • sim flight 30 sec.',
-    detail: 'Build PROJECTION for 2 FHD videoprojectors with separate background and PiP fields, cover/fit behavior, a 45° PiP rotation, looping background videos, looping PiP stills, and the asynchronous VIOSO/keyer/music cue chain.',
+    short: 'Projection assignment • 5–10 min real task • 30 sec sim.',
+    detail: 'Build a PROJECTION setup for two FHD projectors with separate background and PiP fields, correct fit behavior, a 45° PiP rotation, looping media, and synced VIOSO/keyer/music cues.',
     estimate: 'Real task • 5–10 min',
     goal: 'Absorb the brief, then hold the lane for 30 focused seconds.',
     systems: 'Projection outputs, fields, media loops, VIOSO sync.',
     focus: 'Remember the field structure while clearing incoming errors.',
     threat: '404 scouts and display-bug raiders flood the screen.',
     bullets: [
-      'Configure PROJECTION with 2 videoprojectors in FHD and keep the output layout consistent.',
-      'Use one background field plus one PiP field, with the PiP rotated by 45°.',
-      'Assign 3 looping background videos, 3 looping PiP stills, then wire the VIOSO, keyer, music, and mask behavior.'
+      'Set PROJECTION to two FHD projectors with a stable output layout.',
+      'Create one background field and one PiP field, then rotate PiP by 45°.',
+      'Load 3 looping background videos and 3 looping PiP stills, then wire VIOSO, keyer, music, and mask behavior.'
     ],
     badge: 'Projection'
   },
   {
     icon: '🖥️',
     title: 'Monitor playlists',
-    short: 'Monitor assignment • real task 5–10 min • sim flight 30 sec.',
-    detail: 'Build MONITOR in WUXGA, flip the background horizontally, prepare a saturated 2-video background playlist, and create a PiP playlist with 2 videos plus 2 stills that each hold for 8 seconds, all under a dome shader on the PiP.',
+    short: 'Monitor assignment • 5–10 min real task • 30 sec sim.',
+    detail: 'Build a MONITOR setup in WUXGA, mirror the background horizontally, prepare a saturated 2-video background playlist, and create a PiP playlist with 2 videos + 2 stills (8 seconds each) under a dome shader.',
     estimate: 'Real task • 5–10 min',
     goal: 'Keep flying while the monitor playlist brief sinks in.',
     systems: 'Monitor output, playlists, saturation, dome shader.',
@@ -1094,25 +1095,25 @@ const OBJECTIVES = [
     threat: 'Bugged UI fragments and no-signal overlays cut across the lane.',
     bullets: [
       'Set MONITOR to WUXGA and mirror the background field horizontally.',
-      'Build a 2-video background playlist with a visible saturation increase.',
-      'Prepare the PiP playlist with 2 videos, 2 stills at 8 seconds each, and apply the dome shader to the PiP layer.'
+      'Build a background playlist with 2 videos and increased saturation.',
+      'Build the PiP playlist with 2 videos and 2 stills (8s each), then apply the dome shader on PiP.'
     ],
     badge: 'Monitor'
   },
   {
     icon: '🎛️',
     title: 'Control & automation',
-    short: 'Automation assignment • real task 5–10 min • sim flight 30 sec.',
-    detail: 'Link the PiP playlist in client/follow mode, add user-panel controls for cues, saturation, music, and PJLink ON/OFF, send TCP data 0→42 to the lab target 192.168.1.54:8567, then finish the scheduler, autostart, and 04:00 restart setup.',
+    short: 'Automation assignment • 5–10 min real task • 30 sec sim.',
+    detail: 'Link the PiP playlist in client/follow mode, add user-panel controls (cues, saturation, music, PJLink ON/OFF), send TCP values 0→42 to 192.168.1.54:8567, then finish scheduler/autostart/04:00 restart setup.',
     estimate: 'Real task • 5–10 min',
     goal: 'Stay alive for one last timed assignment segment.',
     systems: 'Client/follow, user panel, PJLink, TCP, scheduler.',
     focus: 'Keep the automation checklist in mind during a fast final wave.',
     threat: 'Aggressive control-panel glitches and missing-screen aces rush in.',
     bullets: [
-      'Wire cues, saturation sliders, music control, PJLink ON/OFF, and TCP data output.',
-      'Send the sample TCP values from 0 to 42 to 192.168.1.54:8567 as described.',
-      'Finish the scheduler jobs, autostart behavior, and 04:00 restart before the boss review.'
+      'Wire cues, saturation controls, music controls, PJLink ON/OFF, and TCP output.',
+      'Send sample TCP values from 0 to 42 to 192.168.1.54:8567.',
+      'Finish scheduler jobs, autostart behavior, and the 04:00 restart before boss review.'
     ],
     badge: 'Control'
   },
@@ -1153,6 +1154,7 @@ const pauseButton = document.getElementById('pause-button');
 const startButton = document.getElementById('start-button');
 const demoButton = document.getElementById('demo-button');
 const briefingContinueButton = document.getElementById('briefing-continue-button');
+const briefingSkipButton = document.getElementById('briefing-skip-button');
 const briefingBackButton = document.getElementById('briefing-back-button');
 const resumeButton = document.getElementById('resume-button');
 const restartButton = document.getElementById('restart-button');
@@ -1707,7 +1709,7 @@ function getProgressCopyText() {
     return `Warm-up flight • ${Math.max(0, Math.ceil(WARMUP_TIME - game.phaseTime))}s until the first assignment briefing.`;
   }
   if (game.phase === 'briefing') {
-    return `Briefing open • ${OBJECTIVES[game.objectiveIndex].estimate} • continue when ready.`;
+    return `Briefing open • ${OBJECTIVES[game.objectiveIndex].estimate} • continue or skip flying when ready.`;
   }
   if (game.phase === 'mission') {
     return `${OBJECTIVES[game.objectiveIndex].title} • ${Math.max(0, Math.ceil(ASSIGNMENT_SIM_TIME - game.phaseTime))}s left in this sim stage.`;
@@ -1759,8 +1761,21 @@ function showBriefing(index) {
   briefingList.innerHTML = objective.bullets
     .map((item, bulletIndex) => `<li><span class="briefing-bullet-icon">${CIRCLED_NUMERALS[bulletIndex] || bulletIndex + 1}</span><span>${item}</span></li>`)
     .join('');
+  if (briefingSkipButton) {
+    const canSkipFlight = index > 0 && index < BOSS_OBJECTIVE_INDEX;
+    briefingSkipButton.hidden = !canSkipFlight;
+  }
   briefingOverlay.classList.remove('hidden');
   updateHud();
+}
+
+function skipObjectiveFlight(index) {
+  const objective = OBJECTIVES[index];
+  if (!objective || index <= 0 || index >= BOSS_OBJECTIVE_INDEX) return;
+  game.completedObjectives = Math.max(game.completedObjectives, index + 1);
+  showToast(`${objective.title} flight skipped. Loading next briefing.`);
+  if (game.completedObjectives >= BOSS_OBJECTIVE_INDEX) showBriefing(BOSS_OBJECTIVE_INDEX);
+  else showBriefing(game.completedObjectives);
 }
 
 function beginObjective(index) {
@@ -2407,6 +2422,7 @@ if (startButton) {
 }
 demoButton.addEventListener('click', () => startRun({ autopilot: true }));
 briefingContinueButton.addEventListener('click', () => beginObjective(game.pendingObjectiveIndex));
+briefingSkipButton.addEventListener('click', () => skipObjectiveFlight(game.pendingObjectiveIndex));
 briefingBackButton.addEventListener('click', backToTitle);
 resumeButton.addEventListener('click', () => togglePause(false));
 restartButton.addEventListener('click', () => startRun({ autopilot: false }));

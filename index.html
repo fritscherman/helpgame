@@ -90,6 +90,9 @@ button {
 .vioso-logo-img {
   filter: drop-shadow(0 2px 12px rgba(232, 0, 61, 0.28));
 }
+.vioso-logo-sm  { max-width: 120px; }
+.vioso-logo-md  { max-width: 160px; }
+.vioso-logo-lg  { max-width: 200px; }
 .brand-logo {
   display: block;
   width: min(100%, 320px);
@@ -913,7 +916,7 @@ button {
     <div id="hud">
       <div class="hud-card" id="hud-left">
         <div class="brand-lockup">
-          <img class="brand-logo vioso-logo-img" src="https://helpdesk.vioso.com/wp-content/uploads/2022/02/VIOSO_Logo_22_720p.png" alt="VIOSO logo" style="max-width:120px;">
+          <img class="brand-logo vioso-logo-img vioso-logo-sm" data-vioso-logo alt="VIOSO logo">
         </div>
         <div class="brand-lockup" style="margin-bottom:12px;">
           <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo" style="max-width:200px;">
@@ -973,7 +976,7 @@ button {
       <div class="panel hero-panel">
         <div>
           <div class="brand-lockup">
-            <img class="brand-logo vioso-logo-img" src="https://helpdesk.vioso.com/wp-content/uploads/2022/02/VIOSO_Logo_22_720p.png" alt="VIOSO logo">
+            <img class="brand-logo vioso-logo-img vioso-logo-md" data-vioso-logo alt="VIOSO logo">
           </div>
           <div class="brand-lockup" style="margin-bottom:10px;">
             <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
@@ -1014,7 +1017,7 @@ button {
           <img id="hero-ship" src="PNG/Main%20Planes/Plane03/Idle%20and%20Moving/skeleton-MovingNIdle_0.png" alt="Player ship">
           <img id="hero-enemy" src="PNG/Enemy/Char05/Moving/skeleton-Moving_0.png" alt="Enemy ship">
           <img id="hero-bolt" src="PNG/Projectile/14.png" alt="Projectile">
-          <img id="hero-vioso-logo" src="https://helpdesk.vioso.com/wp-content/uploads/2022/02/VIOSO_Logo_22_720p.png" alt="VIOSO logo">
+          <img id="hero-vioso-logo" class="vioso-logo-img" data-vioso-logo alt="VIOSO logo">
           <div class="hero-badge">VIOSO</div>
         </div>
       </div>
@@ -1025,7 +1028,7 @@ button {
         <div class="briefing-topline">
           <div>
             <div class="brand-lockup compact">
-              <img class="brand-logo vioso-logo-img" src="https://helpdesk.vioso.com/wp-content/uploads/2022/02/VIOSO_Logo_22_720p.png" alt="VIOSO logo" style="max-width:110px;">
+              <img class="brand-logo vioso-logo-img vioso-logo-sm" data-vioso-logo alt="VIOSO logo">
             </div>
             <div class="pretitle" id="briefing-pretitle">Assignment briefing</div>
           </div>
@@ -1076,7 +1079,7 @@ button {
     <section class="overlay hidden" id="end-overlay">
       <div class="panel">
         <div class="brand-lockup">
-          <img class="brand-logo vioso-logo-img" src="https://helpdesk.vioso.com/wp-content/uploads/2022/02/VIOSO_Logo_22_720p.png" alt="VIOSO logo" style="max-width:180px;">
+          <img class="brand-logo vioso-logo-img vioso-logo-lg" data-vioso-logo alt="VIOSO logo">
         </div>
         <div class="brand-lockup" style="margin-bottom:12px;">
           <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo" style="max-width:200px;">
@@ -1107,7 +1110,7 @@ button {
 
     <section class="loading" id="loading-overlay">
       <div class="loading-card">
-        <div style="margin-bottom:14px;"><img src="https://helpdesk.vioso.com/wp-content/uploads/2022/02/VIOSO_Logo_22_720p.png" alt="VIOSO logo" style="max-width:140px; filter: drop-shadow(0 2px 10px rgba(232,0,61,0.3));"></div>
+        <div style="margin-bottom:14px;"><img class="vioso-logo-img vioso-logo-md" data-vioso-logo alt="VIOSO logo"></div>
         <div class="pretitle">Loading VIOSO × EXAPLAY sim</div>
         <h2 style="margin:8px 0 0; font-size:2rem;">Preparing the briefing deck</h2>
         <p class="lead" style="margin-top:10px; margin-bottom:0;">Pulling assets, backgrounds, pilots, projectiles, HUD, and effects.</p>
@@ -1120,6 +1123,8 @@ button {
 const GAME_WIDTH = 1280;
 const GAME_HEIGHT = 720;
 const GAME_TITLE = 'VIOSO Homework Flight';
+const VIOSO_LOGO_URL = 'https://helpdesk.vioso.com/wp-content/uploads/2022/02/VIOSO_Logo_22_720p.png';
+document.querySelectorAll('[data-vioso-logo]').forEach(el => { el.src = VIOSO_LOGO_URL; });
 const WARMUP_TIME = 20;
 const ASSIGNMENT_SIM_TIME = 30;
 const PLAYER_SHOTS_PER_BURST = 2;

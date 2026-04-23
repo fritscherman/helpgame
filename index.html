@@ -502,11 +502,6 @@ button {
   text-transform: uppercase;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
 }
-.hero-badge small {
-  margin-left: 6px;
-  color: var(--accent);
-  letter-spacing: 0.08em;
-}
 .kicker {
   margin-top: 16px;
   font-size: 0.88rem;
@@ -891,7 +886,7 @@ button {
           <img id="hero-ship" src="PNG/Main%20Planes/Plane03/Idle%20and%20Moving/skeleton-MovingNIdle_0.png" alt="Player ship">
           <img id="hero-enemy" src="PNG/Enemy/Char05/Moving/skeleton-Moving_0.png" alt="Enemy ship">
           <img id="hero-bolt" src="PNG/Projectile/14.png" alt="Projectile">
-          <div class="hero-badge">VIOSO <small>sync</small></div>
+          <div class="hero-badge">VIOSO</div>
         </div>
       </div>
     </section>
@@ -1023,6 +1018,7 @@ const READY_STATE_FONT = '700 20px Inter, Segoe UI, sans-serif';
 const READY_TEXT_BOTTOM_OFFSET = 52;
 const DEFAULT_PLAYER_NAME = 'Pilot';
 const DEFAULT_PLAYER_COUNTRY = 'Unknown origin';
+const CIRCLED_NUMERALS = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
 const OBJECTIVES = [
   {
     icon: '🧭',
@@ -1733,7 +1729,7 @@ function showBriefing(index) {
   briefingFocus.textContent = objective.focus;
   briefingThreat.textContent = objective.threat;
   briefingList.innerHTML = objective.bullets
-    .map((item, bulletIndex) => `<li><span class="briefing-bullet-icon">${['①', '②', '③'][bulletIndex] || '•'}</span><span>${item}</span></li>`)
+    .map((item, bulletIndex) => `<li><span class="briefing-bullet-icon">${CIRCLED_NUMERALS[bulletIndex] || bulletIndex + 1}</span><span>${item}</span></li>`)
     .join('');
   briefingOverlay.classList.remove('hidden');
   updateHud();

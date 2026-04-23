@@ -1260,11 +1260,13 @@ function buildPlayerProfile(nameValue = '', countryValue = '') {
 
 function applyPlayerProfile(profile) {
   game.profile = profile;
-  playerMeta.textContent = `${profile.name} • ${profile.flag} ${profile.country}`;
+  if (playerMeta) {
+    playerMeta.textContent = `${profile.name} • ${profile.flag} ${profile.country}`;
+  }
 }
 
 function syncPlayerProfileFromInputs() {
-  applyPlayerProfile(buildPlayerProfile(playerNameInput.value, playerCountryInput.value));
+  applyPlayerProfile(buildPlayerProfile(playerNameInput?.value ?? '', playerCountryInput?.value ?? ''));
 }
 
 function drawRoundedRect(x, y, width, height, radius) {
@@ -1331,8 +1333,8 @@ function resetGame() {
 
 function initGame() {
   applyPlayerProfile(buildPlayerProfile());
-  playerNameInput.value = '';
-  playerCountryInput.value = '';
+  if (playerNameInput) playerNameInput.value = '';
+  if (playerCountryInput) playerCountryInput.value = '';
   initStars();
   resetGame();
   draw(0);
@@ -2164,6 +2166,9 @@ shootButton.addEventListener('pointerup', () => { if (!input.autopilot) input.fi
 shootButton.addEventListener('pointercancel', () => { if (!input.autopilot) input.fire = false; });
 
 pauseButton.addEventListener('click', () => togglePause());
+if (startButton) {
+  startButton.addEventListener('click', () => startRun({ autopilot: false }));
+}
 demoButton.addEventListener('click', () => startRun({ autopilot: true }));
 briefingContinueButton.addEventListener('click', () => beginObjective(game.pendingObjectiveIndex));
 briefingBackButton.addEventListener('click', backToTitle);
@@ -2171,12 +2176,14 @@ resumeButton.addEventListener('click', () => togglePause(false));
 restartButton.addEventListener('click', () => startRun({ autopilot: false }));
 pauseRestartButton.addEventListener('click', () => startRun({ autopilot: false }));
 backToTitleButton.addEventListener('click', backToTitle);
-startForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  startRun({ autopilot: false });
-});
-playerNameInput.addEventListener('input', syncPlayerProfileFromInputs);
-playerCountryInput.addEventListener('input', syncPlayerProfileFromInputs);
+if (startForm) {
+  startForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    startRun({ autopilot: false });
+  });
+}
+if (playerNameInput) playerNameInput.addEventListener('input', syncPlayerProfileFromInputs);
+if (playerCountryInput) playerCountryInput.addEventListener('input', syncPlayerProfileFromInputs);
 
 loadAssets().catch((error) => {
   const card = document.createElement('div');

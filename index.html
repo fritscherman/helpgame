@@ -707,7 +707,11 @@ const GAME_HEIGHT = 720;
 const GAME_TITLE = 'Exaplay 3 Homework Run';
 const SURVIVE_TIME = 78;
 const WARMUP_TIME = 10;
-const OBJECTIVE_STAGE_TIMES = [0, WARMUP_TIME, 28, 46, 62];
+const PROJECTION_STAGE_TIME = 28;
+const MONITOR_STAGE_TIME = 46;
+const BOSS_STAGE_TIME = 62;
+const OBJECTIVE_STAGE_TIMES = [0, WARMUP_TIME, PROJECTION_STAGE_TIME, MONITOR_STAGE_TIME, BOSS_STAGE_TIME];
+const BOSS_MAX_HP = 420;
 const MAX_PLAYER_HP = 100;
 const STAR_COUNT = 64;
 const FIXED_TIMESTEP_SECONDS = 1 / 60;
@@ -742,7 +746,7 @@ const OBJECTIVES = [
   {
     title: 'Control & automation',
     short: 'Client panel, cue control, saturation/audio sliders, PJLink, TCP data track, scheduler, autostart.',
-    detail: 'Link the PiP playlist as client/follow, add the user panel controls for cues, saturation, music, PJLink ON/OFF, TCP data 0→42 to 192.168.1.54:8567, scheduler jobs, autostart on the async cue, and 04:00 restart.',
+    detail: 'Link the PiP playlist as client/follow, add the user panel controls for cues, saturation, music, PJLink ON/OFF, TCP data 0→42 to 192.168.1.54:8567 in the training lab, scheduler jobs, autostart on the async cue, and 04:00 restart.',
     badge: 'Control'
   },
   {
@@ -1103,9 +1107,8 @@ function getStageIndex() {
 }
 
 function getCompletedObjectiveCount() {
-  let completed = Math.max(0, game.objectiveIndex);
-  if (game.bossDefeated) completed = OBJECTIVES.length;
-  return Math.min(completed, OBJECTIVES.length);
+  if (game.bossDefeated) return OBJECTIVES.length;
+  return Math.max(0, Math.min(game.objectiveIndex, OBJECTIVES.length));
 }
 
 function getProgressRatio() {
@@ -1155,8 +1158,8 @@ function spawnBoss() {
     anim: 0,
     frames: assets.enemyAce,
     speed: 0,
-    hp: 420,
-    maxHp: 420,
+    hp: BOSS_MAX_HP,
+    maxHp: BOSS_MAX_HP,
     radius: 74,
     fireDelay: 1.05,
     score: 1200,

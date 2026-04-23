@@ -829,6 +829,7 @@ const MAX_FRAME_DELTA = 1 / 20;
 const MAX_UPDATE_STEPS = 4;
 const DEFAULT_SPAWN_TIMER = 0.55;
 const DAMAGE_PER_ESCAPED_ENEMY = 8;
+// Keep enough health to feel the hits, but never enough damage to fail the guided training run.
 const MIN_SHIELD_HP = 14;
 const SHIELD_RECOVERY_RATIO = 0.28;
 const SHIELD_TOAST_COOLDOWN = 2.2;
@@ -1398,7 +1399,7 @@ function spawnBoss() {
     score: 1200,
     scale: 1.18,
     sway: 1.1,
-      isBoss: true
+    isBoss: true
   });
 }
 

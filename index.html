@@ -1154,10 +1154,33 @@ const assets = {};
 function loadImage(src) {
   return new Promise((resolve, reject) => {
     const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error(`Failed to load image at ${src}. Check that the PNG folder structure matches the expected layout.`));
+    let settled = false;
+    const timeout = window.setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      reject(new Error(`Timed out while loading ${src}.`));
+    }, 8000);
+    image.onload = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeout);
+      resolve(image);
+    };
+    image.onerror = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeout);
+      reject(new Error(`Failed to load image at ${src}. Check that the PNG folder structure matches the expected layout.`));
+    };
     image.src = src;
   });
+}
+
+function createFallbackSprite() {
+  const sprite = document.createElement('canvas');
+  sprite.width = 2;
+  sprite.height = 2;
+  return sprite;
 }
 
 async function loadAssets() {
@@ -1168,8 +1191,16 @@ async function loadAssets() {
   });
 
   let completed = 0;
+  const fallbackSprite = createFallbackSprite();
+  const failures = [];
   for (const entry of entries) {
-    const image = await loadImage(entry.src);
+    let image = fallbackSprite;
+    try {
+      image = await loadImage(entry.src);
+    } catch (error) {
+      failures.push(entry.src);
+      console.warn(error);
+    }
     if (entry.index === null) assets[entry.key] = image;
     else {
       if (!assets[entry.key]) assets[entry.key] = [];
@@ -1180,6 +1211,11 @@ async function loadAssets() {
   }
 
   loadingOverlay.classList.add('hidden');
+  if (failures.length) {
+    const preview = failures.slice(0, 3).join(', ');
+    const suffix = failures.length > 3 ? ` (+${failures.length - 3} more)` : '';
+    showToast(`Loaded with ${failures.length} missing asset(s): ${preview}${suffix}`);
+  }
   initGame();
 }
 

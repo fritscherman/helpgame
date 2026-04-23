@@ -629,7 +629,9 @@ const GAME_HEIGHT = 720;
 const SURVIVE_TIME = 75;
 const MAX_PLAYER_HP = 100;
 const STAR_COUNT = 64;
-const MAX_FRAME_TIME = 1 / 30;
+const FIXED_TIMESTEP = 1 / 60;
+const MAX_FRAME_DELTA = 1 / 20;
+const ENEMY_ESCAPE_DAMAGE = 8;
 const READY_TEXT_FONT = '700 20px Inter, Segoe UI, sans-serif';
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -910,7 +912,7 @@ function firePlayerBullet() {
   if (!player || player.fireCooldown > 0) return;
   player.fireCooldown = 0.16;
   player.muzzleTimer = 0.12;
-  const spread = input.autopilot ? rand(-0.05, 0.05) : rand(-0.02, 0.02);
+  const spread = input.autopilot ? rand(-0.01, 0.01) : rand(-0.02, 0.02);
   game.bullets.push({
     x: player.x + 58,
     y: player.y - 10,
@@ -1096,7 +1098,7 @@ function updateEnemies(dt) {
 
     if (enemy.x < -120) {
       game.enemies.splice(i, 1);
-      damagePlayer(8);
+      damagePlayer(ENEMY_ESCAPE_DAMAGE);
       continue;
     }
 
@@ -1356,10 +1358,15 @@ function draw(timestamp) {
 }
 
 let previous = performance.now();
+let accumulator = 0;
 function loop(now) {
-  const dt = Math.min((now - previous) / 1000, MAX_FRAME_TIME);
+  const dt = Math.min((now - previous) / 1000, MAX_FRAME_DELTA);
   previous = now;
-  update(dt);
+  accumulator += dt;
+  while (accumulator >= FIXED_TIMESTEP) {
+    update(FIXED_TIMESTEP);
+    accumulator -= FIXED_TIMESTEP;
+  }
   draw(now);
   requestAnimationFrame(loop);
 }

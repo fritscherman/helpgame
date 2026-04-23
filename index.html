@@ -34,7 +34,11 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 18px;
+  padding:
+    max(18px, env(safe-area-inset-top))
+    max(18px, env(safe-area-inset-right))
+    max(18px, env(safe-area-inset-bottom))
+    max(18px, env(safe-area-inset-left));
 }
 button {
   font: inherit;
@@ -631,8 +635,12 @@ const MAX_PLAYER_HP = 100;
 const STAR_COUNT = 64;
 const FIXED_TIMESTEP_SECONDS = 1 / 60;
 const MAX_FRAME_DELTA = 1 / 20;
-const PLAYER_DAMAGE_ON_ENEMY_ESCAPE = 8;
+const MAX_UPDATE_STEPS = 4;
+const DAMAGE_PER_ESCAPED_ENEMY = 8;
 const MIN_ENEMIES_FOR_VICTORY = 2;
+const PLAYER_BULLET_SPREAD = 0.02;
+const AUTOPILOT_BULLET_SPREAD = 0.01;
+const VICTORY_BONUS_SCORE = 250;
 const READY_STATE_FONT = '700 20px Inter, Segoe UI, sans-serif';
 const READY_TEXT_BOTTOM_OFFSET = 52;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -733,7 +741,7 @@ function loadImage(src) {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error(`Failed to load ${src}`));
+    image.onerror = () => reject(new Error(`Failed to load sprite asset: ${src}. Ensure the PNG folder structure is intact.`));
     image.src = src;
   });
 }
@@ -864,38 +872,41 @@ function spawnEnemy() {
   const tension = game.time / SURVIVE_TIME;
   const laneY = rand(94, GAME_HEIGHT - 110);
   const roll = Math.random();
-  const type = roll < 0.45
-    ? {
-        frames: assets.enemyScout,
-        speed: rand(220, 280) + tension * 40,
-        hp: 24,
-        radius: 28,
-        fireDelay: rand(1.8, 3.3),
-        score: 85,
-        scale: 0.55,
-        sway: rand(0.6, 1.15)
-      }
-    : roll < 0.82
-      ? {
-          frames: assets.enemyRaider,
-          speed: rand(180, 235) + tension * 35,
-          hp: 38,
-          radius: 34,
-          fireDelay: rand(1.25, 2.5),
-          score: 130,
-          scale: 0.62,
-          sway: rand(0.8, 1.4)
-        }
-      : {
-          frames: assets.enemyAce,
-          speed: rand(170, 210) + tension * 22,
-          hp: 58,
-          radius: 40,
-          fireDelay: rand(0.9, 1.8),
-          score: 190,
-          scale: 0.68,
-          sway: rand(1.2, 1.8)
-        };
+  let type;
+  if (roll < 0.45) {
+    type = {
+      frames: assets.enemyScout,
+      speed: rand(220, 280) + tension * 40,
+      hp: 24,
+      radius: 28,
+      fireDelay: rand(1.8, 3.3),
+      score: 85,
+      scale: 0.55,
+      sway: rand(0.6, 1.15)
+    };
+  } else if (roll < 0.82) {
+    type = {
+      frames: assets.enemyRaider,
+      speed: rand(180, 235) + tension * 35,
+      hp: 38,
+      radius: 34,
+      fireDelay: rand(1.25, 2.5),
+      score: 130,
+      scale: 0.62,
+      sway: rand(0.8, 1.4)
+    };
+  } else {
+    type = {
+      frames: assets.enemyAce,
+      speed: rand(170, 210) + tension * 22,
+      hp: 58,
+      radius: 40,
+      fireDelay: rand(0.9, 1.8),
+      score: 190,
+      scale: 0.68,
+      sway: rand(1.2, 1.8)
+    };
+  }
 
   game.enemies.push({
     x: GAME_WIDTH + rand(40, 180),
@@ -914,7 +925,8 @@ function firePlayerBullet() {
   if (!player || player.fireCooldown > 0) return;
   player.fireCooldown = 0.16;
   player.muzzleTimer = 0.12;
-  const spread = input.autopilot ? rand(-0.01, 0.01) : rand(-0.02, 0.02);
+  const spreadRange = input.autopilot ? AUTOPILOT_BULLET_SPREAD : PLAYER_BULLET_SPREAD;
+  const spread = rand(-spreadRange, spreadRange);
   game.bullets.push({
     x: player.x + 58,
     y: player.y - 10,
@@ -1100,7 +1112,7 @@ function updateEnemies(dt) {
 
     if (enemy.x < -120) {
       game.enemies.splice(i, 1);
-      damagePlayer(PLAYER_DAMAGE_ON_ENEMY_ESCAPE);
+      damagePlayer(DAMAGE_PER_ESCAPED_ENEMY);
       continue;
     }
 
@@ -1197,7 +1209,7 @@ function update(dt) {
 
   if (game.time >= SURVIVE_TIME && game.enemies.length <= MIN_ENEMIES_FOR_VICTORY) {
     createEffect('explosion', GAME_WIDTH - 180, GAME_HEIGHT * 0.5, 0.7, 1.1);
-    game.score += 250;
+    game.score += VICTORY_BONUS_SCORE;
     updateHud();
     showEnd(true);
   }
@@ -1225,7 +1237,7 @@ function drawSprite(image, x, y, width, height, rotation = 0, flipX = false, alp
   ctx.restore();
 }
 
-function frameFrom(sequence, speed, offset = 0) {
+function getAnimationFrame(sequence, speed, offset = 0) {
   return sequence[Math.floor(game.time * speed + offset) % sequence.length];
 }
 
@@ -1285,13 +1297,13 @@ function drawEnemies() {
 function drawPlayer() {
   if (!game.player) return;
   const player = game.player;
-  const engineFrame = frameFrom(assets.engine, 18);
+  const engineFrame = getAnimationFrame(assets.engine, 18);
   drawSprite(engineFrame, player.x - 58, player.y + 2, engineFrame.width * 0.44, engineFrame.height * 0.44, 0, false, 0.95);
   if (player.muzzleTimer > 0) {
-    const muzzleFrame = frameFrom(assets.muzzle, 26);
+    const muzzleFrame = getAnimationFrame(assets.muzzle, 26);
     drawSprite(muzzleFrame, player.x + 70, player.y, muzzleFrame.width * 0.55, muzzleFrame.height * 0.55, 0, false, 0.85);
   }
-  const frame = frameFrom(assets.player, 16);
+  const frame = getAnimationFrame(assets.player, 16);
   drawSprite(frame, player.x, player.y, frame.width * 0.74, frame.height * 0.74, Math.sin(player.bob) * 0.02, false, 1);
   if (player.hitCooldown > 0) {
     ctx.save();
@@ -1365,10 +1377,13 @@ function loop(now) {
   const dt = Math.min((now - previous) / 1000, MAX_FRAME_DELTA);
   previous = now;
   accumulator += dt;
-  while (accumulator >= FIXED_TIMESTEP_SECONDS) {
+  let steps = 0;
+  while (accumulator >= FIXED_TIMESTEP_SECONDS && steps < MAX_UPDATE_STEPS) {
     update(FIXED_TIMESTEP_SECONDS);
     accumulator -= FIXED_TIMESTEP_SECONDS;
+    steps += 1;
   }
+  if (steps === MAX_UPDATE_STEPS) accumulator = 0;
   draw(now);
   requestAnimationFrame(loop);
 }
@@ -1439,7 +1454,21 @@ pauseRestartButton.addEventListener('click', () => startRun({ autopilot: false }
 backToTitleButton.addEventListener('click', backToTitle);
 
 loadAssets().catch((error) => {
-  loadingOverlay.innerHTML = `<div class="loading-card"><div class="pretitle">Load failure</div><h2 style="margin:8px 0 0; font-size:2rem;">Sprite hangar offline</h2><p class="lead" style="margin-top:10px;">${error.message}</p></div>`;
+  const card = document.createElement('div');
+  card.className = 'loading-card';
+  const pretitle = document.createElement('div');
+  pretitle.className = 'pretitle';
+  pretitle.textContent = 'Load failure';
+  const title = document.createElement('h2');
+  title.style.margin = '8px 0 0';
+  title.style.fontSize = '2rem';
+  title.textContent = 'Sprite hangar offline';
+  const copy = document.createElement('p');
+  copy.className = 'lead';
+  copy.style.marginTop = '10px';
+  copy.textContent = error.message;
+  card.append(pretitle, title, copy);
+  loadingOverlay.replaceChildren(card);
   console.error(error);
 });
 </script>

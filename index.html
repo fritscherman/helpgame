@@ -909,6 +909,7 @@ const OBJECTIVES = [
     badge: 'Boss'
   }
 ];
+const BOSS_OBJECTIVE_INDEX = OBJECTIVES.length - 1;
 const REGULAR_ASSIGNMENT_COUNT = OBJECTIVES.length - 2;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -1292,8 +1293,8 @@ function getProgressRatio() {
   if (game.phase === 'warmup') {
     return clamp(game.phaseTime / WARMUP_TIME, 0, 1) * WARMUP_PROGRESS_WEIGHT;
   }
-  const completedAssignments = Math.max(0, game.completedObjectives - 1);
-  const base = WARMUP_PROGRESS_WEIGHT + (completedAssignments / Math.max(1, REGULAR_ASSIGNMENT_COUNT)) * ASSIGNMENT_PROGRESS_WEIGHT;
+  const completedRegularAssignments = Math.max(0, game.completedObjectives - 1);
+  const base = WARMUP_PROGRESS_WEIGHT + (completedRegularAssignments / Math.max(1, REGULAR_ASSIGNMENT_COUNT)) * ASSIGNMENT_PROGRESS_WEIGHT;
   const stageProgress = game.phase === 'mission' ? clamp(game.phaseTime / ASSIGNMENT_SIM_TIME, 0, 1) : 0;
   return clamp(base + stageProgress * (ASSIGNMENT_PROGRESS_WEIGHT / Math.max(1, REGULAR_ASSIGNMENT_COUNT)), 0, WARMUP_PROGRESS_WEIGHT + ASSIGNMENT_PROGRESS_WEIGHT);
 }
@@ -1343,12 +1344,12 @@ function showBriefing(index) {
   input.fire = false;
   resetTouchVector();
   pauseOverlay.classList.add('hidden');
-  briefingPretitle.textContent = index === OBJECTIVES.length - 1 ? 'Final boss briefing' : 'Assignment briefing';
-  briefingChip.textContent = index === OBJECTIVES.length - 1 ? 'Easy boss' : `Sim stage ${index}`;
+  briefingPretitle.textContent = index === BOSS_OBJECTIVE_INDEX ? 'Final boss briefing' : 'Assignment briefing';
+  briefingChip.textContent = index === BOSS_OBJECTIVE_INDEX ? 'Easy boss' : `Sim stage ${index}`;
   briefingTitle.textContent = objective.title;
   briefingCopy.textContent = objective.detail;
   briefingEstimate.textContent = objective.estimate;
-  briefingSimTime.textContent = index === OBJECTIVES.length - 1 ? 'Sim time: until boss breaks' : `Sim time: ${ASSIGNMENT_SIM_TIME} sec flight`;
+  briefingSimTime.textContent = index === BOSS_OBJECTIVE_INDEX ? 'Sim time: until boss breaks' : `Sim time: ${ASSIGNMENT_SIM_TIME} sec flight`;
   briefingGoal.textContent = `Goal: ${objective.goal}`;
   briefingList.innerHTML = objective.bullets.map((item) => `<li>${item}</li>`).join('');
   briefingOverlay.classList.remove('hidden');
@@ -1363,7 +1364,7 @@ function beginObjective(index) {
   game.phaseTime = 0;
   game.objectiveIndex = index;
   refillPlayerShield();
-  if (index === OBJECTIVES.length - 1) {
+  if (index === BOSS_OBJECTIVE_INDEX) {
     game.phase = 'boss';
     spawnBoss();
     showToast('Easy boss review launched. Finish the EXAPLAY run.');
@@ -1375,8 +1376,8 @@ function beginObjective(index) {
 
 function completeCurrentStage() {
   game.completedObjectives = Math.max(game.completedObjectives, game.objectiveIndex + 1);
-  if (game.completedObjectives >= OBJECTIVES.length - 1) {
-    showBriefing(OBJECTIVES.length - 1);
+  if (game.completedObjectives >= BOSS_OBJECTIVE_INDEX) {
+    showBriefing(BOSS_OBJECTIVE_INDEX);
     return;
   }
   showBriefing(game.completedObjectives);
@@ -1447,7 +1448,7 @@ function damagePlayer(amount) {
   game.comboTimer = 0;
   createEffect('sparkle', player.x + 30, player.y, 0.34, 0.42);
   createSparkBurst(player.x + 18, player.y, 10, '#ff7e87');
-  if (player.hp <= 0) {
+  if (player.hp < MIN_SHIELD_HP) {
     player.hp = Math.max(MIN_SHIELD_HP, MAX_PLAYER_HP * SHIELD_RECOVERY_RATIO);
     if (game.shieldToastCooldown <= 0) {
       showToast('Training shield active. You cannot really die in this run.');

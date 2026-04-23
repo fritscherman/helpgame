@@ -711,7 +711,11 @@ const PROJECTION_STAGE_TIME = 28;
 const MONITOR_STAGE_TIME = 46;
 const BOSS_STAGE_TIME = 62;
 const OBJECTIVE_STAGE_TIMES = [0, WARMUP_TIME, PROJECTION_STAGE_TIME, MONITOR_STAGE_TIME, BOSS_STAGE_TIME];
-const BOSS_MAX_HP = 420;
+const PLAYER_SHOTS_PER_BURST = 2;
+const PLAYER_BULLET_DAMAGE = 14;
+const BOSS_MAX_HP = PLAYER_SHOTS_PER_BURST * PLAYER_BULLET_DAMAGE * 15;
+const BOSS_VERTICAL_AMPLITUDE = 170;
+const BOSS_COLLISION_DAMAGE = 26;
 const MAX_PLAYER_HP = 100;
 const STAR_COUNT = 64;
 const FIXED_TIMESTEP_SECONDS = 1 / 60;
@@ -1058,7 +1062,7 @@ function firePlayerBullet() {
     vy: spread * 600,
     life: 1.45,
     radius: 14,
-    damage: 14,
+    damage: PLAYER_BULLET_DAMAGE,
     friendly: true
   });
   game.bullets.push({
@@ -1068,7 +1072,7 @@ function firePlayerBullet() {
     vy: -spread * 600,
     life: 1.45,
     radius: 14,
-    damage: 14,
+    damage: PLAYER_BULLET_DAMAGE,
     friendly: true
   });
   createEffect('muzzle', player.x + 62, player.y, 0.24, 0.34);
@@ -1126,10 +1130,10 @@ function renderObjectiveBoard() {
   const boss = getBoss();
   objectiveCurrent.textContent = current.title;
   objectiveDetail.textContent = boss
-    ? `${current.detail} Boss integrity ${Math.round((boss.hp / boss.maxHp) * 100)}%.`
+    ? `${current.detail} — Boss integrity ${Math.round((boss.hp / boss.maxHp) * 100)}%.`
     : current.detail;
   objectiveList.innerHTML = OBJECTIVES.map((objective, index) => {
-    const done = game.bossDefeated ? true : index < game.objectiveIndex;
+    const done = game.bossDefeated || index < game.objectiveIndex;
     const active = !done && index === game.objectiveIndex;
     const state = done ? 'done' : active ? 'active' : '';
     const marker = done ? '✓' : index + 1;
@@ -1310,7 +1314,7 @@ function updateEnemies(dt) {
     enemy.hitFlash = Math.max(0, enemy.hitFlash - dt * 3.5);
     if (enemy.isBoss) {
       enemy.x = lerp(enemy.x, GAME_WIDTH - 220, dt * 1.6);
-      enemy.y = GAME_HEIGHT * 0.5 + Math.sin(game.time * enemy.sway + enemy.phase) * 170;
+      enemy.y = GAME_HEIGHT * 0.5 + Math.sin(game.time * enemy.sway + enemy.phase) * BOSS_VERTICAL_AMPLITUDE;
       enemy.y = clamp(enemy.y, 130, GAME_HEIGHT - 130);
     } else {
       enemy.x -= enemy.speed * dt;
@@ -1340,7 +1344,7 @@ function updateEnemies(dt) {
     const dy = enemy.y - game.player.y;
     if (Math.hypot(dx, dy) < enemy.radius + game.player.radius) {
       if (enemy.isBoss) {
-        damagePlayer(26);
+        damagePlayer(BOSS_COLLISION_DAMAGE);
         enemy.x = Math.min(GAME_WIDTH - 140, enemy.x + 32);
         continue;
       }

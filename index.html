@@ -653,7 +653,7 @@ button {
     <div id="hud">
       <div class="hud-card" id="hud-left">
         <div class="brand-lockup">
-          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY training platform logo">
+          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
         </div>
         <div class="hud-label">Homework</div>
         <div id="mission-name">EXAPLAY Homework Flight</div>
@@ -706,7 +706,7 @@ button {
       <div class="panel hero-panel">
         <div>
           <div class="brand-lockup">
-            <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY training platform logo">
+            <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
           </div>
           <div class="pretitle">Gamified EXAPLAY homework</div>
           <h1 class="title">EXAPLAY<br>Homework Flight</h1>
@@ -736,7 +736,7 @@ button {
         <div class="briefing-topline">
           <div>
             <div class="brand-lockup compact">
-              <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY training platform logo">
+              <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
             </div>
             <div class="pretitle" id="briefing-pretitle">Assignment briefing</div>
           </div>
@@ -772,7 +772,7 @@ button {
     <section class="overlay hidden" id="end-overlay">
       <div class="panel">
         <div class="brand-lockup">
-          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY training platform logo">
+          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
         </div>
         <div class="pretitle" id="end-pretitle">Certification unlocked</div>
         <h2 class="title panel-title" id="end-title">You are a certified EXAPLAY user</h2>
@@ -832,7 +832,7 @@ const DAMAGE_PER_ESCAPED_ENEMY = 8;
 const WARMUP_PROGRESS_WEIGHT = 0.18;
 const ASSIGNMENT_PROGRESS_WEIGHT = 0.64;
 const BOSS_PROGRESS_WEIGHT = 0.18;
-// Keep enough health to take one more hit, then bounce back to 28% so the guided run never hard-fails.
+// 14 HP keeps the ship alive for one more normal hit, then the shield snaps back to 28% so the guided run never hard-fails.
 const MIN_SHIELD_HP = 14;
 const SHIELD_RECOVERY_RATIO = 0.28;
 const SHIELD_TOAST_COOLDOWN = 2.2;
@@ -1454,8 +1454,9 @@ function damagePlayer(amount) {
       showToast('Training shield active. You cannot really die in this run.');
       game.shieldToastCooldown = SHIELD_TOAST_COOLDOWN;
     }
-  } else {
+  } else if (game.shieldToastCooldown <= 0) {
     showToast('Hit taken. Training shield still active.');
+    game.shieldToastCooldown = SHIELD_TOAST_COOLDOWN;
   }
   updateHud();
 }

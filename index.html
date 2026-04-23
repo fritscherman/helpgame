@@ -45,7 +45,7 @@ button {
 }
 #game-shell {
   position: relative;
-  width: min(100vw - 36px, 1280px);
+  width: min(100vw - 36px, 1600px);
   aspect-ratio: 16 / 9;
   max-height: calc(100vh - 36px);
   border-radius: 28px;
@@ -292,12 +292,16 @@ button {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 30px;
   background: linear-gradient(180deg, rgba(4, 10, 27, 0.3), rgba(4, 10, 27, 0.82));
   backdrop-filter: blur(5px);
   z-index: 5;
+  overflow-y: auto;
+}
+.overlay > .panel {
+  margin: auto 0;
 }
 .overlay.hidden {
   display: none;

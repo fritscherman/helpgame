@@ -4,7 +4,7 @@ A single-page HTML space shooter built from the uploaded PNG sprite pack.
 
 ## Play
 
-Open `/home/runner/work/helpgame/helpgame/index.html` in a modern browser.
+Open `index.html` in a modern browser.
 
 ## Controls
 

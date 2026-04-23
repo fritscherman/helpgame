@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Nebula Run</title>
+<title>Exaplay 3 Homework Run</title>
 <style>
 :root {
   --bg: #070d1f;
@@ -167,6 +167,74 @@ button {
 #progress-copy {
   margin-top: 8px;
   font-size: 0.82rem;
+  color: var(--muted);
+}
+#objective-panel {
+  min-width: min(31vw, 360px);
+  max-width: 380px;
+}
+#objective-current {
+  margin-top: 6px;
+  font-size: 1rem;
+  font-weight: 800;
+}
+#objective-detail {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #d6edff;
+}
+#objective-list {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+.objective-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.objective-item.active {
+  border-color: rgba(102, 215, 255, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(102, 215, 255, 0.16);
+}
+.objective-item.done {
+  background: rgba(115, 255, 184, 0.08);
+  border-color: rgba(115, 255, 184, 0.18);
+}
+.objective-step {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.08);
+}
+.objective-item.active .objective-step {
+  color: #07192a;
+  background: linear-gradient(135deg, var(--accent), #a7f8ff);
+}
+.objective-item.done .objective-step {
+  color: #07271a;
+  background: rgba(115, 255, 184, 0.72);
+}
+.objective-copy strong {
+  display: block;
+  font-size: 0.84rem;
+}
+.objective-copy span {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  line-height: 1.45;
   color: var(--muted);
 }
 .icon-button {
@@ -512,8 +580,8 @@ button {
 
     <div id="hud">
       <div class="hud-card" id="hud-left">
-        <div class="hud-label">Mission</div>
-        <div id="mission-name">Nebula Run</div>
+        <div class="hud-label">Homework</div>
+        <div id="mission-name">Exaplay 3 Homework Run</div>
         <div class="health-row">
           <div class="health-wrap">
             <img src="PNG/Hud/HPbar_Bg.png" alt="Health background">
@@ -522,16 +590,22 @@ button {
           <div id="health-text">100%</div>
         </div>
         <div class="stat-row">
-          <div class="stat-chip">Score <strong id="score-value">0</strong></div>
-          <div class="stat-chip">Combo <strong id="combo-value">x1</strong></div>
-          <div class="stat-chip">Threat <strong id="threat-value">Calm</strong></div>
+          <div class="stat-chip">XP <strong id="score-value">0</strong></div>
+          <div class="stat-chip">Tasks <strong id="combo-value">0/5</strong></div>
+          <div class="stat-chip">Stage <strong id="threat-value">Warm-up</strong></div>
         </div>
       </div>
       <div id="hud-right">
         <div class="hud-card" id="progress-panel">
-          <div class="hud-label">Sector progress</div>
+          <div class="hud-label">Learning path</div>
           <div id="progress-track"><div id="progress-fill"></div></div>
-          <div id="progress-copy">Hold the line until your jump window opens.</div>
+          <div id="progress-copy">Warm up the controls, then the Exaplay 3 objectives will unlock one by one.</div>
+        </div>
+        <div class="hud-card" id="objective-panel">
+          <div class="hud-label">Homework board</div>
+          <div id="objective-current">Warm-up flight</div>
+          <div id="objective-detail">Just fly for a moment and get comfortable before the real Exaplay 3 build tasks start dropping in.</div>
+          <div id="objective-list"></div>
         </div>
         <button class="icon-button" id="pause-button" aria-label="Pause game">
           <img src="PNG/Hud/Pause-Btn.png" alt="Pause">
@@ -556,19 +630,19 @@ button {
     <section class="overlay" id="start-overlay">
       <div class="panel hero-panel">
         <div>
-          <div class="pretitle">Sprite-powered arcade mission</div>
-          <h1 class="title">Nebula<br>Run</h1>
-          <p class="lead">The old quiz has been replaced with a real space game. Dodge incoming squadrons, shred interceptors, and survive long enough to make the final warp jump using the uploaded sprite pack.</p>
+          <div class="pretitle">Gamified Exaplay 3 homework</div>
+          <h1 class="title">Exaplay 3<br>Homework Run</h1>
+          <p class="lead">A cool-looking training run for the tech team: authored by Etienne Servant, built as a playable briefing, and packed with the exact Exaplay 3 setup work the crew needs to learn.</p>
           <ul class="feature-list">
-            <li>🚀 Fly with a fully animated ship built from the uploaded main-plane sprite frames.</li>
-            <li>🪐 Fight through layered nebula backgrounds, hostile pilots, missiles, and impact effects from the PNG pack.</li>
-            <li>🎮 Play with keyboard or on-screen mobile controls inspired by the provided HUD artwork.</li>
+            <li>🛠️ Build the PROJECTION setup: dual FHD videoprojectors, background + PiP fields, 45° rotated PiP, timeline loops, VIOSO cue, keyer, music, and mask.</li>
+            <li>🖥️ Build the MONITOR setup: WUXGA output, flipped background, saturation correction, linked playlists, 8-second stills, and dome shader on PiP.</li>
+            <li>🎛️ Finish with controls, PJLink, TCP data, scheduler rules, autostart, and a final boss review before sign-off.</li>
           </ul>
           <div class="button-row">
-            <button class="cta cta-primary" id="start-button">Launch mission</button>
-            <button class="cta cta-secondary" id="demo-button">Autopilot preview</button>
+            <button class="cta cta-primary" id="start-button">Start homework</button>
+            <button class="cta cta-secondary" id="demo-button">Autopilot flythrough</button>
           </div>
-          <div class="kicker">Goal: survive 75 seconds and clear enough hostiles to open the hyperspace route.</div>
+          <div class="kicker">Authored by Etienne Servant • easy flight intro, staged objectives, and a boss at the end.</div>
         </div>
         <div class="hero-art">
           <img id="hero-bg" src="PNG/Backgrounds/07/Layer1.png" alt="Nebula background">
@@ -581,37 +655,37 @@ button {
 
     <section class="overlay hidden" id="pause-overlay">
       <div class="panel">
-        <div class="pretitle">Mission paused</div>
-        <h2 class="title" style="font-size:clamp(2rem,4vw,3.5rem); margin-bottom:10px;">Systems on standby</h2>
-        <p class="lead">Take a breath, then jump back into the dogfight.</p>
+        <div class="pretitle">Homework paused</div>
+        <h2 class="title" style="font-size:clamp(2rem,4vw,3.5rem); margin-bottom:10px;">Briefing on standby</h2>
+        <p class="lead">Take a breath, then jump back in and finish the Exaplay 3 checklist.</p>
         <div class="button-row">
           <button class="cta cta-primary" id="resume-button">Resume</button>
-          <button class="cta cta-secondary" id="pause-restart-button">Restart run</button>
+          <button class="cta cta-secondary" id="pause-restart-button">Restart homework</button>
         </div>
       </div>
     </section>
 
     <section class="overlay hidden" id="end-overlay">
       <div class="panel">
-        <div class="pretitle" id="end-pretitle">Mission complete</div>
-        <h2 class="title" id="end-title" style="font-size:clamp(2rem,4vw,3.5rem); margin-bottom:10px;">Warp route secured</h2>
-        <p class="lead" id="end-copy">You punched through the blockade and lived to tell the story.</p>
+        <div class="pretitle" id="end-pretitle">Homework complete</div>
+        <h2 class="title" id="end-title" style="font-size:clamp(2rem,4vw,3.5rem); margin-bottom:10px;">Exaplay 3 signed off</h2>
+        <p class="lead" id="end-copy">You flew through every learning objective and cleared the final review.</p>
         <div class="summary-grid">
           <div class="summary-box">
-            <div class="summary-label">Final score</div>
+            <div class="summary-label">Final XP</div>
             <div class="summary-value" id="final-score">0</div>
           </div>
           <div class="summary-box">
-            <div class="summary-label">Enemies cleared</div>
-            <div class="summary-value" id="final-kills">0</div>
+            <div class="summary-label">Tasks cleared</div>
+            <div class="summary-value" id="final-tasks">0</div>
           </div>
           <div class="summary-box">
-            <div class="summary-label">Survival time</div>
+            <div class="summary-label">Flight time</div>
             <div class="summary-value" id="final-time">0s</div>
           </div>
         </div>
         <div class="button-row">
-          <button class="cta cta-primary" id="restart-button">Play again</button>
+          <button class="cta cta-primary" id="restart-button">Run it again</button>
           <button class="cta cta-secondary" id="back-to-title-button">Back to briefing</button>
         </div>
       </div>
@@ -619,8 +693,8 @@ button {
 
     <section class="loading" id="loading-overlay">
       <div class="loading-card">
-        <div class="pretitle">Loading sprites</div>
-        <h2 style="margin:8px 0 0; font-size:2rem;">Preparing the hangar</h2>
+        <div class="pretitle">Loading homework sim</div>
+        <h2 style="margin:8px 0 0; font-size:2rem;">Preparing the briefing deck</h2>
         <p class="lead" style="margin-top:10px; margin-bottom:0;">Pulling backgrounds, pilots, projectiles, HUD, and effects from the uploaded PNG folder.</p>
         <div class="loading-bar"><span id="loading-fill"></span></div>
       </div>
@@ -630,8 +704,21 @@ button {
 <script>
 const GAME_WIDTH = 1280;
 const GAME_HEIGHT = 720;
-const GAME_TITLE = 'Nebula Run';
-const SURVIVE_TIME = 75;
+const GAME_TITLE = 'Exaplay 3 Homework Run';
+const SURVIVE_TIME = 78;
+const WARMUP_TIME = 10;
+const PROJECTION_UNLOCK_TIME = 28;
+const MONITOR_UNLOCK_TIME = 46;
+const BOSS_UNLOCK_TIME = 62;
+const OBJECTIVE_STAGE_TIMES = [0, WARMUP_TIME, PROJECTION_UNLOCK_TIME, MONITOR_UNLOCK_TIME, BOSS_UNLOCK_TIME];
+const PLAYER_SHOTS_PER_BURST = 2;
+const PLAYER_BULLET_DAMAGE = 14;
+const BOSS_BURSTS_TO_DEFEAT = 15;
+const BOSS_MAX_HP = PLAYER_SHOTS_PER_BURST * PLAYER_BULLET_DAMAGE * BOSS_BURSTS_TO_DEFEAT;
+const BOSS_APPROACH_X = GAME_WIDTH - 220;
+const BOSS_APPROACH_LERP = 1.6;
+const BOSS_VERTICAL_AMPLITUDE = 170;
+const BOSS_COLLISION_DAMAGE = 26;
 const MAX_PLAYER_HP = 100;
 const STAR_COUNT = 64;
 const FIXED_TIMESTEP_SECONDS = 1 / 60;
@@ -644,6 +731,38 @@ const AUTOPILOT_BULLET_SPREAD = 0.01;
 const VICTORY_BONUS_SCORE = 250;
 const READY_STATE_FONT = '700 20px Inter, Segoe UI, sans-serif';
 const READY_TEXT_BOTTOM_OFFSET = 52;
+const OBJECTIVES = [
+  {
+    title: 'Warm-up flight',
+    short: 'Just fly and get comfortable before the real assignment unlocks.',
+    detail: 'Easy intro. Get a feel for the ship, then the Exaplay 3 homework starts.',
+    badge: 'Warm-up'
+  },
+  {
+    title: 'Projection setup',
+    short: '2x FHD projectors, background + PiP, 45° PiP, looped timeline, VIOSO cue, keyer, music, mask.',
+    detail: 'Create PROJECTION with 2 videoprojectors in FHD, 2 fields (background and PiP), cover/fit behavior, 45° PiP rotation, 3 looping background videos, 3 looping PiP stills, plus the asynchronous VIOSO/keyer/music cue.',
+    badge: 'Projection'
+  },
+  {
+    title: 'Monitor playlists',
+    short: 'WUXGA monitor, flipped background, saturation correction, linked playlists, 8s stills, dome shader.',
+    detail: 'Build MONITOR in WUXGA with background flipped horizontally, a background playlist of 2 videos with more saturation, and a PiP playlist with 2 videos + 2 stills of 8 seconds, all with a dome shader on PiP.',
+    badge: 'Monitor'
+  },
+  {
+    title: 'Control & automation',
+    short: 'Client panel, cue control, saturation/audio sliders, PJLink, TCP data track, scheduler, autostart.',
+    detail: 'Link the PiP playlist as client/follow. Add the user panel controls for cues, saturation, music, and PJLink ON/OFF. Send TCP data 0→42 to the example lab target 192.168.1.54:8567 supplied in the brief, then finish the scheduler jobs, autostart, and 04:00 restart.',
+    badge: 'Control'
+  },
+  {
+    title: 'Boss review',
+    short: 'Final review battle: clear the lead reviewer and prove the homework is production-ready.',
+    detail: 'The boss represents the final review. Beat it to show the whole Exaplay 3 homework is complete and ready for sign-off.',
+    badge: 'Boss'
+  }
+];
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const lerp = (a, b, t) => a + (b - a) * t;
 const rand = (min, max) => Math.random() * (max - min) + min;
@@ -672,11 +791,14 @@ const comboValue = document.getElementById('combo-value');
 const threatValue = document.getElementById('threat-value');
 const progressFill = document.getElementById('progress-fill');
 const progressCopy = document.getElementById('progress-copy');
+const objectiveCurrent = document.getElementById('objective-current');
+const objectiveDetail = document.getElementById('objective-detail');
+const objectiveList = document.getElementById('objective-list');
 const endPretitle = document.getElementById('end-pretitle');
 const endTitle = document.getElementById('end-title');
 const endCopy = document.getElementById('end-copy');
 const finalScore = document.getElementById('final-score');
-const finalKills = document.getElementById('final-kills');
+const finalTasks = document.getElementById('final-tasks');
 const finalTime = document.getElementById('final-time');
 const joystick = document.getElementById('joystick');
 const joystickKnob = document.getElementById('joystick-knob');
@@ -701,7 +823,7 @@ const game = {
   score: 0,
   combo: 1,
   comboTimer: 0,
-  kills: 0,
+  clearedThreats: 0,
   spawnTimer: 0,
   meteorTimer: 0,
   flash: 0,
@@ -713,7 +835,10 @@ const game = {
   effects: [],
   sparks: [],
   stars: [],
-  autopilotTimer: 0
+  autopilotTimer: 0,
+  objectiveIndex: 0,
+  bossSpawned: false,
+  bossDefeated: false
 };
 
 const assetPaths = {
@@ -801,7 +926,7 @@ function resetGame() {
   game.score = 0;
   game.combo = 1;
   game.comboTimer = 0;
-  game.kills = 0;
+  game.clearedThreats = 0;
   game.spawnTimer = 0.55;
   game.meteorTimer = 1.8;
   game.flash = 0;
@@ -813,8 +938,12 @@ function resetGame() {
   game.effects = [];
   game.sparks = [];
   game.autopilotTimer = 0;
+  game.objectiveIndex = 0;
+  game.bossSpawned = false;
+  game.bossDefeated = false;
   input.fire = false;
   input.touchActive = false;
+  renderObjectiveBoard();
   updateHud();
 }
 
@@ -832,8 +961,8 @@ function startRun({ autopilot = false } = {}) {
   startOverlay.classList.add('hidden');
   pauseOverlay.classList.add('hidden');
   endOverlay.classList.add('hidden');
-  missionName.textContent = autopilot ? `${GAME_TITLE} • Autopilot demo` : GAME_TITLE;
-  showToast(autopilot ? 'Autopilot demo engaged.' : 'Mission launched. Clear the blockade.');
+  missionName.textContent = autopilot ? `${GAME_TITLE} • Autopilot flythrough` : GAME_TITLE;
+  showToast(autopilot ? 'Autopilot flythrough engaged.' : 'Warm-up flight started. Homework objectives incoming.');
 }
 
 function backToTitle() {
@@ -851,25 +980,26 @@ function togglePause(force) {
   const nextMode = typeof force === 'boolean' ? (force ? 'paused' : 'playing') : (game.mode === 'paused' ? 'playing' : 'paused');
   game.mode = nextMode;
   pauseOverlay.classList.toggle('hidden', nextMode !== 'paused');
-  if (nextMode === 'paused') showToast('Mission paused.');
+  if (nextMode === 'paused') showToast('Homework paused.');
 }
 
 function showEnd(victory) {
   game.mode = victory ? 'victory' : 'gameover';
   endOverlay.classList.remove('hidden');
   pauseOverlay.classList.add('hidden');
-  endPretitle.textContent = victory ? 'Mission complete' : 'Mission failed';
-  endTitle.textContent = victory ? 'Warp route secured' : 'Your ship broke apart';
+  endPretitle.textContent = victory ? 'Homework complete' : 'Homework failed';
+  endTitle.textContent = victory ? 'Exaplay 3 signed off' : 'Review run failed';
   endCopy.textContent = victory
-    ? 'You survived the blockade and carved open a safe jump lane through the sector.'
-    : 'The enemy squadrons won this round, but the hangar is ready for another run.';
+    ? 'You cleared every Exaplay 3 objective, beat the final review, and turned the homework into a win.'
+    : 'The reviewers pushed back this time, but the briefing is ready for another run.';
   finalScore.textContent = `${game.score}`;
-  finalKills.textContent = `${game.kills}`;
+  finalTasks.textContent = `${getCompletedObjectiveCount()}/${OBJECTIVES.length}`;
   finalTime.textContent = `${Math.round(game.time)}s`;
-  showToast(victory ? 'Jump gate online!' : 'Hull integrity lost.');
+  showToast(victory ? 'Homework delivered.' : 'Run failed. Reset and try again.');
 }
 
 function spawnEnemy() {
+  if (game.time < WARMUP_TIME || game.bossSpawned) return;
   const tension = game.time / SURVIVE_TIME;
   const laneY = rand(94, GAME_HEIGHT - 110);
   const roll = Math.random();
@@ -935,7 +1065,7 @@ function firePlayerBullet() {
     vy: spread * 600,
     life: 1.45,
     radius: 14,
-    damage: 14,
+    damage: PLAYER_BULLET_DAMAGE,
     friendly: true
   });
   game.bullets.push({
@@ -945,17 +1075,17 @@ function firePlayerBullet() {
     vy: -spread * 600,
     life: 1.45,
     radius: 14,
-    damage: 14,
+    damage: PLAYER_BULLET_DAMAGE,
     friendly: true
   });
   createEffect('muzzle', player.x + 62, player.y, 0.24, 0.34);
 }
 
-function fireEnemyBullet(enemy) {
+function fireEnemyBullet(enemy, targetYOffset = 0) {
   const dx = game.player.x - enemy.x;
-  const dy = game.player.y - enemy.y;
+  const dy = game.player.y + targetYOffset - enemy.y;
   const length = Math.max(1, Math.hypot(dx, dy));
-  const speed = 360 + game.time * 1.8;
+  const speed = enemy.isBoss ? 420 : 360 + game.time * 1.8;
   game.enemyBullets.push({
     x: enemy.x - 34,
     y: enemy.y,
@@ -969,6 +1099,87 @@ function fireEnemyBullet(enemy) {
 
 function createEffect(type, x, y, life = 0.5, scale = 0.6) {
   game.effects.push({ type, x, y, life, maxLife: life, scale, rotation: rand(-0.2, 0.2) });
+}
+
+function getBoss() {
+  return game.enemies.find((enemy) => enemy.isBoss) || null;
+}
+
+function getStageIndex() {
+  if (game.bossSpawned) return OBJECTIVES.length - 1;
+  for (let i = OBJECTIVE_STAGE_TIMES.length - 1; i >= 0; i--) {
+    if (game.time >= OBJECTIVE_STAGE_TIMES[i]) return i;
+  }
+  return 0;
+}
+
+function getCompletedObjectiveCount() {
+  if (game.bossDefeated) return OBJECTIVES.length;
+  return Math.max(0, Math.min(game.objectiveIndex, OBJECTIVES.length));
+}
+
+function getProgressRatio() {
+  if (game.bossDefeated) return 1;
+  const boss = getBoss();
+  if (boss) {
+    const bossProgress = 1 - boss.hp / boss.maxHp;
+    return 0.82 + bossProgress * 0.18;
+  }
+  return clamp(game.time / OBJECTIVE_STAGE_TIMES[OBJECTIVE_STAGE_TIMES.length - 1], 0, 1) * 0.82;
+}
+
+function shouldSpawnEnemy() {
+  return game.spawnTimer <= 0 && game.mode === 'playing' && game.time >= WARMUP_TIME && !game.bossSpawned;
+}
+
+function renderObjectiveBoard() {
+  const current = OBJECTIVES[game.objectiveIndex] || OBJECTIVES[0];
+  const boss = getBoss();
+  objectiveCurrent.textContent = current.title;
+  objectiveDetail.textContent = boss
+    ? `${current.detail} — Boss integrity ${Math.round((boss.hp / boss.maxHp) * 100)}%.`
+    : current.detail;
+  objectiveList.innerHTML = OBJECTIVES.map((objective, index) => {
+    const done = game.bossDefeated || index < game.objectiveIndex;
+    const active = !done && index === game.objectiveIndex;
+    const state = done ? 'done' : active ? 'active' : '';
+    const marker = done ? '✓' : index + 1;
+    return `<div class="objective-item ${state}"><div class="objective-step">${marker}</div><div class="objective-copy"><strong>${objective.title}</strong><span>${objective.short}</span></div></div>`;
+  }).join('');
+}
+
+function updateObjectiveState() {
+  const nextIndex = getStageIndex();
+  if (nextIndex !== game.objectiveIndex) {
+    game.objectiveIndex = nextIndex;
+    renderObjectiveBoard();
+    if (nextIndex > 0) showToast(`Objective unlocked: ${OBJECTIVES[nextIndex].title}`);
+  }
+}
+
+function spawnBoss() {
+  if (game.bossSpawned) return;
+  game.bossSpawned = true;
+  game.enemies.push({
+    x: GAME_WIDTH + 260,
+    y: GAME_HEIGHT * 0.5,
+    phase: rand(0, Math.PI * 2),
+    hitFlash: 0,
+    fireTimer: 0.8,
+    anim: 0,
+    frames: assets.enemyAce,
+    speed: 0,
+    hp: BOSS_MAX_HP,
+    maxHp: BOSS_MAX_HP,
+    radius: 74,
+    fireDelay: 1.05,
+    score: 1200,
+    scale: 1.18,
+    sway: 1.1,
+    isBoss: true
+  });
+  updateObjectiveState();
+  showToast('Boss review incoming. Prove the homework is ready.');
 }
 
 function createSparkBurst(x, y, count = 8, color = '#ffd77f') {
@@ -1002,20 +1213,27 @@ function damagePlayer(amount) {
     createEffect('explosion', player.x + 18, player.y, 0.58, 0.75);
     showEnd(false);
   } else {
-    showToast('Hull hit! Keep moving.');
+    showToast('Hit taken. Keep the homework run alive.');
   }
 }
 
 function destroyEnemy(enemyIndex) {
   const enemy = game.enemies[enemyIndex];
-  createEffect('explosion', enemy.x, enemy.y, 0.52, enemy.scale + 0.18);
-  createSparkBurst(enemy.x, enemy.y, 11, '#ffc86d');
-  game.kills += 1;
+  createEffect('explosion', enemy.x, enemy.y, enemy.isBoss ? 0.82 : 0.52, enemy.scale + 0.18);
+  createSparkBurst(enemy.x, enemy.y, enemy.isBoss ? 24 : 11, '#ffc86d');
+  game.clearedThreats += 1;
   game.combo = clamp(game.combo + 0.2, 1, 5);
   game.comboTimer = 2.2;
   game.score += Math.round(enemy.score * game.combo);
   game.cameraShake = Math.max(game.cameraShake, 6);
   game.enemies.splice(enemyIndex, 1);
+  if (enemy.isBoss) {
+    game.bossDefeated = true;
+    game.score += VICTORY_BONUS_SCORE;
+    updateHud();
+    showEnd(true);
+    return;
+  }
   updateHud();
 }
 
@@ -1025,14 +1243,14 @@ function updateHud() {
   healthText.textContent = `${Math.round(hpPercent * 100)}%`;
   healthText.style.color = hpPercent > 0.55 ? '#ffef9a' : hpPercent > 0.25 ? '#ffd27c' : '#ff8d98';
   scoreValue.textContent = game.score;
-  comboValue.textContent = `x${game.combo.toFixed(1).replace('.0', '')}`;
-  const tension = game.time / SURVIVE_TIME;
-  threatValue.textContent = tension < 0.35 ? 'Calm' : tension < 0.7 ? 'Heavy' : 'Critical';
-  const progress = clamp(game.time / SURVIVE_TIME, 0, 1);
+  comboValue.textContent = `${getCompletedObjectiveCount()}/${OBJECTIVES.length}`;
+  threatValue.textContent = OBJECTIVES[game.objectiveIndex].badge;
+  const progress = getProgressRatio();
   progressFill.style.width = `${progress * 100}%`;
-  progressCopy.textContent = progress < 1
-    ? `${Math.ceil(SURVIVE_TIME - game.time)}s until warp window.`
-    : 'Warp window is open. Finish the last attackers.';
+  progressCopy.textContent = game.bossDefeated
+    ? 'All objectives cleared. Homework accepted.'
+    : OBJECTIVES[game.objectiveIndex].short;
+  renderObjectiveBoard();
 }
 
 function showToast(message) {
@@ -1091,27 +1309,39 @@ function updatePlayer(dt) {
 function updateEnemies(dt) {
   const intensity = clamp(game.time / SURVIVE_TIME, 0, 1);
   game.spawnTimer -= dt;
-  if (game.spawnTimer <= 0 && game.mode === 'playing') {
+  if (shouldSpawnEnemy()) {
     spawnEnemy();
     game.spawnTimer = Math.max(0.32, 1.15 - intensity * 0.62) + rand(0, 0.35);
   }
 
   for (let i = game.enemies.length - 1; i >= 0; i--) {
     const enemy = game.enemies[i];
-    enemy.anim += dt * 10;
+    enemy.anim += dt * (enemy.isBoss ? 7 : 10);
     enemy.fireTimer -= dt;
     enemy.hitFlash = Math.max(0, enemy.hitFlash - dt * 3.5);
-    enemy.x -= enemy.speed * dt;
-    enemy.y += Math.sin(game.time * enemy.sway + enemy.phase) * 42 * dt;
-    enemy.y = clamp(enemy.y, 72, GAME_HEIGHT - 72);
-
-    if (enemy.fireTimer <= 0 && enemy.x < GAME_WIDTH - 150) {
-      fireEnemyBullet(enemy);
-      enemy.fireTimer = enemy.fireDelay;
-      createEffect('muzzle', enemy.x - 22, enemy.y, 0.18, 0.24);
+    if (enemy.isBoss) {
+      enemy.x = lerp(enemy.x, BOSS_APPROACH_X, dt * BOSS_APPROACH_LERP);
+      enemy.y = GAME_HEIGHT * 0.5 + Math.sin(game.time * enemy.sway + enemy.phase) * BOSS_VERTICAL_AMPLITUDE;
+      enemy.y = clamp(enemy.y, 130, GAME_HEIGHT - 130);
+    } else {
+      enemy.x -= enemy.speed * dt;
+      enemy.y += Math.sin(game.time * enemy.sway + enemy.phase) * 42 * dt;
+      enemy.y = clamp(enemy.y, 72, GAME_HEIGHT - 72);
     }
 
-    if (enemy.x < -120) {
+    if (enemy.fireTimer <= 0 && enemy.x < GAME_WIDTH - 150) {
+      if (enemy.isBoss) {
+        fireEnemyBullet(enemy, -120);
+        fireEnemyBullet(enemy, 0);
+        fireEnemyBullet(enemy, 120);
+      } else {
+        fireEnemyBullet(enemy);
+      }
+      enemy.fireTimer = enemy.fireDelay;
+      createEffect('muzzle', enemy.x - 22, enemy.y, enemy.isBoss ? 0.28 : 0.18, enemy.isBoss ? 0.42 : 0.24);
+    }
+
+    if (!enemy.isBoss && enemy.x < -120) {
       game.enemies.splice(i, 1);
       damagePlayer(DAMAGE_PER_ESCAPED_ENEMY);
       continue;
@@ -1120,6 +1350,11 @@ function updateEnemies(dt) {
     const dx = enemy.x - game.player.x;
     const dy = enemy.y - game.player.y;
     if (Math.hypot(dx, dy) < enemy.radius + game.player.radius) {
+      if (enemy.isBoss) {
+        damagePlayer(BOSS_COLLISION_DAMAGE);
+        enemy.x = Math.min(GAME_WIDTH - 140, enemy.x + 32);
+        continue;
+      }
       game.enemies.splice(i, 1);
       createEffect('explosion', enemy.x, enemy.y, 0.48, enemy.scale + 0.12);
       damagePlayer(18);
@@ -1202,18 +1437,13 @@ function updateEffects(dt) {
 function update(dt) {
   if (game.mode !== 'playing') return;
   game.time += dt;
+  if (!game.bossSpawned && game.time >= OBJECTIVE_STAGE_TIMES[OBJECTIVE_STAGE_TIMES.length - 1]) spawnBoss();
+  updateObjectiveState();
   updatePlayer(dt);
   updateEnemies(dt);
   updateBullets(dt);
   updateEffects(dt);
   updateHud();
-
-  if (game.time >= SURVIVE_TIME && game.enemies.length <= MIN_ENEMIES_FOR_VICTORY) {
-    createEffect('explosion', GAME_WIDTH - 180, GAME_HEIGHT * 0.5, 0.7, 1.1);
-    game.score += VICTORY_BONUS_SCORE;
-    updateHud();
-    showEnd(true);
-  }
 }
 
 function drawParallaxLayer(image, offset, speed, opacity = 1) {
@@ -1367,7 +1597,7 @@ function draw(timestamp) {
     ctx.fillStyle = 'rgba(255,255,255,0.08)';
     ctx.font = READY_STATE_FONT;
     ctx.textAlign = 'center';
-    ctx.fillText('Press Launch Mission to start', GAME_WIDTH / 2, GAME_HEIGHT - READY_TEXT_BOTTOM_OFFSET);
+    ctx.fillText('Press Start Homework to begin the Exaplay 3 run', GAME_WIDTH / 2, GAME_HEIGHT - READY_TEXT_BOTTOM_OFFSET);
     ctx.restore();
   }
 }
@@ -1463,7 +1693,7 @@ loadAssets().catch((error) => {
   const title = document.createElement('h2');
   title.style.margin = '8px 0 0';
   title.style.fontSize = '2rem';
-  title.textContent = 'Sprite hangar offline';
+  title.textContent = 'Homework sim offline';
   const copy = document.createElement('p');
   copy.className = 'lead';
   copy.style.marginTop = '10px';

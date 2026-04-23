@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>EXAPLAY Homework Flight</title>
+<title>VIOSO × EXAPLAY Homework Flight</title>
 <style>
 :root {
-  --bg: #070d1f;
-  --panel: rgba(8, 14, 33, 0.86);
-  --panel-strong: rgba(9, 16, 39, 0.96);
-  --border: rgba(142, 205, 255, 0.22);
-  --text: #eef7ff;
-  --muted: #9cc4e7;
-  --accent: #5be4ff;
-  --accent-2: #9b6bff;
+  --bg: #0d0708;
+  --panel: rgba(20, 7, 10, 0.88);
+  --panel-strong: rgba(22, 7, 10, 0.97);
+  --border: rgba(232, 0, 61, 0.26);
+  --text: #fff5f5;
+  --muted: #c8959f;
+  --accent: #e8003d;
+  --accent-2: #ff5c28;
   --danger: #ff607d;
   --success: #73ffb8;
-  --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
   --radius: 24px;
 }
 * { box-sizing: border-box; }
@@ -24,8 +24,9 @@ html, body {
   margin: 0;
   min-height: 100%;
   background:
-    radial-gradient(circle at top, rgba(122, 66, 177, 0.45), transparent 34%),
-    linear-gradient(180deg, #261034 0%, #131c35 54%, #041a26 100%);
+    radial-gradient(circle at 20% 0%, rgba(232, 0, 61, 0.22), transparent 38%),
+    radial-gradient(circle at 80% 100%, rgba(180, 0, 40, 0.15), transparent 32%),
+    linear-gradient(180deg, #180608 0%, #0e0508 54%, #07030a 100%);
   color: var(--text);
   font-family: Inter, "Segoe UI", system-ui, sans-serif;
 }
@@ -50,9 +51,9 @@ button {
   max-height: calc(100vh - 16px);
   border-radius: 28px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: var(--shadow);
-  background: linear-gradient(180deg, rgba(18, 24, 52, 0.95), rgba(4, 13, 28, 0.98));
+  border: 1px solid rgba(232, 0, 61, 0.2);
+  box-shadow: var(--shadow), 0 0 60px rgba(232, 0, 61, 0.08);
+  background: linear-gradient(180deg, rgba(28, 7, 10, 0.96), rgba(8, 3, 5, 0.98));
 }
 #game-canvas {
   width: 100%;
@@ -72,6 +73,7 @@ button {
   pointer-events: auto;
   background: var(--panel);
   border: 1px solid var(--border);
+  border-top: 2px solid rgba(232, 0, 61, 0.35);
   border-radius: 20px;
   padding: 14px 16px;
   backdrop-filter: blur(12px);
@@ -85,6 +87,12 @@ button {
 .brand-lockup.compact {
   margin-bottom: 10px;
 }
+.vioso-logo-img {
+  filter: drop-shadow(0 2px 12px rgba(232, 0, 61, 0.28));
+}
+.vioso-logo-sm  { max-width: 120px; }
+.vioso-logo-md  { max-width: 160px; }
+.vioso-logo-lg  { max-width: 200px; }
 .brand-logo {
   display: block;
   width: min(100%, 320px);
@@ -96,9 +104,9 @@ button {
   gap: 8px;
   padding: 7px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--muted);
+  background: rgba(232, 0, 61, 0.09);
+  border: 1px solid rgba(232, 0, 61, 0.24);
+  color: #f0a0a8;
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -119,7 +127,7 @@ button {
 }
 #player-meta {
   margin: -6px 0 12px;
-  color: #d6edff;
+  color: #f0dde0;
   font-size: 0.88rem;
 }
 .health-row {
@@ -194,7 +202,7 @@ button {
   width: 0;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  box-shadow: 0 0 18px rgba(102, 215, 255, 0.4);
+  box-shadow: 0 0 18px rgba(232, 0, 61, 0.45);
 }
 #progress-copy {
   margin-top: 8px;
@@ -217,7 +225,7 @@ button {
   margin-top: 8px;
   font-size: 0.8rem;
   line-height: 1.5;
-  color: #d6edff;
+  color: #f0dde0;
 }
 #objective-list {
   margin-top: 12px;
@@ -234,8 +242,8 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 .objective-item.active {
-  border-color: rgba(102, 215, 255, 0.34);
-  box-shadow: inset 0 0 0 1px rgba(102, 215, 255, 0.16);
+  border-color: rgba(232, 0, 61, 0.38);
+  box-shadow: inset 0 0 0 1px rgba(232, 0, 61, 0.18);
 }
 .objective-item.done {
   background: rgba(115, 255, 184, 0.08);
@@ -254,8 +262,8 @@ button {
   background: rgba(255, 255, 255, 0.08);
 }
 .objective-item.active .objective-step {
-  color: #07192a;
-  background: linear-gradient(135deg, var(--accent), #a7f8ff);
+  color: #1a0008;
+  background: linear-gradient(135deg, var(--accent), #ff8060);
 }
 .objective-item.done .objective-step {
   color: #07271a;
@@ -309,9 +317,10 @@ button {
   width: min(100%, 960px);
   background: var(--panel-strong);
   border: 1px solid var(--border);
+  border-top: 2px solid rgba(232, 0, 61, 0.5);
   border-radius: var(--radius);
   padding: clamp(22px, 4vw, 34px);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), 0 0 40px rgba(232, 0, 61, 0.06);
 }
 .hero-panel {
   display: grid;
@@ -333,7 +342,7 @@ button {
 }
 .lead {
   margin: 0 0 18px;
-  color: #d4ebff;
+  color: #eedde0;
   line-height: 1.6;
   font-size: 1rem;
 }
@@ -357,7 +366,7 @@ button {
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  color: #dcefff;
+  color: #eedde0;
 }
 .mission-flow {
   display: grid;
@@ -417,10 +426,10 @@ button {
   font: inherit;
 }
 .field input::placeholder {
-  color: rgba(238, 247, 255, 0.42);
+  color: rgba(255, 235, 237, 0.42);
 }
 .field input:focus {
-  outline: 2px solid rgba(102, 215, 255, 0.28);
+  outline: 2px solid rgba(232, 0, 61, 0.32);
   outline-offset: 2px;
 }
 .profile-hint {
@@ -446,7 +455,7 @@ button {
 }
 .cta-primary {
   background: linear-gradient(135deg, #ff9d46, #ffd45d);
-  color: #1d223c;
+  color: #1d0a00;
   box-shadow: 0 10px 24px rgba(255, 180, 71, 0.28);
 }
 .cta-secondary {
@@ -459,8 +468,8 @@ button {
   min-height: 340px;
   border-radius: 24px;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 18%, rgba(255, 173, 63, 0.24), transparent 24%), rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: radial-gradient(circle at 50% 18%, rgba(232, 0, 61, 0.2), transparent 28%), rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(232, 0, 61, 0.18);
 }
 .hero-art img {
   position: absolute;
@@ -491,23 +500,39 @@ button {
   left: 48%;
   top: 42%;
 }
+#hero-vioso-logo {
+  width: min(54%, 220px);
+  left: 50%;
+  top: 10%;
+  transform: translateX(-50%);
+  opacity: 0.88;
+  filter: drop-shadow(0 4px 18px rgba(232, 0, 61, 0.35));
+}
 .hero-badge {
   position: absolute;
   left: 18%;
   bottom: 29%;
   padding: 8px 14px;
   border-radius: 999px;
-  background: rgba(8, 14, 33, 0.9);
-  border: 1px solid rgba(102, 215, 255, 0.32);
-  color: #f2fbff;
+  background: rgba(18, 4, 6, 0.9);
+  border: 1px solid rgba(232, 0, 61, 0.55);
+  color: #fff0f2;
   font-size: 0.8rem;
   font-weight: 900;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 0 18px rgba(232, 0, 61, 0.3), 0 10px 28px rgba(0, 0, 0, 0.28);
 }
 #start-overlay .pretitle {
-  color: #7ce7ff;
+  color: #ff6070;
+}
+#start-overlay .title {
+  background: linear-gradient(135deg, #ffffff 30%, #ff8898 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 6px 0 10px;
+  font-size: clamp(1.8rem, 3.1vw, 2.8rem);
 }
 #start-overlay {
   align-items: stretch;
@@ -522,23 +547,19 @@ button {
   padding: clamp(18px, 3vw, 24px);
 }
 #start-overlay .cta-primary {
-  background: linear-gradient(135deg, #4ce2ff, #8b63ff);
-  color: #051329;
-  box-shadow: 0 10px 24px rgba(91, 228, 255, 0.24);
+  background: linear-gradient(135deg, #e8003d, #ff5028);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(232, 0, 61, 0.38);
 }
 #start-overlay .flow-card,
 #start-overlay .feature-list li {
-  background: rgba(124, 231, 255, 0.08);
-  border-color: rgba(155, 107, 255, 0.25);
+  background: rgba(232, 0, 61, 0.07);
+  border-color: rgba(232, 0, 61, 0.22);
 }
 .kicker {
   margin-top: 12px;
   font-size: 0.78rem;
   color: var(--muted);
-}
-#start-overlay .title {
-  margin: 6px 0 10px;
-  font-size: clamp(1.8rem, 3.1vw, 2.8rem);
 }
 #start-overlay .lead {
   margin: 0 0 12px;
@@ -576,9 +597,9 @@ button {
   min-width: 150px;
   padding: 8px 20px;
   border-radius: 999px;
-  background: rgba(6, 14, 37, 0.9);
-  border: 1px solid rgba(135, 226, 255, 0.46);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  background: rgba(18, 4, 6, 0.92);
+  border: 1px solid rgba(232, 0, 61, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 16px rgba(232, 0, 61, 0.15);
   text-align: center;
   z-index: 4;
 }
@@ -587,7 +608,7 @@ button {
   font-size: 0.62rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #afe7ff;
+  color: #f09099;
 }
 #phase-timer-value {
   display: block;
@@ -717,9 +738,9 @@ button {
 .briefing-pill {
   padding: 10px 14px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #e5f5ff;
+  background: rgba(232, 0, 61, 0.06);
+  border: 1px solid rgba(232, 0, 61, 0.18);
+  color: #eedde0;
   font-size: 0.84rem;
 }
 .briefing-card-grid {
@@ -752,7 +773,7 @@ button {
   list-style: none;
   display: grid;
   gap: 10px;
-  color: #d8ecff;
+  color: #eedde0;
 }
 .briefing-list li {
   display: flex;
@@ -770,8 +791,8 @@ button {
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  background: rgba(102, 215, 255, 0.14);
-  color: #bdf4ff;
+  background: rgba(232, 0, 61, 0.14);
+  color: #ffb0b8;
   flex: none;
 }
 .briefing-list li + li {
@@ -810,6 +831,7 @@ button {
   width: 0;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px rgba(232, 0, 61, 0.4);
 }
 @media (hover: hover) and (pointer: fine) {
   .cta:hover,
@@ -894,10 +916,13 @@ button {
     <div id="hud">
       <div class="hud-card" id="hud-left">
         <div class="brand-lockup">
-          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+          <img class="brand-logo vioso-logo-img vioso-logo-sm" data-vioso-logo alt="VIOSO logo">
+        </div>
+        <div class="brand-lockup" style="margin-bottom:12px;">
+          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo" style="max-width:200px;">
         </div>
         <div class="hud-label">Homework</div>
-        <div id="mission-name">EXAPLAY Homework Flight</div>
+        <div id="mission-name">VIOSO Homework Flight</div>
         <div class="health-row">
           <div class="health-wrap">
             <img src="PNG/Hud/HPbar_Bg.png" alt="Health background">
@@ -951,6 +976,9 @@ button {
       <div class="panel hero-panel">
         <div>
           <div class="brand-lockup">
+            <img class="brand-logo vioso-logo-img vioso-logo-md" data-vioso-logo alt="VIOSO logo">
+          </div>
+          <div class="brand-lockup" style="margin-bottom:10px;">
             <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
           </div>
           <div class="pretitle">VIOSO × EXAPLAY mission sim</div>
@@ -989,6 +1017,7 @@ button {
           <img id="hero-ship" src="PNG/Main%20Planes/Plane03/Idle%20and%20Moving/skeleton-MovingNIdle_0.png" alt="Player ship">
           <img id="hero-enemy" src="PNG/Enemy/Char05/Moving/skeleton-Moving_0.png" alt="Enemy ship">
           <img id="hero-bolt" src="PNG/Projectile/14.png" alt="Projectile">
+          <img id="hero-vioso-logo" class="vioso-logo-img" data-vioso-logo alt="VIOSO logo">
           <div class="hero-badge">VIOSO</div>
         </div>
       </div>
@@ -999,7 +1028,7 @@ button {
         <div class="briefing-topline">
           <div>
             <div class="brand-lockup compact">
-              <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+              <img class="brand-logo vioso-logo-img vioso-logo-sm" data-vioso-logo alt="VIOSO logo">
             </div>
             <div class="pretitle" id="briefing-pretitle">Assignment briefing</div>
           </div>
@@ -1050,10 +1079,13 @@ button {
     <section class="overlay hidden" id="end-overlay">
       <div class="panel">
         <div class="brand-lockup">
-          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+          <img class="brand-logo vioso-logo-img vioso-logo-lg" data-vioso-logo alt="VIOSO logo">
+        </div>
+        <div class="brand-lockup" style="margin-bottom:12px;">
+          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo" style="max-width:200px;">
         </div>
         <div class="pretitle" id="end-pretitle">Certification unlocked</div>
-        <h2 class="title panel-title" id="end-title">You are a certified EXAPLAY user</h2>
+        <h2 class="title panel-title" id="end-title">You are a certified VIOSO operator</h2>
         <p class="lead" id="end-copy">You survived the warm-up, cleared every assignment flight, and beat the easy final boss review.</p>
         <div class="summary-grid">
           <div class="summary-box">
@@ -1078,9 +1110,10 @@ button {
 
     <section class="loading" id="loading-overlay">
       <div class="loading-card">
-        <div class="pretitle">Loading EXAPLAY sim</div>
+        <div style="margin-bottom:14px;"><img class="vioso-logo-img vioso-logo-md" data-vioso-logo alt="VIOSO logo"></div>
+        <div class="pretitle">Loading VIOSO × EXAPLAY sim</div>
         <h2 style="margin:8px 0 0; font-size:2rem;">Preparing the briefing deck</h2>
-        <p class="lead" style="margin-top:10px; margin-bottom:0;">Pulling the EXAPLAY logo, backgrounds, pilots, projectiles, HUD, and effects from the uploaded assets.</p>
+        <p class="lead" style="margin-top:10px; margin-bottom:0;">Pulling assets, backgrounds, pilots, projectiles, HUD, and effects.</p>
         <div class="loading-bar"><span id="loading-fill"></span></div>
       </div>
     </section>
@@ -1089,7 +1122,9 @@ button {
 <script>
 const GAME_WIDTH = 1280;
 const GAME_HEIGHT = 720;
-const GAME_TITLE = 'EXAPLAY Homework Flight';
+const GAME_TITLE = 'VIOSO Homework Flight';
+const VIOSO_LOGO_URL = 'https://helpdesk.vioso.com/wp-content/uploads/2022/02/VIOSO_Logo_22_720p.png';
+document.querySelectorAll('[data-vioso-logo]').forEach(el => { el.src = VIOSO_LOGO_URL; });
 const WARMUP_TIME = 20;
 const ASSIGNMENT_SIM_TIME = 30;
 const PLAYER_SHOTS_PER_BURST = 2;
@@ -2358,11 +2393,11 @@ function drawPlayer() {
   drawRoundedRect(-30, -11, 60, 22, 11);
   ctx.fillStyle = 'rgba(7, 12, 30, 0.92)';
   ctx.fill();
-  ctx.strokeStyle = 'rgba(102, 215, 255, 0.38)';
+  ctx.strokeStyle = 'rgba(232, 0, 61, 0.45)';
   ctx.lineWidth = 2;
   ctx.stroke();
   const badgeGradient = ctx.createLinearGradient(-30, 0, 30, 0);
-  badgeGradient.addColorStop(0, '#8ff4ff');
+  badgeGradient.addColorStop(0, '#ff8090');
   badgeGradient.addColorStop(1, '#ffd45d');
   ctx.fillStyle = badgeGradient;
   ctx.font = '900 11px Inter, "Segoe UI", sans-serif';
@@ -2382,7 +2417,7 @@ function drawPlayer() {
   drawRoundedRect(-14, -18, 30, 24, 7);
   ctx.fillStyle = 'rgba(7, 12, 30, 0.94)';
   ctx.fill();
-  ctx.strokeStyle = 'rgba(102, 215, 255, 0.34)';
+  ctx.strokeStyle = 'rgba(232, 0, 61, 0.38)';
   ctx.stroke();
   ctx.font = '16px "Apple Color Emoji", "Segoe UI Emoji", Inter, sans-serif';
   ctx.textAlign = 'center';

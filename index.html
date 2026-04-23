@@ -76,6 +76,30 @@ button {
   padding: 14px 16px;
   backdrop-filter: blur(12px);
 }
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.brand-logo {
+  display: block;
+  width: min(100%, 320px);
+  height: auto;
+}
+.brand-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 #hud-left {
   min-width: min(48vw, 360px);
 }
@@ -236,6 +260,10 @@ button {
   font-size: 0.75rem;
   line-height: 1.45;
   color: var(--muted);
+}
+.objective-meta {
+  margin-top: 6px;
+  color: #ffda8a;
 }
 .icon-button {
   width: 62px;
@@ -474,6 +502,36 @@ button {
   font-size: clamp(1.25rem, 2vw, 1.8rem);
   font-weight: 800;
 }
+.briefing-topline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+.briefing-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 0;
+}
+.briefing-pill {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e5f5ff;
+  font-size: 0.84rem;
+}
+.briefing-list {
+  margin: 22px 0 0;
+  padding-left: 20px;
+  color: #d8ecff;
+  line-height: 1.7;
+}
+.briefing-list li + li {
+  margin-top: 8px;
+}
 .loading {
   position: absolute;
   inset: 0;
@@ -580,8 +638,11 @@ button {
 
     <div id="hud">
       <div class="hud-card" id="hud-left">
+        <div class="brand-lockup">
+          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+        </div>
         <div class="hud-label">Homework</div>
-        <div id="mission-name">Exaplay 3 Homework Run</div>
+        <div id="mission-name">EXAPLAY Homework Flight</div>
         <div class="health-row">
           <div class="health-wrap">
             <img src="PNG/Hud/HPbar_Bg.png" alt="Health background">
@@ -599,12 +660,12 @@ button {
         <div class="hud-card" id="progress-panel">
           <div class="hud-label">Learning path</div>
           <div id="progress-track"><div id="progress-fill"></div></div>
-          <div id="progress-copy">Warm up the controls, then the Exaplay 3 objectives will unlock one by one.</div>
+          <div id="progress-copy">20-second warm-up first, then each EXAPLAY assignment gets a dedicated briefing and a 60-second flight sim.</div>
         </div>
         <div class="hud-card" id="objective-panel">
           <div class="hud-label">Homework board</div>
           <div id="objective-current">Warm-up flight</div>
-          <div id="objective-detail">Just fly for a moment and get comfortable before the real Exaplay 3 build tasks start dropping in.</div>
+          <div id="objective-detail">Warm up for 20 seconds, then the first EXAPLAY assignment briefing appears with the full task details.</div>
           <div id="objective-list"></div>
         </div>
         <button class="icon-button" id="pause-button" aria-label="Pause game">
@@ -630,25 +691,54 @@ button {
     <section class="overlay" id="start-overlay">
       <div class="panel hero-panel">
         <div>
-          <div class="pretitle">Gamified Exaplay 3 homework</div>
-          <h1 class="title">Exaplay 3<br>Homework Run</h1>
-          <p class="lead">A cool-looking training run for the tech team: authored by Etienne Servant, built as a playable briefing, and packed with the exact Exaplay 3 setup work the crew needs to learn.</p>
+          <div class="brand-lockup">
+            <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+          </div>
+          <div class="pretitle">Gamified EXAPLAY homework</div>
+          <h1 class="title">EXAPLAY<br>Homework Flight</h1>
+          <p class="lead">A branded training run for the tech team: warm up for 20 seconds, read each assignment in a focused briefing, then fly a 60-second combat sim before the next EXAPLAY task unlocks.</p>
           <ul class="feature-list">
-            <li>🛠️ Build the PROJECTION setup: dual FHD videoprojectors, background + PiP fields, 45° rotated PiP, timeline loops, VIOSO cue, keyer, music, and mask.</li>
-            <li>🖥️ Build the MONITOR setup: WUXGA output, flipped background, saturation correction, linked playlists, 8-second stills, and dome shader on PiP.</li>
-            <li>🎛️ Finish with controls, PJLink, TCP data, scheduler rules, autostart, and a final boss review before sign-off.</li>
+            <li>⏱️ Each real-world assignment is framed as a 5–10 minute EXAPLAY setup task, but the sim keeps each flight segment to 60 seconds.</li>
+            <li>🛠️ Full briefings cover PROJECTION, MONITOR, and CONTROL &amp; AUTOMATION before an easy final boss review.</li>
+            <li>🛡️ Training shield active: you can get hit, but the run keeps going until you earn your EXAPLAY certification.</li>
           </ul>
           <div class="button-row">
-            <button class="cta cta-primary" id="start-button">Start homework</button>
+            <button class="cta cta-primary" id="start-button">Launch warm-up</button>
             <button class="cta cta-secondary" id="demo-button">Autopilot flythrough</button>
           </div>
-          <div class="kicker">Authored by Etienne Servant • easy flight intro, staged objectives, and a boss at the end.</div>
+          <div class="kicker">Authored by Etienne Servant • EXAPLAY branding, staged briefings, easy boss, and a certification reward at the end.</div>
         </div>
         <div class="hero-art">
           <img id="hero-bg" src="PNG/Backgrounds/07/Layer1.png" alt="Nebula background">
           <img id="hero-ship" src="PNG/Main%20Planes/Plane03/Idle%20and%20Moving/skeleton-MovingNIdle_0.png" alt="Player ship">
           <img id="hero-enemy" src="PNG/Enemy/Char05/Moving/skeleton-Moving_0.png" alt="Enemy ship">
           <img id="hero-bolt" src="PNG/Projectile/14.png" alt="Projectile">
+        </div>
+      </div>
+    </section>
+
+    <section class="overlay hidden" id="briefing-overlay">
+      <div class="panel">
+        <div class="briefing-topline">
+          <div>
+            <div class="brand-lockup" style="margin-bottom:10px;">
+              <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+            </div>
+            <div class="pretitle" id="briefing-pretitle">Assignment briefing</div>
+          </div>
+          <div class="brand-chip" id="briefing-chip">Sim stage 1</div>
+        </div>
+        <h2 class="title" id="briefing-title" style="font-size:clamp(2rem,4vw,3.8rem); margin-bottom:10px;">Projection setup</h2>
+        <p class="lead" id="briefing-copy">Read the assignment, then press continue to launch the next 60-second EXAPLAY training flight.</p>
+        <div class="briefing-meta">
+          <div class="briefing-pill" id="briefing-estimate">Real task: 5–10 min</div>
+          <div class="briefing-pill" id="briefing-sim-time">Sim time: 60 sec flight</div>
+          <div class="briefing-pill" id="briefing-goal">Goal: Stay mobile and absorb the brief</div>
+        </div>
+        <ul class="briefing-list" id="briefing-list"></ul>
+        <div class="button-row" style="margin-top:24px;">
+          <button class="cta cta-primary" id="briefing-continue-button">Continue mission</button>
+          <button class="cta cta-secondary" id="briefing-back-button">Back to briefing</button>
         </div>
       </div>
     </section>
@@ -667,9 +757,12 @@ button {
 
     <section class="overlay hidden" id="end-overlay">
       <div class="panel">
-        <div class="pretitle" id="end-pretitle">Homework complete</div>
-        <h2 class="title" id="end-title" style="font-size:clamp(2rem,4vw,3.5rem); margin-bottom:10px;">Exaplay 3 signed off</h2>
-        <p class="lead" id="end-copy">You flew through every learning objective and cleared the final review.</p>
+        <div class="brand-lockup">
+          <img class="brand-logo" src="EXAPLAY-Logo.png" alt="EXAPLAY logo">
+        </div>
+        <div class="pretitle" id="end-pretitle">Certification unlocked</div>
+        <h2 class="title" id="end-title" style="font-size:clamp(2rem,4vw,3.5rem); margin-bottom:10px;">You are a certified EXAPLAY user</h2>
+        <p class="lead" id="end-copy">You survived the warm-up, cleared every assignment flight, and beat the easy final boss review.</p>
         <div class="summary-grid">
           <div class="summary-box">
             <div class="summary-label">Final XP</div>
@@ -693,9 +786,9 @@ button {
 
     <section class="loading" id="loading-overlay">
       <div class="loading-card">
-        <div class="pretitle">Loading homework sim</div>
+        <div class="pretitle">Loading EXAPLAY sim</div>
         <h2 style="margin:8px 0 0; font-size:2rem;">Preparing the briefing deck</h2>
-        <p class="lead" style="margin-top:10px; margin-bottom:0;">Pulling backgrounds, pilots, projectiles, HUD, and effects from the uploaded PNG folder.</p>
+        <p class="lead" style="margin-top:10px; margin-bottom:0;">Pulling the EXAPLAY logo, backgrounds, pilots, projectiles, HUD, and effects from the uploaded assets.</p>
         <div class="loading-bar"><span id="loading-fill"></span></div>
       </div>
     </section>
@@ -704,16 +797,12 @@ button {
 <script>
 const GAME_WIDTH = 1280;
 const GAME_HEIGHT = 720;
-const GAME_TITLE = 'Exaplay 3 Homework Run';
-const SURVIVE_TIME = 78;
-const WARMUP_TIME = 10;
-const PROJECTION_UNLOCK_TIME = 28;
-const MONITOR_UNLOCK_TIME = 46;
-const BOSS_UNLOCK_TIME = 62;
-const OBJECTIVE_STAGE_TIMES = [0, WARMUP_TIME, PROJECTION_UNLOCK_TIME, MONITOR_UNLOCK_TIME, BOSS_UNLOCK_TIME];
+const GAME_TITLE = 'EXAPLAY Homework Flight';
+const WARMUP_TIME = 20;
+const ASSIGNMENT_SIM_TIME = 60;
 const PLAYER_SHOTS_PER_BURST = 2;
 const PLAYER_BULLET_DAMAGE = 14;
-const BOSS_BURSTS_TO_DEFEAT = 15;
+const BOSS_BURSTS_TO_DEFEAT = 6;
 const BOSS_MAX_HP = PLAYER_SHOTS_PER_BURST * PLAYER_BULLET_DAMAGE * BOSS_BURSTS_TO_DEFEAT;
 const BOSS_APPROACH_X = GAME_WIDTH - 220;
 const BOSS_APPROACH_LERP = 1.6;
@@ -734,35 +823,71 @@ const READY_TEXT_BOTTOM_OFFSET = 52;
 const OBJECTIVES = [
   {
     title: 'Warm-up flight',
-    short: 'Just fly and get comfortable before the real assignment unlocks.',
-    detail: 'Easy intro. Get a feel for the ship, then the Exaplay 3 homework starts.',
+    short: '20-second controls check before the first EXAPLAY assignment briefing appears.',
+    detail: 'Take a 20-second warm-up lap, settle into the controls, and get ready for the first detailed EXAPLAY assignment.',
+    estimate: 'Warm-up • 20 sec',
+    goal: 'Stay loose and get comfortable with the ship.',
+    bullets: [
+      'Move, shoot, and get used to the ship response.',
+      'No assignment pressure yet — this is only a warm-up.',
+      'At the end of the countdown, the first full assignment briefing opens.'
+    ],
     badge: 'Warm-up'
   },
   {
     title: 'Projection setup',
-    short: '2x FHD projectors, background + PiP, 45° PiP, looped timeline, VIOSO cue, keyer, music, mask.',
+    short: 'Projection assignment • real task 5–10 min • sim flight 60 sec.',
     detail: 'Create PROJECTION with 2 videoprojectors in FHD, 2 fields (background and PiP), cover/fit behavior, 45° PiP rotation, 3 looping background videos, 3 looping PiP stills, plus the asynchronous VIOSO/keyer/music cue.',
+    estimate: 'Real task • 5–10 min',
+    goal: 'Absorb the brief, then hold the lane for 60 seconds.',
+    bullets: [
+      'Build PROJECTION with dual FHD videoprojectors.',
+      'Use a background field plus a PiP field with 45° PiP rotation.',
+      'Set looping media, VIOSO cueing, keyer, music, and mask behavior.'
+    ],
     badge: 'Projection'
   },
   {
     title: 'Monitor playlists',
-    short: 'WUXGA monitor, flipped background, saturation correction, linked playlists, 8s stills, dome shader.',
+    short: 'Monitor assignment • real task 5–10 min • sim flight 60 sec.',
     detail: 'Build MONITOR in WUXGA with background flipped horizontally, a background playlist of 2 videos with more saturation, and a PiP playlist with 2 videos + 2 stills of 8 seconds, all with a dome shader on PiP.',
+    estimate: 'Real task • 5–10 min',
+    goal: 'Keep flying while the monitor playlist brief sinks in.',
+    bullets: [
+      'Build MONITOR in WUXGA with a flipped background field.',
+      'Boost saturation on the background playlist.',
+      'Prepare linked PiP media with 8-second stills and a dome shader.'
+    ],
     badge: 'Monitor'
   },
   {
     title: 'Control & automation',
-    short: 'Client panel, cue control, saturation/audio sliders, PJLink, TCP data track, scheduler, autostart.',
+    short: 'Automation assignment • real task 5–10 min • sim flight 60 sec.',
     detail: 'Link the PiP playlist as client/follow. Add the user panel controls for cues, saturation, music, and PJLink ON/OFF. Send TCP data 0→42 to the example lab target 192.168.1.54:8567 supplied in the brief, then finish the scheduler jobs, autostart, and 04:00 restart.',
+    estimate: 'Real task • 5–10 min',
+    goal: 'Stay alive for one last timed assignment segment.',
+    bullets: [
+      'Wire cue control, sliders, PJLink, and TCP data output.',
+      'Finish scheduler jobs, autostart, and the 04:00 restart routine.',
+      'Treat this as the last 60-second sim before the boss review.'
+    ],
     badge: 'Control'
   },
   {
     title: 'Boss review',
-    short: 'Final review battle: clear the lead reviewer and prove the homework is production-ready.',
-    detail: 'The boss represents the final review. Beat it to show the whole Exaplay 3 homework is complete and ready for sign-off.',
+    short: 'Easy boss review • finish the run and claim certification.',
+    detail: 'The boss represents the final review. It is intentionally easy — beat it to prove the EXAPLAY homework is complete and ready for sign-off.',
+    estimate: 'Final check • easy boss',
+    goal: 'Finish the review and unlock certification.',
+    bullets: [
+      'The reviewer is softer than the training waves.',
+      'Keep firing and stay mobile until the boss breaks.',
+      'Victory unlocks the “certified EXAPLAY user” reward.'
+    ],
     badge: 'Boss'
   }
 ];
+const REGULAR_ASSIGNMENT_COUNT = OBJECTIVES.length - 2;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const lerp = (a, b, t) => a + (b - a) * t;
 const rand = (min, max) => Math.random() * (max - min) + min;
@@ -773,11 +898,14 @@ const ctx = canvas.getContext('2d');
 const loadingOverlay = document.getElementById('loading-overlay');
 const loadingFill = document.getElementById('loading-fill');
 const startOverlay = document.getElementById('start-overlay');
+const briefingOverlay = document.getElementById('briefing-overlay');
 const pauseOverlay = document.getElementById('pause-overlay');
 const endOverlay = document.getElementById('end-overlay');
 const pauseButton = document.getElementById('pause-button');
 const startButton = document.getElementById('start-button');
 const demoButton = document.getElementById('demo-button');
+const briefingContinueButton = document.getElementById('briefing-continue-button');
+const briefingBackButton = document.getElementById('briefing-back-button');
 const resumeButton = document.getElementById('resume-button');
 const restartButton = document.getElementById('restart-button');
 const pauseRestartButton = document.getElementById('pause-restart-button');
@@ -794,6 +922,14 @@ const progressCopy = document.getElementById('progress-copy');
 const objectiveCurrent = document.getElementById('objective-current');
 const objectiveDetail = document.getElementById('objective-detail');
 const objectiveList = document.getElementById('objective-list');
+const briefingPretitle = document.getElementById('briefing-pretitle');
+const briefingChip = document.getElementById('briefing-chip');
+const briefingTitle = document.getElementById('briefing-title');
+const briefingCopy = document.getElementById('briefing-copy');
+const briefingEstimate = document.getElementById('briefing-estimate');
+const briefingSimTime = document.getElementById('briefing-sim-time');
+const briefingGoal = document.getElementById('briefing-goal');
+const briefingList = document.getElementById('briefing-list');
 const endPretitle = document.getElementById('end-pretitle');
 const endTitle = document.getElementById('end-title');
 const endCopy = document.getElementById('end-copy');
@@ -820,10 +956,13 @@ const input = {
 const game = {
   mode: 'loading',
   time: 0,
+  phase: 'warmup',
+  phaseTime: 0,
   score: 0,
   combo: 1,
   comboTimer: 0,
   clearedThreats: 0,
+  completedObjectives: 0,
   spawnTimer: 0,
   meteorTimer: 0,
   flash: 0,
@@ -838,7 +977,9 @@ const game = {
   autopilotTimer: 0,
   objectiveIndex: 0,
   bossSpawned: false,
-  bossDefeated: false
+  bossDefeated: false,
+  pendingObjectiveIndex: 1,
+  shieldToastCooldown: 0
 };
 
 const assetPaths = {
@@ -923,10 +1064,13 @@ function createPlayer() {
 function resetGame() {
   game.mode = 'ready';
   game.time = 0;
+  game.phase = 'warmup';
+  game.phaseTime = 0;
   game.score = 0;
   game.combo = 1;
   game.comboTimer = 0;
   game.clearedThreats = 0;
+  game.completedObjectives = 0;
   game.spawnTimer = 0.55;
   game.meteorTimer = 1.8;
   game.flash = 0;
@@ -941,8 +1085,11 @@ function resetGame() {
   game.objectiveIndex = 0;
   game.bossSpawned = false;
   game.bossDefeated = false;
+  game.pendingObjectiveIndex = 1;
+  game.shieldToastCooldown = 0;
   input.fire = false;
   input.touchActive = false;
+  briefingOverlay.classList.add('hidden');
   renderObjectiveBoard();
   updateHud();
 }
@@ -959,16 +1106,18 @@ function startRun({ autopilot = false } = {}) {
   input.autopilot = autopilot;
   game.mode = 'playing';
   startOverlay.classList.add('hidden');
+  briefingOverlay.classList.add('hidden');
   pauseOverlay.classList.add('hidden');
   endOverlay.classList.add('hidden');
   missionName.textContent = autopilot ? `${GAME_TITLE} • Autopilot flythrough` : GAME_TITLE;
-  showToast(autopilot ? 'Autopilot flythrough engaged.' : 'Warm-up flight started. Homework objectives incoming.');
+  showToast(autopilot ? 'Autopilot flythrough engaged.' : '20-second warm-up started. First assignment briefing incoming.');
 }
 
 function backToTitle() {
   game.mode = 'ready';
   input.autopilot = false;
   startOverlay.classList.remove('hidden');
+  briefingOverlay.classList.add('hidden');
   pauseOverlay.classList.add('hidden');
   endOverlay.classList.add('hidden');
   missionName.textContent = GAME_TITLE;
@@ -985,29 +1134,30 @@ function togglePause(force) {
 
 function showEnd(victory) {
   game.mode = victory ? 'victory' : 'gameover';
+  briefingOverlay.classList.add('hidden');
   endOverlay.classList.remove('hidden');
   pauseOverlay.classList.add('hidden');
-  endPretitle.textContent = victory ? 'Homework complete' : 'Homework failed';
-  endTitle.textContent = victory ? 'Exaplay 3 signed off' : 'Review run failed';
+  endPretitle.textContent = victory ? 'Certification unlocked' : 'Review stalled';
+  endTitle.textContent = victory ? 'You are a certified EXAPLAY user' : 'Review run paused';
   endCopy.textContent = victory
-    ? 'You cleared every Exaplay 3 objective, beat the final review, and turned the homework into a win.'
-    : 'The reviewers pushed back this time, but the briefing is ready for another run.';
+    ? 'You cleared every EXAPLAY objective, beat the easy boss review, and earned the final reward.'
+    : 'The run can restart at any time, but the training shield normally keeps you in the fight.';
   finalScore.textContent = `${game.score}`;
   finalTasks.textContent = `${getCompletedObjectiveCount()}/${OBJECTIVES.length}`;
   finalTime.textContent = `${Math.round(game.time)}s`;
-  showToast(victory ? 'Homework delivered.' : 'Run failed. Reset and try again.');
+  showToast(victory ? 'Certification earned.' : 'Run paused. Reset and try again.');
 }
 
 function spawnEnemy() {
-  if (game.time < WARMUP_TIME || game.bossSpawned) return;
-  const tension = game.time / SURVIVE_TIME;
+  if (game.phase !== 'mission' || game.bossSpawned) return;
+  const stageProgress = clamp(game.phaseTime / ASSIGNMENT_SIM_TIME, 0, 1);
   const laneY = rand(94, GAME_HEIGHT - 110);
   const roll = Math.random();
   let type;
   if (roll < 0.45) {
     type = {
       frames: assets.enemyScout,
-      speed: rand(220, 280) + tension * 40,
+      speed: rand(220, 280) + stageProgress * 40,
       hp: 24,
       radius: 28,
       fireDelay: rand(1.8, 3.3),
@@ -1018,7 +1168,7 @@ function spawnEnemy() {
   } else if (roll < 0.82) {
     type = {
       frames: assets.enemyRaider,
-      speed: rand(180, 235) + tension * 35,
+      speed: rand(180, 235) + stageProgress * 35,
       hp: 38,
       radius: 34,
       fireDelay: rand(1.25, 2.5),
@@ -1029,7 +1179,7 @@ function spawnEnemy() {
   } else {
     type = {
       frames: assets.enemyAce,
-      speed: rand(170, 210) + tension * 22,
+      speed: rand(170, 210) + stageProgress * 22,
       hp: 58,
       radius: 40,
       fireDelay: rand(0.9, 1.8),
@@ -1105,17 +1255,8 @@ function getBoss() {
   return game.enemies.find((enemy) => enemy.isBoss) || null;
 }
 
-function getStageIndex() {
-  if (game.bossSpawned) return OBJECTIVES.length - 1;
-  for (let i = OBJECTIVE_STAGE_TIMES.length - 1; i >= 0; i--) {
-    if (game.time >= OBJECTIVE_STAGE_TIMES[i]) return i;
-  }
-  return 0;
-}
-
 function getCompletedObjectiveCount() {
-  if (game.bossDefeated) return OBJECTIVES.length;
-  return Math.max(0, Math.min(game.objectiveIndex, OBJECTIVES.length));
+  return game.bossDefeated ? OBJECTIVES.length : Math.max(0, Math.min(game.completedObjectives, OBJECTIVES.length));
 }
 
 function getProgressRatio() {
@@ -1125,11 +1266,72 @@ function getProgressRatio() {
     const bossProgress = 1 - boss.hp / boss.maxHp;
     return 0.82 + bossProgress * 0.18;
   }
-  return clamp(game.time / OBJECTIVE_STAGE_TIMES[OBJECTIVE_STAGE_TIMES.length - 1], 0, 1) * 0.82;
+  if (game.phase === 'warmup') {
+    return clamp(game.phaseTime / WARMUP_TIME, 0, 1) * 0.18;
+  }
+  const completedAssignments = Math.max(0, game.completedObjectives - 1);
+  const base = 0.18 + (completedAssignments / Math.max(1, REGULAR_ASSIGNMENT_COUNT)) * 0.64;
+  const stageProgress = game.phase === 'mission' ? clamp(game.phaseTime / ASSIGNMENT_SIM_TIME, 0, 1) : 0;
+  return clamp(base + stageProgress * (0.64 / Math.max(1, REGULAR_ASSIGNMENT_COUNT)), 0, 0.82);
 }
 
 function shouldSpawnEnemy() {
-  return game.spawnTimer <= 0 && game.mode === 'playing' && game.time >= WARMUP_TIME && !game.bossSpawned;
+  return game.spawnTimer <= 0 && game.mode === 'playing' && game.phase === 'mission' && !game.bossSpawned;
+}
+
+function refillPlayerShield() {
+  if (!game.player) return;
+  game.player.hp = MAX_PLAYER_HP;
+  game.player.hitCooldown = 0;
+}
+
+function showBriefing(index) {
+  const objective = OBJECTIVES[index];
+  if (!objective) return;
+  game.mode = 'briefing';
+  game.phase = 'briefing';
+  game.phaseTime = 0;
+  game.objectiveIndex = index;
+  game.pendingObjectiveIndex = index;
+  input.fire = false;
+  pauseOverlay.classList.add('hidden');
+  briefingPretitle.textContent = index === OBJECTIVES.length - 1 ? 'Final boss briefing' : 'Assignment briefing';
+  briefingChip.textContent = index === OBJECTIVES.length - 1 ? 'Easy boss' : `Sim stage ${index}`;
+  briefingTitle.textContent = objective.title;
+  briefingCopy.textContent = objective.detail;
+  briefingEstimate.textContent = objective.estimate;
+  briefingSimTime.textContent = index === OBJECTIVES.length - 1 ? 'Sim time: until boss breaks' : `Sim time: ${ASSIGNMENT_SIM_TIME} sec flight`;
+  briefingGoal.textContent = `Goal: ${objective.goal}`;
+  briefingList.innerHTML = objective.bullets.map((item) => `<li>${item}</li>`).join('');
+  briefingOverlay.classList.remove('hidden');
+  updateHud();
+}
+
+function beginObjective(index) {
+  const objective = OBJECTIVES[index];
+  if (!objective) return;
+  briefingOverlay.classList.add('hidden');
+  game.mode = 'playing';
+  game.phaseTime = 0;
+  game.objectiveIndex = index;
+  refillPlayerShield();
+  if (index === OBJECTIVES.length - 1) {
+    game.phase = 'boss';
+    spawnBoss();
+    showToast('Easy boss review launched. Finish the EXAPLAY run.');
+    return;
+  }
+  game.phase = index === 0 ? 'warmup' : 'mission';
+  showToast(index === 0 ? 'Warm-up flight started.' : `${objective.title} started. 60-second training window active.`);
+}
+
+function completeCurrentStage() {
+  game.completedObjectives = Math.max(game.completedObjectives, game.objectiveIndex + 1);
+  if (game.completedObjectives >= OBJECTIVES.length - 1) {
+    showBriefing(OBJECTIVES.length - 1);
+    return;
+  }
+  showBriefing(game.completedObjectives);
 }
 
 function renderObjectiveBoard() {
@@ -1140,21 +1342,12 @@ function renderObjectiveBoard() {
     ? `${current.detail} — Boss integrity ${Math.round((boss.hp / boss.maxHp) * 100)}%.`
     : current.detail;
   objectiveList.innerHTML = OBJECTIVES.map((objective, index) => {
-    const done = game.bossDefeated || index < game.objectiveIndex;
+    const done = game.bossDefeated || index < game.completedObjectives;
     const active = !done && index === game.objectiveIndex;
     const state = done ? 'done' : active ? 'active' : '';
     const marker = done ? '✓' : index + 1;
-    return `<div class="objective-item ${state}"><div class="objective-step">${marker}</div><div class="objective-copy"><strong>${objective.title}</strong><span>${objective.short}</span></div></div>`;
+    return `<div class="objective-item ${state}"><div class="objective-step">${marker}</div><div class="objective-copy"><strong>${objective.title}</strong><span>${objective.short}</span><span class="objective-meta">${objective.estimate}</span></div></div>`;
   }).join('');
-}
-
-function updateObjectiveState() {
-  const nextIndex = getStageIndex();
-  if (nextIndex !== game.objectiveIndex) {
-    game.objectiveIndex = nextIndex;
-    renderObjectiveBoard();
-    if (nextIndex > 0) showToast(`Objective unlocked: ${OBJECTIVES[nextIndex].title}`);
-  }
 }
 
 function spawnBoss() {
@@ -1176,10 +1369,8 @@ function spawnBoss() {
     score: 1200,
     scale: 1.18,
     sway: 1.1,
-    isBoss: true
+     isBoss: true
   });
-  updateObjectiveState();
-  showToast('Boss review incoming. Prove the homework is ready.');
 }
 
 function createSparkBurst(x, y, count = 8, color = '#ffd77f') {
@@ -1208,13 +1399,17 @@ function damagePlayer(amount) {
   game.comboTimer = 0;
   createEffect('sparkle', player.x + 30, player.y, 0.34, 0.42);
   createSparkBurst(player.x + 18, player.y, 10, '#ff7e87');
-  updateHud();
+  game.shieldToastCooldown = Math.max(0, game.shieldToastCooldown - 0);
   if (player.hp <= 0) {
-    createEffect('explosion', player.x + 18, player.y, 0.58, 0.75);
-    showEnd(false);
+    player.hp = Math.max(14, MAX_PLAYER_HP * 0.28);
+    if (game.shieldToastCooldown <= 0) {
+      showToast('Training shield active. You cannot really die in this run.');
+      game.shieldToastCooldown = 2.2;
+    }
   } else {
-    showToast('Hit taken. Keep the homework run alive.');
+    showToast('Hit taken. Training shield still active.');
   }
+  updateHud();
 }
 
 function destroyEnemy(enemyIndex) {
@@ -1229,6 +1424,7 @@ function destroyEnemy(enemyIndex) {
   game.enemies.splice(enemyIndex, 1);
   if (enemy.isBoss) {
     game.bossDefeated = true;
+    game.completedObjectives = OBJECTIVES.length;
     game.score += VICTORY_BONUS_SCORE;
     updateHud();
     showEnd(true);
@@ -1244,12 +1440,20 @@ function updateHud() {
   healthText.style.color = hpPercent > 0.55 ? '#ffef9a' : hpPercent > 0.25 ? '#ffd27c' : '#ff8d98';
   scoreValue.textContent = game.score;
   comboValue.textContent = `${getCompletedObjectiveCount()}/${OBJECTIVES.length}`;
-  threatValue.textContent = OBJECTIVES[game.objectiveIndex].badge;
+  threatValue.textContent = game.phase === 'briefing' ? 'Briefing' : OBJECTIVES[game.objectiveIndex].badge;
   const progress = getProgressRatio();
   progressFill.style.width = `${progress * 100}%`;
-  progressCopy.textContent = game.bossDefeated
-    ? 'All objectives cleared. Homework accepted.'
-    : OBJECTIVES[game.objectiveIndex].short;
+  if (game.bossDefeated) {
+    progressCopy.textContent = 'All objectives cleared. Certification granted.';
+  } else if (game.phase === 'warmup') {
+    progressCopy.textContent = `Warm-up flight • ${Math.max(0, Math.ceil(WARMUP_TIME - game.phaseTime))}s until the first assignment briefing.`;
+  } else if (game.phase === 'briefing') {
+    progressCopy.textContent = `Briefing open • ${OBJECTIVES[game.objectiveIndex].estimate} • continue when ready.`;
+  } else if (game.phase === 'mission') {
+    progressCopy.textContent = `${OBJECTIVES[game.objectiveIndex].title} • ${Math.max(0, Math.ceil(ASSIGNMENT_SIM_TIME - game.phaseTime))}s left in this sim stage.`;
+  } else {
+    progressCopy.textContent = 'Easy boss review live. Finish the run to unlock certification.';
+  }
   renderObjectiveBoard();
 }
 
@@ -1431,14 +1635,23 @@ function updateEffects(dt) {
   game.flash = Math.max(0, game.flash - dt);
   game.cameraShake = Math.max(0, game.cameraShake - dt * 18);
   game.comboTimer = Math.max(0, game.comboTimer - dt);
+  game.shieldToastCooldown = Math.max(0, game.shieldToastCooldown - dt);
   if (game.comboTimer <= 0) game.combo = lerp(game.combo, 1, dt * 3.5);
 }
 
 function update(dt) {
   if (game.mode !== 'playing') return;
   game.time += dt;
-  if (!game.bossSpawned && game.time >= OBJECTIVE_STAGE_TIMES[OBJECTIVE_STAGE_TIMES.length - 1]) spawnBoss();
-  updateObjectiveState();
+  game.phaseTime += dt;
+  if (game.phase === 'warmup' && game.phaseTime >= WARMUP_TIME) {
+    game.completedObjectives = 1;
+    showBriefing(1);
+    return;
+  }
+  if (game.phase === 'mission' && game.phaseTime >= ASSIGNMENT_SIM_TIME) {
+    completeCurrentStage();
+    return;
+  }
   updatePlayer(dt);
   updateEnemies(dt);
   updateBullets(dt);
@@ -1597,7 +1810,7 @@ function draw(timestamp) {
     ctx.fillStyle = 'rgba(255,255,255,0.08)';
     ctx.font = READY_STATE_FONT;
     ctx.textAlign = 'center';
-    ctx.fillText('Press Start Homework to begin the Exaplay 3 run', GAME_WIDTH / 2, GAME_HEIGHT - READY_TEXT_BOTTOM_OFFSET);
+    ctx.fillText('Press Launch warm-up to begin the EXAPLAY run', GAME_WIDTH / 2, GAME_HEIGHT - READY_TEXT_BOTTOM_OFFSET);
     ctx.restore();
   }
 }
@@ -1679,6 +1892,8 @@ shootButton.addEventListener('pointercancel', () => { if (!input.autopilot) inpu
 pauseButton.addEventListener('click', () => togglePause());
 startButton.addEventListener('click', () => startRun({ autopilot: false }));
 demoButton.addEventListener('click', () => startRun({ autopilot: true }));
+briefingContinueButton.addEventListener('click', () => beginObjective(game.pendingObjectiveIndex));
+briefingBackButton.addEventListener('click', backToTitle);
 resumeButton.addEventListener('click', () => togglePause(false));
 restartButton.addEventListener('click', () => startRun({ autopilot: false }));
 pauseRestartButton.addEventListener('click', () => startRun({ autopilot: false }));
@@ -1693,7 +1908,7 @@ loadAssets().catch((error) => {
   const title = document.createElement('h2');
   title.style.margin = '8px 0 0';
   title.style.fontSize = '2rem';
-  title.textContent = 'Homework sim offline';
+  title.textContent = 'EXAPLAY sim offline';
   const copy = document.createElement('p');
   copy.className = 'lead';
   copy.style.marginTop = '10px';

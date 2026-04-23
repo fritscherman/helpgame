@@ -629,10 +629,12 @@ const GAME_HEIGHT = 720;
 const SURVIVE_TIME = 75;
 const MAX_PLAYER_HP = 100;
 const STAR_COUNT = 64;
-const FIXED_TIMESTEP = 1 / 60;
+const FIXED_TIMESTEP_SECONDS = 1 / 60;
 const MAX_FRAME_DELTA = 1 / 20;
-const ENEMY_ESCAPE_DAMAGE = 8;
-const READY_TEXT_FONT = '700 20px Inter, Segoe UI, sans-serif';
+const PLAYER_DAMAGE_ON_ENEMY_ESCAPE = 8;
+const MIN_ENEMIES_FOR_VICTORY = 2;
+const READY_STATE_FONT = '700 20px Inter, Segoe UI, sans-serif';
+const READY_TEXT_BOTTOM_OFFSET = 52;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const lerp = (a, b, t) => a + (b - a) * t;
 const rand = (min, max) => Math.random() * (max - min) + min;
@@ -1098,7 +1100,7 @@ function updateEnemies(dt) {
 
     if (enemy.x < -120) {
       game.enemies.splice(i, 1);
-      damagePlayer(ENEMY_ESCAPE_DAMAGE);
+      damagePlayer(PLAYER_DAMAGE_ON_ENEMY_ESCAPE);
       continue;
     }
 
@@ -1193,7 +1195,7 @@ function update(dt) {
   updateEffects(dt);
   updateHud();
 
-  if (game.time >= SURVIVE_TIME && game.enemies.length <= 2) {
+  if (game.time >= SURVIVE_TIME && game.enemies.length <= MIN_ENEMIES_FOR_VICTORY) {
     createEffect('explosion', GAME_WIDTH - 180, GAME_HEIGHT * 0.5, 0.7, 1.1);
     game.score += 250;
     updateHud();
@@ -1350,9 +1352,9 @@ function draw(timestamp) {
   if (game.mode === 'ready') {
     ctx.save();
     ctx.fillStyle = 'rgba(255,255,255,0.08)';
-    ctx.font = READY_TEXT_FONT;
+    ctx.font = READY_STATE_FONT;
     ctx.textAlign = 'center';
-    ctx.fillText('Press Launch Mission to start', GAME_WIDTH / 2, GAME_HEIGHT - 52);
+    ctx.fillText('Press Launch Mission to start', GAME_WIDTH / 2, GAME_HEIGHT - READY_TEXT_BOTTOM_OFFSET);
     ctx.restore();
   }
 }
@@ -1363,9 +1365,9 @@ function loop(now) {
   const dt = Math.min((now - previous) / 1000, MAX_FRAME_DELTA);
   previous = now;
   accumulator += dt;
-  while (accumulator >= FIXED_TIMESTEP) {
-    update(FIXED_TIMESTEP);
-    accumulator -= FIXED_TIMESTEP;
+  while (accumulator >= FIXED_TIMESTEP_SECONDS) {
+    update(FIXED_TIMESTEP_SECONDS);
+    accumulator -= FIXED_TIMESTEP_SECONDS;
   }
   draw(now);
   requestAnimationFrame(loop);

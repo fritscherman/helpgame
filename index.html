@@ -634,7 +634,7 @@ button {
           <h1 class="title">Exaplay 3<br>Homework Run</h1>
           <p class="lead">A cool-looking training run for the tech team: authored by Etienne Servant, built as a playable briefing, and packed with the exact Exaplay 3 setup work the crew needs to learn.</p>
           <ul class="feature-list">
-            <li>🛠️ Build the PROJECTION setup: dual FHD videoprojectors, background + PiP fields, rotated PiP, timeline loops, VIOSO cue, keyer, music, and mask.</li>
+            <li>🛠️ Build the PROJECTION setup: dual FHD videoprojectors, background + PiP fields, 45° rotated PiP, timeline loops, VIOSO cue, keyer, music, and mask.</li>
             <li>🖥️ Build the MONITOR setup: WUXGA output, flipped background, saturation correction, linked playlists, 8-second stills, and dome shader on PiP.</li>
             <li>🎛️ Finish with controls, PJLink, TCP data, scheduler rules, autostart, and a final boss review before sign-off.</li>
           </ul>
@@ -677,7 +677,7 @@ button {
           </div>
           <div class="summary-box">
             <div class="summary-label">Tasks cleared</div>
-            <div class="summary-value" id="final-kills">0</div>
+            <div class="summary-value" id="final-tasks">0</div>
           </div>
           <div class="summary-box">
             <div class="summary-label">Flight time</div>
@@ -753,7 +753,7 @@ const OBJECTIVES = [
   {
     title: 'Control & automation',
     short: 'Client panel, cue control, saturation/audio sliders, PJLink, TCP data track, scheduler, autostart.',
-    detail: 'Link the PiP playlist as client/follow, add the user panel controls for cues, saturation, music, PJLink ON/OFF, TCP data 0→42 to the lab target 192.168.1.54:8567 supplied in the brief, scheduler jobs, autostart on the async cue, and 04:00 restart.',
+    detail: 'Link the PiP playlist as client/follow. Add the user panel controls for cues, saturation, music, and PJLink ON/OFF. Send TCP data 0→42 to the lab target 192.168.1.54:8567 supplied in the brief, then finish the scheduler jobs, autostart, and 04:00 restart.',
     badge: 'Control'
   },
   {
@@ -798,7 +798,7 @@ const endPretitle = document.getElementById('end-pretitle');
 const endTitle = document.getElementById('end-title');
 const endCopy = document.getElementById('end-copy');
 const finalScore = document.getElementById('final-score');
-const finalKills = document.getElementById('final-kills');
+const finalTasks = document.getElementById('final-tasks');
 const finalTime = document.getElementById('final-time');
 const joystick = document.getElementById('joystick');
 const joystickKnob = document.getElementById('joystick-knob');
@@ -823,7 +823,7 @@ const game = {
   score: 0,
   combo: 1,
   comboTimer: 0,
-  kills: 0,
+  clearedThreats: 0,
   spawnTimer: 0,
   meteorTimer: 0,
   flash: 0,
@@ -926,7 +926,7 @@ function resetGame() {
   game.score = 0;
   game.combo = 1;
   game.comboTimer = 0;
-  game.kills = 0;
+  game.clearedThreats = 0;
   game.spawnTimer = 0.55;
   game.meteorTimer = 1.8;
   game.flash = 0;
@@ -993,7 +993,7 @@ function showEnd(victory) {
     ? 'You cleared every Exaplay 3 objective, beat the final review, and turned the homework into a win.'
     : 'The reviewers pushed back this time, but the briefing is ready for another run.';
   finalScore.textContent = `${game.score}`;
-  finalKills.textContent = `${getCompletedObjectiveCount()}/${OBJECTIVES.length}`;
+  finalTasks.textContent = `${getCompletedObjectiveCount()}/${OBJECTIVES.length}`;
   finalTime.textContent = `${Math.round(game.time)}s`;
   showToast(victory ? 'Homework delivered.' : 'Run failed. Reset and try again.');
 }
@@ -1217,7 +1217,7 @@ function destroyEnemy(enemyIndex) {
   const enemy = game.enemies[enemyIndex];
   createEffect('explosion', enemy.x, enemy.y, enemy.isBoss ? 0.82 : 0.52, enemy.scale + 0.18);
   createSparkBurst(enemy.x, enemy.y, enemy.isBoss ? 24 : 11, '#ffc86d');
-  game.kills += 1;
+  game.clearedThreats += 1;
   game.combo = clamp(game.combo + 0.2, 1, 5);
   game.comboTimer = 2.2;
   game.score += Math.round(enemy.score * game.combo);

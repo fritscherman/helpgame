@@ -1266,7 +1266,11 @@ function applyPlayerProfile(profile) {
 }
 
 function syncPlayerProfileFromInputs() {
-  applyPlayerProfile(buildPlayerProfile(playerNameInput?.value ?? '', playerCountryInput?.value ?? ''));
+  if (!playerNameInput || !playerCountryInput) {
+    applyPlayerProfile(buildPlayerProfile());
+    return;
+  }
+  applyPlayerProfile(buildPlayerProfile(playerNameInput.value, playerCountryInput.value));
 }
 
 function drawRoundedRect(x, y, width, height, radius) {
@@ -2166,7 +2170,7 @@ shootButton.addEventListener('pointerup', () => { if (!input.autopilot) input.fi
 shootButton.addEventListener('pointercancel', () => { if (!input.autopilot) input.fire = false; });
 
 pauseButton.addEventListener('click', () => togglePause());
-startButton.addEventListener('click', () => startRun({ autopilot: false }));
+if (startButton) startButton.addEventListener('click', () => startRun({ autopilot: false }));
 demoButton.addEventListener('click', () => startRun({ autopilot: true }));
 briefingContinueButton.addEventListener('click', () => beginObjective(game.pendingObjectiveIndex));
 briefingBackButton.addEventListener('click', backToTitle);

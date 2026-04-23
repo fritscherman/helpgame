@@ -90,6 +90,11 @@ button {
   font-size: clamp(1.1rem, 2vw, 1.4rem);
   font-weight: 800;
 }
+#player-meta {
+  margin: -6px 0 12px;
+  color: #d6edff;
+  font-size: 0.88rem;
+}
 .health-row {
   display: flex;
   align-items: center;
@@ -311,6 +316,49 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.06);
   color: #dcefff;
 }
+.profile-card {
+  margin: 0 0 24px;
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.field {
+  display: grid;
+  gap: 8px;
+}
+.field span {
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.field input {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: rgba(6, 11, 28, 0.92);
+  color: var(--text);
+  font: inherit;
+}
+.field input::placeholder {
+  color: rgba(238, 247, 255, 0.42);
+}
+.field input:focus {
+  outline: 2px solid rgba(102, 215, 255, 0.28);
+  outline-offset: 2px;
+}
+.profile-hint {
+  margin: 10px 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
 .button-row {
   display: flex;
   flex-wrap: wrap;
@@ -528,6 +576,9 @@ button {
   .hero-panel {
     grid-template-columns: 1fr;
   }
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
   .summary-grid {
     grid-template-columns: 1fr;
   }
@@ -582,6 +633,7 @@ button {
       <div class="hud-card" id="hud-left">
         <div class="hud-label">Homework</div>
         <div id="mission-name">Exaplay 3 Homework Run</div>
+        <div id="player-meta">Pilot • 🌍 Unknown origin</div>
         <div class="health-row">
           <div class="health-wrap">
             <img src="PNG/Hud/HPbar_Bg.png" alt="Health background">
@@ -638,10 +690,23 @@ button {
             <li>🖥️ Build the MONITOR setup: WUXGA output, flipped background, saturation correction, linked playlists, 8-second stills, and dome shader on PiP.</li>
             <li>🎛️ Finish with controls, PJLink, TCP data, scheduler rules, autostart, and a final boss review before sign-off.</li>
           </ul>
-          <div class="button-row">
-            <button class="cta cta-primary" id="start-button">Start homework</button>
-            <button class="cta cta-secondary" id="demo-button">Autopilot flythrough</button>
-          </div>
+          <form class="profile-card" id="start-form">
+            <div class="profile-grid">
+              <label class="field" for="player-name-input">
+                <span>Pilot name</span>
+                <input id="player-name-input" name="playerName" type="text" maxlength="24" placeholder="Captain Nova" autocomplete="nickname" enterkeyhint="go">
+              </label>
+              <label class="field" for="player-country-input">
+                <span>Country</span>
+                <input id="player-country-input" name="playerCountry" type="text" maxlength="32" placeholder="France" autocomplete="country-name">
+              </label>
+            </div>
+            <p class="profile-hint">Your ship gets a tiny flag badge before takeoff.</p>
+            <div class="button-row">
+              <button class="cta cta-primary" id="start-button" type="submit">Start homework</button>
+              <button class="cta cta-secondary" id="demo-button" type="button">Autopilot flythrough</button>
+            </div>
+          </form>
           <div class="kicker">Authored by Etienne Servant • easy flight intro, staged objectives, and a boss at the end.</div>
         </div>
         <div class="hero-art">
@@ -731,6 +796,8 @@ const AUTOPILOT_BULLET_SPREAD = 0.01;
 const VICTORY_BONUS_SCORE = 250;
 const READY_STATE_FONT = '700 20px Inter, Segoe UI, sans-serif';
 const READY_TEXT_BOTTOM_OFFSET = 52;
+const DEFAULT_PLAYER_NAME = 'Pilot';
+const DEFAULT_PLAYER_COUNTRY = 'Unknown origin';
 const OBJECTIVES = [
   {
     title: 'Warm-up flight',
@@ -803,8 +870,78 @@ const finalTime = document.getElementById('final-time');
 const joystick = document.getElementById('joystick');
 const joystickKnob = document.getElementById('joystick-knob');
 const shootButton = document.getElementById('shoot-button');
+const playerMeta = document.getElementById('player-meta');
+const startForm = document.getElementById('start-form');
+const playerNameInput = document.getElementById('player-name-input');
+const playerCountryInput = document.getElementById('player-country-input');
 
 const FRAME_CACHE = {};
+const COUNTRY_ALIASES = {
+  at: 'AT',
+  austria: 'AT',
+  au: 'AU',
+  australia: 'AU',
+  be: 'BE',
+  belgium: 'BE',
+  br: 'BR',
+  brazil: 'BR',
+  ca: 'CA',
+  canada: 'CA',
+  ch: 'CH',
+  switzerland: 'CH',
+  cn: 'CN',
+  china: 'CN',
+  cz: 'CZ',
+  'czech republic': 'CZ',
+  de: 'DE',
+  germany: 'DE',
+  dk: 'DK',
+  denmark: 'DK',
+  es: 'ES',
+  spain: 'ES',
+  fi: 'FI',
+  finland: 'FI',
+  fr: 'FR',
+  france: 'FR',
+  gb: 'GB',
+  uk: 'GB',
+  'united kingdom': 'GB',
+  england: 'GB',
+  ie: 'IE',
+  ireland: 'IE',
+  in: 'IN',
+  india: 'IN',
+  it: 'IT',
+  italy: 'IT',
+  jp: 'JP',
+  japan: 'JP',
+  mx: 'MX',
+  mexico: 'MX',
+  nl: 'NL',
+  netherlands: 'NL',
+  no: 'NO',
+  norway: 'NO',
+  nz: 'NZ',
+  'new zealand': 'NZ',
+  pl: 'PL',
+  poland: 'PL',
+  pt: 'PT',
+  portugal: 'PT',
+  ro: 'RO',
+  romania: 'RO',
+  se: 'SE',
+  sweden: 'SE',
+  sg: 'SG',
+  singapore: 'SG',
+  tr: 'TR',
+  turkey: 'TR',
+  ua: 'UA',
+  ukraine: 'UA',
+  us: 'US',
+  usa: 'US',
+  'united states': 'US',
+  'united states of america': 'US'
+};
 const input = {
   left: false,
   right: false,
@@ -838,7 +975,8 @@ const game = {
   autopilotTimer: 0,
   objectiveIndex: 0,
   bossSpawned: false,
-  bossDefeated: false
+  bossDefeated: false,
+  profile: null
 };
 
 const assetPaths = {
@@ -905,6 +1043,58 @@ function initStars() {
   }));
 }
 
+function normalizeText(value) {
+  return value.trim().replace(/\s+/g, ' ');
+}
+
+function normalizeCountryKey(value) {
+  return normalizeText(value)
+    .toLowerCase()
+    .replace(/[.'’()-]/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+function countryCodeToFlag(code) {
+  if (!/^[A-Z]{2}$/.test(code)) return '🌍';
+  return String.fromCodePoint(...[...code].map(char => 127397 + char.charCodeAt(0)));
+}
+
+function buildPlayerProfile(nameValue = '', countryValue = '') {
+  const name = normalizeText(nameValue).slice(0, 24) || DEFAULT_PLAYER_NAME;
+  const rawCountry = normalizeText(countryValue).slice(0, 32);
+  const country = rawCountry || DEFAULT_PLAYER_COUNTRY;
+  const countryCode = COUNTRY_ALIASES[normalizeCountryKey(rawCountry)] || '';
+  return {
+    name,
+    country,
+    countryCode,
+    flag: countryCodeToFlag(countryCode)
+  };
+}
+
+function applyPlayerProfile(profile) {
+  game.profile = profile;
+  playerMeta.textContent = `${profile.name} • ${profile.flag} ${profile.country}`;
+}
+
+function syncPlayerProfileFromInputs() {
+  applyPlayerProfile(buildPlayerProfile(playerNameInput.value, playerCountryInput.value));
+}
+
+function drawRoundedRect(x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+}
+
 function createPlayer() {
   return {
     x: 180,
@@ -948,6 +1138,9 @@ function resetGame() {
 }
 
 function initGame() {
+  applyPlayerProfile(buildPlayerProfile());
+  playerNameInput.value = '';
+  playerCountryInput.value = '';
   initStars();
   resetGame();
   draw(0);
@@ -955,6 +1148,7 @@ function initGame() {
 }
 
 function startRun({ autopilot = false } = {}) {
+  syncPlayerProfileFromInputs();
   resetGame();
   input.autopilot = autopilot;
   game.mode = 'playing';
@@ -962,7 +1156,9 @@ function startRun({ autopilot = false } = {}) {
   pauseOverlay.classList.add('hidden');
   endOverlay.classList.add('hidden');
   missionName.textContent = autopilot ? `${GAME_TITLE} • Autopilot flythrough` : GAME_TITLE;
-  showToast(autopilot ? 'Autopilot flythrough engaged.' : 'Warm-up flight started. Homework objectives incoming.');
+  showToast(autopilot
+    ? `${game.profile.name} is cruising on autopilot.`
+    : `${game.profile.name} is cleared for takeoff.`);
 }
 
 function backToTitle() {
@@ -972,6 +1168,7 @@ function backToTitle() {
   pauseOverlay.classList.add('hidden');
   endOverlay.classList.add('hidden');
   missionName.textContent = GAME_TITLE;
+  syncPlayerProfileFromInputs();
   resetGame();
 }
 
@@ -990,8 +1187,8 @@ function showEnd(victory) {
   endPretitle.textContent = victory ? 'Homework complete' : 'Homework failed';
   endTitle.textContent = victory ? 'Exaplay 3 signed off' : 'Review run failed';
   endCopy.textContent = victory
-    ? 'You cleared every Exaplay 3 objective, beat the final review, and turned the homework into a win.'
-    : 'The reviewers pushed back this time, but the briefing is ready for another run.';
+    ? `${game.profile.name} cleared every Exaplay 3 objective, beat the final review, and brought ${game.profile.flag} ${game.profile.country} home a win.`
+    : `${game.profile.name}'s run for ${game.profile.flag} ${game.profile.country} hit resistance, but the briefing is ready for another attempt.`;
   finalScore.textContent = `${game.score}`;
   finalTasks.textContent = `${getCompletedObjectiveCount()}/${OBJECTIVES.length}`;
   finalTime.textContent = `${Math.round(game.time)}s`;
@@ -1536,6 +1733,25 @@ function drawPlayer() {
   }
   const frame = getAnimationFrame(assets.player, 16);
   drawSprite(frame, player.x, player.y, frame.width * 0.74, frame.height * 0.74, Math.sin(player.bob) * 0.02, false, 1);
+  ctx.save();
+  ctx.translate(player.x + 6, player.y - 36);
+  ctx.rotate(-0.1 + Math.sin(player.bob) * 0.015);
+  ctx.strokeStyle = 'rgba(225, 239, 255, 0.72)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(-18, 18);
+  ctx.lineTo(-18, -10);
+  ctx.stroke();
+  drawRoundedRect(-14, -18, 30, 24, 7);
+  ctx.fillStyle = 'rgba(7, 12, 30, 0.94)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(102, 215, 255, 0.34)';
+  ctx.stroke();
+  ctx.font = '16px "Apple Color Emoji", "Segoe UI Emoji", Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(game.profile?.flag || '🌍', 1, -5);
+  ctx.restore();
   if (player.hitCooldown > 0) {
     ctx.save();
     ctx.globalAlpha = 0.18 + Math.sin(game.time * 60) * 0.08;
@@ -1677,12 +1893,17 @@ shootButton.addEventListener('pointerup', () => { if (!input.autopilot) input.fi
 shootButton.addEventListener('pointercancel', () => { if (!input.autopilot) input.fire = false; });
 
 pauseButton.addEventListener('click', () => togglePause());
-startButton.addEventListener('click', () => startRun({ autopilot: false }));
 demoButton.addEventListener('click', () => startRun({ autopilot: true }));
 resumeButton.addEventListener('click', () => togglePause(false));
 restartButton.addEventListener('click', () => startRun({ autopilot: false }));
 pauseRestartButton.addEventListener('click', () => startRun({ autopilot: false }));
 backToTitleButton.addEventListener('click', backToTitle);
+startForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  startRun({ autopilot: false });
+});
+playerNameInput.addEventListener('input', syncPlayerProfileFromInputs);
+playerCountryInput.addEventListener('input', syncPlayerProfileFromInputs);
 
 loadAssets().catch((error) => {
   const card = document.createElement('div');

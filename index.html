@@ -292,13 +292,12 @@ button {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   padding: 20px;
   background: linear-gradient(180deg, rgba(4, 10, 27, 0.3), rgba(4, 10, 27, 0.82));
   backdrop-filter: blur(5px);
   z-index: 5;
-  overflow-y: auto;
 }
 .overlay.hidden {
   display: none;
@@ -310,7 +309,6 @@ button {
   border-radius: var(--radius);
   padding: clamp(22px, 4vw, 34px);
   box-shadow: var(--shadow);
-  margin: auto 0;
 }
 .hero-panel {
   display: grid;
@@ -318,8 +316,6 @@ button {
   gap: 28px;
   align-items: start;
   width: min(100%, 1080px);
-  max-height: 100%;
-  overflow-y: auto;
 }
 .pretitle {
   font-size: 0.8rem;
@@ -509,6 +505,16 @@ button {
 }
 #start-overlay .pretitle {
   color: #7ce7ff;
+}
+#start-overlay {
+  align-items: stretch;
+  padding: 12px;
+}
+#start-overlay .panel {
+  margin: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
 }
 #start-overlay .cta-primary {
   background: linear-gradient(135deg, #4ce2ff, #8b63ff);
@@ -752,6 +758,9 @@ button {
   }
   .hero-panel {
     grid-template-columns: 1fr;
+  }
+  #start-overlay {
+    padding: 8px;
   }
   .mission-flow,
   .briefing-card-grid {
